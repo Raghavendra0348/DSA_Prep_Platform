@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id        Int               @id @default(autoincrement())
+  name      String            @unique
+  slug      String            @unique
+  questions CompanyQuestion[]
+}
+
+model Question {
+  id         Int               @id @default(autoincrement())
+  slug       String            @unique
+  title      String
+  difficulty String
+  link       String
+  topics     String[]
+  companies  CompanyQuestion[]
+  progress   Progress[]
+  bookmarks  Bookmark[]
+
+  @@index([difficulty])
+  @@index([title])
+}
+
+model CompanyQuestion {
+  companyId      Int
+  questionId     Int
+  period         String
+  frequency      Float
+  acceptanceRate Float
+
+  company  Company  @relation(fields: [companyId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@id([companyId, questionId, period])
+  @@index([companyId, period])
+  @@index([questionId])
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  password  String
+  avatar    String?
+  createdAt DateTime   @default(now())
+  progress  Progress[]
+  bookmarks Bookmark[]
+}
+
+model Progress {
+  userId     String
+  questionId Int
+  status     String   // "solved" | "attempted" | "not-started"
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@id([userId, questionId])
+}
+
+model Bookmark {
+  userId     String
+  questionId Int
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@id([userId, questionId])
+}
