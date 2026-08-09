@@ -1,0 +1,586 @@
+{
+  "info": {
+    "name": "DSA Prep Platform API",
+    "_postman_id": "dsa-prep-platform-api",
+    "description": "Complete API collection for the DSA Interview Prep Platform backend.\n\n**How to use:**\n1. Set the `baseUrl` variable to `http://localhost:5000` (or your server port)\n2. Run **Register** or **Login** first — the token is auto-saved to `authToken`\n3. All protected routes automatically use `{{authToken}}`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string",
+      "description": "Change this to match your server port"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "Auto-filled after Login or Register"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏥 Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Simple health check. Returns { status: 'ok' }. No auth required."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "  pm.collectionVariables.set('authToken', res.token);",
+                  "  console.log('✅ Token saved:', res.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Creates a new user. Password must be ≥ 6 characters.\nAuto-saves the JWT token to `authToken` collection variable."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "  pm.collectionVariables.set('authToken', res.token);",
+                  "  console.log('✅ Token saved:', res.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with existing credentials. Auto-saves JWT to `authToken`."
+          }
+        },
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "me"]
+            },
+            "description": "Returns profile of the currently logged-in user. Requires JWT."
+          }
+        },
+        {
+          "name": "❌ Register - Missing Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"bad\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Should return 400 - All fields required"
+          }
+        },
+        {
+          "name": "❌ Login - Wrong Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Should return 401 - Invalid email or password"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard"]
+            },
+            "description": "Returns full user stats: overview, difficulty breakdown, top companies, top topics, and recent activity.\nRequires JWT."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Progress",
+      "item": [
+        {
+          "name": "Get All Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress"]
+            },
+            "description": "Returns all progress records for the logged-in user."
+          }
+        },
+        {
+          "name": "Mark Question Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": 1,\n  \"status\": \"solved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress"]
+            },
+            "description": "Upsert (create or update) progress for a question.\nValid status values: `solved` | `attempted` | `not-started`"
+          }
+        },
+        {
+          "name": "Mark as Attempted",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": 2,\n  \"status\": \"attempted\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress"]
+            },
+            "description": "Mark a question as attempted."
+          }
+        },
+        {
+          "name": "Bulk Progress Fetch",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionIds\": [1, 2, 3, 4, 5]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress", "bulk"]
+            },
+            "description": "Fetch progress status for multiple questions at once (max 500 IDs).\nReturns a map of questionId → status."
+          }
+        },
+        {
+          "name": "❌ Invalid Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": 1,\n  \"status\": \"skipped\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress"]
+            },
+            "description": "Should return 400 - Invalid status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔖 Bookmarks",
+      "item": [
+        {
+          "name": "Get All Bookmarks",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookmarks"]
+            },
+            "description": "Returns all bookmarked questions for the logged-in user."
+          }
+        },
+        {
+          "name": "Toggle Bookmark (Add)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookmarks"]
+            },
+            "description": "Toggles bookmark for a question.\n- If NOT bookmarked → adds it → returns `{ bookmarked: true }`\n- If already bookmarked → removes it → returns `{ bookmarked: false }`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Companies",
+      "item": [
+        {
+          "name": "Get All Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies"]
+            },
+            "description": "Returns all companies with question count and top topics. Public endpoint."
+          }
+        },
+        {
+          "name": "Get Company Problems (Google)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}", "description": "Optional - enriches response with user progress" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/google?period=all&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "google"],
+              "query": [
+                { "key": "period", "value": "all", "description": "30days | 3months | 6months | 6plus | all" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Returns paginated problems for Google. JWT is optional — if provided, adds status & bookmarked fields per problem."
+          }
+        },
+        {
+          "name": "Filter Company Problems (Difficulty)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/google?period=all&difficulty=MEDIUM&sortBy=frequency&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "google"],
+              "query": [
+                { "key": "period", "value": "all" },
+                { "key": "difficulty", "value": "MEDIUM", "description": "EASY | MEDIUM | HARD (comma-separated for multiple)" },
+                { "key": "sortBy", "value": "frequency", "description": "frequency | acceptanceRate | difficulty | title" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Filter by difficulty. Use comma for multiple: `EASY,MEDIUM`"
+          }
+        },
+        {
+          "name": "Filter Company Problems (Topics)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/google?period=all&topics=Array,String&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "google"],
+              "query": [
+                { "key": "period", "value": "all" },
+                { "key": "topics", "value": "Array,String", "description": "Comma-separated topic names" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Filter by topics. Comma-separated list."
+          }
+        },
+        {
+          "name": "Company Problems (3 Months Period)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/amazon?period=3months&sortBy=acceptanceRate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "amazon"],
+              "query": [
+                { "key": "period", "value": "3months" },
+                { "key": "sortBy", "value": "acceptanceRate" }
+              ]
+            },
+            "description": "Amazon problems from the last 3 months, sorted by acceptance rate."
+          }
+        },
+        {
+          "name": "Get Company Stats (Google)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/google/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "google", "stats"]
+            },
+            "description": "Returns difficulty + topic breakdown for each time period for Google."
+          }
+        },
+        {
+          "name": "❌ Invalid Company Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/company/nonexistent-company-xyz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "company", "nonexistent-company-xyz"]
+            },
+            "description": "Should return 404 - Company not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔍 Search",
+      "item": [
+        {
+          "name": "Search Questions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search?q=two+sum",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search"],
+              "query": [
+                { "key": "q", "value": "two sum" }
+              ]
+            },
+            "description": "Full-text search across question titles. Min 2 characters."
+          }
+        },
+        {
+          "name": "Search with Difficulty Filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search?q=binary+search&difficulty=MEDIUM&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search"],
+              "query": [
+                { "key": "q", "value": "binary search" },
+                { "key": "difficulty", "value": "MEDIUM" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Search filtered by difficulty."
+          }
+        },
+        {
+          "name": "❌ Short Query (< 2 chars)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search?q=a",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search"],
+              "query": [
+                { "key": "q", "value": "a" }
+              ]
+            },
+            "description": "Should return 400 - Query must be at least 2 characters"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏷️ Topics",
+      "item": [
+        {
+          "name": "Get All Topics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/topics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "topics"]
+            },
+            "description": "Returns all topics with problem count, sorted by popularity."
+          }
+        },
+        {
+          "name": "Get Topic Problems (Dynamic Programming)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/topics/dynamic-programming?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "topics", "dynamic-programming"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Returns all problems tagged with Dynamic Programming. Slug format: lowercase with hyphens."
+          }
+        },
+        {
+          "name": "Filter Topic by Difficulty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/topics/array?difficulty=HARD&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "topics", "array"],
+              "query": [
+                { "key": "difficulty", "value": "HARD" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Filter topic problems by difficulty."
+          }
+        },
+        {
+          "name": "❌ Invalid Topic Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/topics/nonexistent-topic-xyz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "topics", "nonexistent-topic-xyz"]
+            },
+            "description": "Should return 404 - Topic not found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📉 Stats",
+      "item": [
+        {
+          "name": "Get Platform Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "stats"]
+            },
+            "description": "Returns platform-wide stats: total companies, questions, users, topics, and difficulty breakdown. Public endpoint."
+          }
+        }
+      ]
+    }
+  ]
+}
