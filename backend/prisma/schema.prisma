@@ -54,14 +54,17 @@ model User {
   password  String
   avatar    String?
   createdAt DateTime   @default(now())
-  progress  Progress[]
-  bookmarks Bookmark[]
+  progress      Progress[]
+  bookmarks     Bookmark[]
+  refreshTokens RefreshToken[]
 }
 
 model Progress {
   userId     String
   questionId Int
   status     String   // "solved" | "attempted" | "not-started"
+  notes      String?  // personal notes per problem (M3)
+  solvedAt   DateTime? // timestamp of first solve — set once when status → "solved" (M3)
   updatedAt  DateTime @updatedAt
 
   user     User     @relation(fields: [userId], references: [id])
@@ -79,4 +82,17 @@ model Bookmark {
   question Question @relation(fields: [questionId], references: [id])
 
   @@id([userId, questionId])
+}
+
+// Stores refresh tokens for server-side logout + token rotation.
+// When user logs out, their token is deleted → /refresh fails → they must log in again.
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

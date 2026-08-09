@@ -4,10 +4,11 @@
   "description": "DSA Interview Prep Platform — Backend API",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
+    "dev":    "nodemon src/server.js",
+    "start":  "node src/server.js",
     "import": "node scripts/import-data.js",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "test":   "jest --runInBand --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +24,19 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
     "pg": "^8.22.0",
-    "prisma": "^7.9.1"
+    "prisma": "^7.9.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch":       ["**/tests/**/*.test.js"],
+    "testTimeout":     30000
   }
 }

@@ -1,88 +1,138 @@
 const router       = require('express').Router();
+const { z }        = require('zod');
 const prisma       = require('../lib/prisma');
 const authenticate = require('../middleware/authenticate');
 
 // All routes in this file require a valid JWT token
 router.use(authenticate);
 
+// ── Zod schemas ─────────────────────────────────────────────────────────────
+const progressSchema = z.object({
+  questionId: z.number({ coerce: true }).int().positive('questionId must be a positive integer'),
+  status:     z.enum(['solved', 'attempted', 'not-started'], {
+                errorMap: () => ({ message: 'status must be: solved | attempted | not-started' }),
+              }),
+  notes:      z.string().optional(),  // optional personal notes (M3)
+});
+
 // ── GET /api/progress ──────────────────────────────────────────────────────
-// Returns all progress records for the logged-in user.
-// Used by: Dashboard page to show overall stats.
+// Returns paginated progress records for the logged-in user. (M2: added pagination)
+// Query params: page (default 1), limit (default 50, max 200), status (filter)
 router.get('/', async (req, res, next) => {
   try {
-    const progress = await prisma.progress.findMany({
-      where:   { userId: req.user.id },
-      include: { question: { select: { slug: true, title: true } } },
+    const page    = Math.max(1, Number(req.query.page)  || 1);
+    const limit   = Math.min(Math.max(1, Number(req.query.limit) || 50), 200);
+    const status  = req.query.status; // optional filter: solved | attempted | not-started
+
+    const where = {
+      userId: req.user.id,
+      ...(status && { status }),
+    };
+
+    const [progress, total] = await Promise.all([
+      prisma.progress.findMany({
+        where,
+        include:  { question: { select: { slug: true, title: true, difficulty: true } } },
+        orderBy:  { updatedAt: 'desc' },
+        take:     limit,
+        skip:     (page - 1) * limit,
+      }),
+      prisma.progress.count({ where }),
+    ]);
+
+    res.json({
+      success: true,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+      progress,
     });
-    res.json({ success: true, progress });
   } catch (e) { next(e); }
 });
 
 // ── POST /api/progress ─────────────────────────────────────────────────────
-// Upsert the status of a single question for the logged-in user.
-// Used by: Company detail page — when user clicks to mark a problem solved.
-// Body: { questionId: 3, status: "solved" }
+// Upsert the status (and optionally notes) for a single question. (M3: notes support)
+// Body: { questionId: 3, status: "solved", notes?: "My notes here" }
 router.post('/', async (req, res, next) => {
   try {
-    const { questionId, status } = req.body;
-    const validStatuses = ['solved', 'attempted', 'not-started'];
-    if (!validStatuses.includes(status))
-      return res.status(400).json({ error: 'Invalid status. Must be: solved | attempted | not-started' });
+    const { questionId, status, notes } = progressSchema.parse(req.body);
 
-    if (!questionId || isNaN(Number(questionId)))
-      return res.status(400).json({ error: 'questionId must be a valid number' });
+    const updateData  = { status };
+    const createData  = { userId: req.user.id, questionId, status };
+
+    // notes — only update if explicitly provided in the request body
+    if (notes !== undefined) {
+      updateData.notes = notes;
+      createData.notes = notes;
+    }
+
+    // Set solvedAt once when status first becomes "solved"
+    if (status === 'solved') {
+      const existing = await prisma.progress.findUnique({
+        where:  { userId_questionId: { userId: req.user.id, questionId } },
+        select: { solvedAt: true },
+      });
+      // Only set solvedAt if it hasn't been set before (preserve original solve time)
+      if (!existing?.solvedAt) {
+        updateData.solvedAt = new Date();
+        createData.solvedAt = new Date();
+      }
+    }
 
     const progress = await prisma.progress.upsert({
-      where:  { userId_questionId: { userId: req.user.id, questionId: Number(questionId) } },
-      update: { status },
-      create: { userId: req.user.id, questionId: Number(questionId), status },
+      where:  { userId_questionId: { userId: req.user.id, questionId } },
+      update: updateData,
+      create: createData,
     });
+
+    res.json({ success: true, progress });
+  } catch (e) { next(e); }
+});
+
+// ── PATCH /api/progress/:questionId/notes ─────────────────────────────────
+// Update only the notes for a question — without changing the status. (M3)
+// Body: { notes: "My thinking here..." }
+router.patch('/:questionId/notes', async (req, res, next) => {
+  try {
+    const questionId = Number(req.params.questionId);
+    if (isNaN(questionId) || questionId < 1)
+      return res.status(400).json({ success: false, error: 'Invalid questionId' });
+
+    const { notes } = z.object({ notes: z.string() }).parse(req.body);
+
+    const progress = await prisma.progress.update({
+      where: { userId_questionId: { userId: req.user.id, questionId } },
+      data:  { notes },
+    });
+
     res.json({ success: true, progress });
   } catch (e) { next(e); }
 });
 
 // ── POST /api/progress/bulk ────────────────────────────────────────────────
-// FIX #5: Bulk progress fetch — get statuses for a list of question IDs.
-//
-// WHY this is needed:
-//   Company page shows 172 Google problems. Frontend needs to show which
-//   ones are solved/attempted. Without this endpoint, it would need 172
-//   separate API calls. With this, it sends ONE request with all IDs.
-//
-// Body:    { questionIds: [3, 7, 15, 22, ...] }
-// Returns: Map of questionId → status (only for questions the user has touched)
-//          Questions with no record are simply absent (meaning "not-started")
-//
-// Example:
-//   Request:  { questionIds: [3, 7, 15] }
-//   Response: { progress: { "3": "solved", "7": "attempted" } }
-//             (15 is absent → user hasn't started it)
+// Bulk progress fetch — get statuses for a list of question IDs.
+// Body:    { questionIds: [3, 7, 15, 22, ...] }   (max 500)
+// Returns: Map of questionId → { status, notes }
 router.post('/bulk', async (req, res, next) => {
   try {
     const { questionIds } = req.body;
 
     if (!Array.isArray(questionIds) || questionIds.length === 0)
-      return res.status(400).json({ error: 'questionIds must be a non-empty array' });
+      return res.status(400).json({ success: false, error: 'questionIds must be a non-empty array' });
 
-    // Cap at 500 IDs to prevent abuse
     if (questionIds.length > 500)
-      return res.status(400).json({ error: 'Cannot fetch more than 500 questions at once' });
+      return res.status(400).json({ success: false, error: 'Cannot fetch more than 500 questions at once' });
 
     const records = await prisma.progress.findMany({
-      where: {
-        userId:     req.user.id,
-        questionId: { in: questionIds.map(Number) },  // Prisma IN clause
-      },
-      select: { questionId: true, status: true },
+      where:  { userId: req.user.id, questionId: { in: questionIds.map(Number) } },
+      select: { questionId: true, status: true, notes: true, solvedAt: true },
     });
 
-    // Convert array to a map for O(1) lookup on the frontend:
-    // [{ questionId: 3, status: "solved" }]  →  { "3": "solved" }
-    const progress = Object.fromEntries(records.map(r => [r.questionId, r.status]));
+    // { "3": { status: "solved", notes: "..." }, "7": { status: "attempted", notes: null } }
+    const progress = Object.fromEntries(
+      records.map(r => [r.questionId, { status: r.status, notes: r.notes, solvedAt: r.solvedAt }])
+    );
 
     res.json({ success: true, progress });
   } catch (e) { next(e); }
 });
 
 module.exports = router;
-

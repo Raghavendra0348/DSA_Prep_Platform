@@ -1,6 +1,22 @@
 const router  = require('express').Router();
 const prisma  = require('../lib/prisma');
 
+// ── GET /api/companies/slugs ───────────────────────────────────────────────
+// Lightweight endpoint — returns only name + slug for all companies.
+// LOW priority fix: frontend navigation only needs slugs, not full data.
+// Much faster than GET /api/companies (skips questionCount + topTopics computation).
+router.get('/slugs', async (req, res, next) => {
+  try {
+    const companies = await prisma.company.findMany({
+      select:  { name: true, slug: true },
+      orderBy: { name: 'asc' },
+    });
+    res.json({ success: true, total: companies.length, companies });
+  } catch (e) { next(e); }
+});
+
+// ── GET /api/companies ────────────────────────────────────────────────────
+// Full company list with question count and top topics.
 router.get('/', async (req, res, next) => {
   try {
     const companies = await prisma.company.findMany({
