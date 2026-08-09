@@ -336,3 +336,55 @@ bookmarks          → user × question
 | **Week 4** | Company Detail page (5 tabs, filters, question table) |
 | **Week 5** | Progress, Bookmarks, Search, Topics, Dashboard |
 | **Week 6** | Polish, animations, responsive, SEO + Deploy to Railway/Aiven/Vercel |
+
+---
+
+## 16. Backend Completion Status (August 8, 2026)
+
+> **Weeks 1–2 are 100% complete.** Frontend work (Weeks 3–6) is next.
+> See [`BACKEND_REFERENCE.md`](./BACKEND_REFERENCE.md) for the full API spec.
+
+### ✅ Built & Verified
+
+| Component | Details |
+|---|---|
+| PostgreSQL DB | `dsa_db` @ localhost:5432, user `postgres` |
+| Prisma v7 schema | 6 models: Company, Question, CompanyQuestion, User, Progress, Bookmark |
+| Migrations | `prisma/migrations/0_init/` — baseline applied |
+| CSV Import | 471 companies, 3,257 questions, 74 topics imported |
+| Express server | Running on port 5000, nodemon for dev |
+| Security | helmet, CORS, rate limiting (10/15min auth, 100/min API) |
+| Auth | JWT (7d expiry), bcrypt, email validation, password min-length |
+
+### ✅ All API Endpoints Working
+
+| Endpoint | Auth |
+|---|---|
+| `GET /health` | Public |
+| `GET /api/stats` | Public |
+| `GET /api/companies` | Public |
+| `GET /api/company/:slug` | Public + auth-aware (adds `status`/`bookmarked` when logged in) |
+| `GET /api/company/:slug/stats` | Public |
+| `GET /api/search` | Public |
+| `GET /api/topics` | Public |
+| `GET /api/topics/:topic` | Public |
+| `POST /api/auth/register` | Public |
+| `POST /api/auth/login` | Public |
+| `GET /api/me` | 🔐 JWT |
+| `GET /api/dashboard` | 🔐 JWT |
+| `GET /api/progress` | 🔐 JWT |
+| `POST /api/progress` | 🔐 JWT |
+| `POST /api/progress/bulk` | 🔐 JWT |
+| `GET /api/bookmarks` | 🔐 JWT |
+| `POST /api/bookmarks` | 🔐 JWT |
+
+### 🔜 Next: Frontend (React + Vite)
+- [ ] Landing page
+- [ ] Company browser (search, sort, grid)
+- [ ] Company detail (period tabs, filters, question table with status + bookmark)
+- [ ] Auth pages (login, register)
+- [ ] Dashboard page (uses `GET /api/dashboard`)
+- [ ] Global search
+- [ ] Topic explorer
+- [ ] Deploy: Railway (backend) + Aiven (DB) + Vercel (frontend)
+

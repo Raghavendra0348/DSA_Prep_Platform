@@ -4,13 +4,29 @@
 
 **Stack:** PostgreSQL · Prisma ORM · Node.js · Express · JWT
 
+> **📌 Status as of August 8, 2026: IMPLEMENTATION COMPLETE**
+>
+> This document was the original planning reference. The backend is now fully built and running.
+> For the **current, accurate API reference** see: [`BACKEND_REFERENCE.md`](./BACKEND_REFERENCE.md)
+>
+> **What was built vs planned:**
+>
+> - ✅ All Phase 0–3 items complete
+> - ✅ Prisma v7 (plan assumed v4/v5 — adapter pattern required)
+> - ✅ Migrations baseline created (`prisma/migrations/0_init/`)
+> - ✅ Additional endpoints beyond plan: `/api/dashboard`, `/api/progress/bulk`, `/api/me`
+> - ✅ Rate limiting applied (was in plan, is now live)
+> - ✅ Topics case-mismatch bug fixed
+> - ✅ Stats endpoint parallelized (Promise.all)
+> - ✅ Company endpoint is auth-aware (returns `status` + `bookmarked` for logged-in users)
+>
+> **DB credentials used (local dev):** `postgres / rgukt123 @ localhost:5432 / dsa_db`
+
 ---
 
 ## Phase 0 — Database Setup
 
 ### Step 0.1 — Install PostgreSQL Locally
-
-
 
 ```bash
 sudo apt install postgresql postgresql-contrib

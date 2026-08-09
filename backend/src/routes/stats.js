@@ -25,7 +25,7 @@ router.get('/', async (req, res, next) => {
         totalQuestions:   questions,
         totalUsers:       users,
         totalTopics:      Object.keys(topicMap).length,
-        lastUpdated:      '2025-06-01',
+        lastUpdated:      new Date().toISOString(),
         difficultyBreakdown: Object.fromEntries(byDiff.map(d => [d.difficulty, d._count.id])),
       },
     });
