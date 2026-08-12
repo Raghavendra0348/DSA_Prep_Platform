@@ -1,0 +1,37 @@
+/* ── Tier Badge ──────────────────────────────────────────────────────────────── */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--tier-color) 30%, transparent);
+  background: color-mix(in srgb, var(--tier-color) 12%, transparent);
+  color: var(--tier-color);
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.tier-badge:hover {
+  background: color-mix(in srgb, var(--tier-color) 20%, transparent);
+}
+
+/* ── Sizes ────────────────────────────────────────────────────────────────── */
+.tier-badge--md {
+  font-size: 12px;
+}
+
+.tier-badge--sm {
+  font-size: 11px;
+  padding: 2px 7px;
+  gap: 3px;
+}
+
+.tier-badge-icon {
+  flex-shrink: 0;
+}
+
+.tier-badge-label {
+  letter-spacing: 0.02em;
+}

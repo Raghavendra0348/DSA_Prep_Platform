@@ -4,7 +4,7 @@
 }
 
 .companies-header {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .companies-header h1 {
@@ -16,6 +16,42 @@
 .companies-subtitle {
   color: var(--text-secondary);
   font-size: 15px;
+}
+
+/* ── Type Toggle (Product / Service / All) ────────────────────────────────── */
+.type-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.type-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.type-toggle-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.type-toggle-btn.active {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 /* ── Controls ─────────────────────────────────────────────────────────────── */
@@ -38,6 +74,106 @@
   color: var(--text-muted);
 }
 
+/* ── Tier Sections ────────────────────────────────────────────────────────── */
+.tier-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.tier-section {
+  animation: tier-fade-in 0.35s ease both;
+}
+
+@keyframes tier-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tier-section:nth-child(1) { animation-delay: 0s; }
+.tier-section:nth-child(2) { animation-delay: 0.05s; }
+.tier-section:nth-child(3) { animation-delay: 0.10s; }
+.tier-section:nth-child(4) { animation-delay: 0.15s; }
+.tier-section:nth-child(5) { animation-delay: 0.20s; }
+
+/* ── Tier Header (clickable / collapsible) ────────────────────────────────── */
+.tier-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--section-tier-color, var(--border));
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+}
+
+.tier-section--collapsed .tier-section-header {
+  margin-bottom: 0;
+}
+
+.tier-section-header:hover {
+  border-color: var(--section-tier-color, var(--accent));
+  border-left-color: var(--section-tier-color, var(--accent));
+  background: var(--bg-hover);
+}
+
+.tier-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tier-section-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--section-tier-color, var(--accent)) 15%, transparent);
+  color: var(--section-tier-color, var(--accent));
+  flex-shrink: 0;
+}
+
+.tier-section-title h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.tier-section-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.tier-section-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.tier-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--section-tier-color, var(--accent)) 15%, transparent);
+  color: var(--section-tier-color, var(--accent));
+}
+
 /* ── Grid ─────────────────────────────────────────────────────────────────── */
 .companies-grid {
   display: grid;
@@ -45,55 +181,140 @@
   gap: 14px;
 }
 
-/* ── Company Card ─────────────────────────────────────────────────────────── */
-.company-card {
+/* ── Company Card (Image Background with Overlay Text) ────────────────────── */
+.company-card-img-bg {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  justify-content: space-between;
   text-decoration: none;
   color: inherit;
+  overflow: hidden;
+  min-height: 170px;
+  border-radius: var(--radius-lg, 16px);
+  background: var(--bg-card, #161b22);
+  padding: 16px;
+  border: 1px solid var(--border, #30363d);
+  border-top: 3px solid var(--card-tier-color, var(--border));
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+
+  /* ⚙️ Easy Background Controls — Adjust these values! */
+  --card-bg-blur: 2px;       /* Set to 0px for sharp logo, higher (e.g. 20px) for heavy blur */
+  --card-bg-opacity: 0.70;    /* Background image visibility (0.0 to 1.0) */
+  --card-bg-size: 60%;        /* Logo size inside background (contain, cover, or 50% - 100%) */
+}
+
+.company-card-img-bg:hover {
+  border-color: var(--card-tier-color, var(--accent));
+  border-top-color: var(--card-tier-color, var(--accent));
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              0 0 0 1px color-mix(in srgb, var(--card-tier-color, var(--accent)) 30%, transparent);
+
+  --card-bg-opacity: 0.35;
+  --card-bg-blur: 8px;
+}
+
+/* Background Image */
+.company-card-bg-img {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: var(--card-bg-size);
+  background-repeat: no-repeat;
+  opacity: var(--card-bg-opacity);
+  filter: blur(var(--card-bg-blur)) brightness(1.1);
+  transition: opacity var(--transition), transform var(--transition), filter var(--transition);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.company-card-img-bg:hover .company-card-bg-img {
+  opacity: 0.28;
+  transform: scale(1.1);
+  filter: grayscale(0%) brightness(1.3);
+}
+
+/* Gradient Overlay for Text Readability */
+.company-card-bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(22, 27, 34, 0.45) 0%,
+    rgba(22, 27, 34, 0.85) 60%,
+    rgba(22, 27, 34, 0.98) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Card Top Row: Logo Badge + Tier Badge */
+.company-card-top-row {
   position: relative;
-  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
-}
-
-.company-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(88, 166, 255, 0.08);
-}
-
-.company-card-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(88, 166, 255, 0.1);
-  color: var(--accent);
+  z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 4px;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Overlay Text Content */
+.company-card-overlay-text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
 }
 
 .company-card-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .company-card-count {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--text-secondary, #8b949e);
+  font-weight: 500;
+  margin: 0 0 6px 0;
 }
 
 .company-card-topics {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 5px;
 }
 
 .company-card-skeleton {
   height: 140px;
+}
+
+/* ── Show More / Less ─────────────────────────────────────────────────────── */
+.tier-show-more {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.tier-show-more:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
 }
 
 /* ── Result Count ─────────────────────────────────────────────────────────── */
@@ -106,14 +327,39 @@
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .type-toggle {
+    width: 100%;
+  }
+
+  .type-toggle-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
   .companies-controls {
     flex-direction: column;
     align-items: stretch;
   }
+
   .companies-controls .search-input-wrapper {
     max-width: 100%;
   }
+
   .companies-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .tier-section-header {
+    padding: 12px 14px;
+  }
+
+  .tier-section-title h2 {
+    font-size: 13px;
+  }
+
+  .tier-section-meta {
+    display: none;
   }
 }
