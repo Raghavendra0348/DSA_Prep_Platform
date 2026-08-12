@@ -1,0 +1,24 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  background: none;
+  border: none;
+}
+
+.status-badge.clickable {
+  cursor: pointer;
+}
+
+.status-badge.clickable:hover {
+  background: var(--bg-hover);
+  transform: scale(1.15);
+}
+
+.status-badge:disabled {
+  cursor: default;
+  opacity: 0.6;
+}

@@ -1,0 +1,119 @@
+/* ── Companies Page ────────────────────────────────────────────────────────── */
+.companies-page {
+  padding: 40px 24px 60px;
+}
+
+.companies-header {
+  margin-bottom: 28px;
+}
+
+.companies-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.companies-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────────── */
+.companies-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  align-items: center;
+}
+
+.companies-controls .search-input-wrapper {
+  flex: 1;
+  max-width: 400px;
+}
+
+.companies-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────── */
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ── Company Card ─────────────────────────────────────────────────────────── */
+.company-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.company-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(88, 166, 255, 0.08);
+}
+
+.company-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(88, 166, 255, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.company-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.company-card-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.company-card-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.company-card-skeleton {
+  height: 140px;
+}
+
+/* ── Result Count ─────────────────────────────────────────────────────────── */
+.companies-result-count {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 24px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .companies-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .companies-controls .search-input-wrapper {
+    max-width: 100%;
+  }
+  .companies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}

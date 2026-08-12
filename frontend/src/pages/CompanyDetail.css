@@ -1,0 +1,204 @@
+/* ── Company Detail Page ───────────────────────────────────────────────────── */
+.company-detail {
+  padding: 32px 24px 60px;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.company-header {
+  margin-bottom: 24px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: color var(--transition);
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+.company-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.company-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ── Problem Table ────────────────────────────────────────────────────────── */
+.problem-table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.problem-table-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 90px 100px 70px 140px 40px 36px;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.problem-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 90px 100px 70px 140px 40px 36px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-muted);
+  align-items: center;
+  font-size: 14px;
+  transition: background var(--transition);
+}
+
+.problem-row:last-child {
+  border-bottom: none;
+}
+
+.problem-row:hover {
+  background: var(--bg-hover);
+}
+
+/* Column styles */
+.col-num {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.col-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.problem-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.problem-link {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: all var(--transition);
+}
+
+.problem-row:hover .problem-link {
+  opacity: 1;
+}
+
+.problem-link:hover {
+  color: var(--accent);
+}
+
+.col-accept {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.col-topics {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.chip-more {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.col-status,
+.col-bookmark {
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Skeleton Table ───────────────────────────────────────────────────────── */
+.problem-table-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.problem-row-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.problem-row-skeleton:last-child {
+  border-bottom: none;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .problem-table-header {
+    display: none;
+  }
+
+  .problem-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .col-num { display: none; }
+
+  .col-title {
+    width: 100%;
+  }
+
+  .problem-title {
+    white-space: normal;
+    font-size: 15px;
+  }
+
+  .problem-link {
+    opacity: 1;
+  }
+
+  .col-freq { width: 100%; }
+
+  .col-topics {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .company-detail {
+    padding: 24px 16px 40px;
+  }
+}

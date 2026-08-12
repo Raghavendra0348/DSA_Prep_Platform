@@ -1,0 +1,83 @@
+/* ── Dashboard ─────────────────────────────────────────────────────────────── */
+.dashboard { padding: 40px 24px 60px; }
+.dashboard h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+
+/* ── Stats Grid ───────────────────────────────────────────────────────────── */
+.dash-stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+}
+
+.dash-stat-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; padding: 20px; text-align: center;
+}
+
+.dash-stat-value { font-size: 28px; font-weight: 700; }
+.dash-stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.dash-stat-solved    { color: var(--solved); }
+.dash-stat-attempted { color: var(--attempted); }
+.dash-stat-bookmarks { color: var(--medium); }
+.dash-stat-total     { color: var(--accent); }
+
+/* ── Row Layout ───────────────────────────────────────────────────────────── */
+.dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.dash-row .card { padding: 24px; }
+.dash-row h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+/* ── Difficulty Bars ──────────────────────────────────────────────────────── */
+.dash-difficulty-bars { display: flex; flex-direction: column; gap: 14px; }
+
+.dash-diff-row { display: flex; align-items: center; gap: 12px; }
+.dash-diff-label { font-size: 13px; font-weight: 600; width: 55px; }
+.dash-diff-track {
+  flex: 1; height: 8px; border-radius: 4px; background: var(--bg-hover); overflow: hidden;
+}
+.dash-diff-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.dash-diff-count { font-size: 14px; font-weight: 600; color: var(--text-primary); min-width: 24px; text-align: right; }
+
+/* ── Progress Ring Card ───────────────────────────────────────────────────── */
+.dash-progress-center { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.dash-progress-text { font-size: 14px; color: var(--text-secondary); }
+
+/* ── List Cards ───────────────────────────────────────────────────────────── */
+.dash-list { display: flex; flex-direction: column; }
+
+.dash-list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border-muted);
+  font-size: 14px; text-decoration: none; color: var(--text-primary);
+  transition: color var(--transition);
+}
+.dash-list-item:last-child { border-bottom: none; }
+.dash-list-item:hover { color: var(--accent); }
+.dash-list-count { font-size: 12px; color: var(--text-muted); }
+
+/* ── Activity ─────────────────────────────────────────────────────────────── */
+.dash-activity-card { padding: 24px; margin-bottom: 24px; }
+.dash-activity-card h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+.dash-activity-list { display: flex; flex-direction: column; }
+
+.dash-activity-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border-muted); gap: 12px;
+}
+.dash-activity-item:last-child { border-bottom: none; }
+
+.dash-activity-main { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.dash-activity-title {
+  font-size: 14px; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dash-activity-time { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .dash-stats-grid { grid-template-columns: 1fr 1fr; }
+}
