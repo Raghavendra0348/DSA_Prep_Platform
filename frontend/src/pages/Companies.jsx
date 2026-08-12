@@ -129,43 +129,47 @@ export default function Companies() {
         </p>
       </div>
 
-      {/* ── Type Toggle ──────────────────────────────────────────────────── */}
-      <div className="type-toggle" role="tablist" aria-label="Company type filter">
-        {TYPE_TABS.map(({ key, label, Icon }) => (
-          <button
-            key={key}
-            className={`type-toggle-btn ${activeType === key ? 'active' : ''}`}
-            onClick={() => handleTypeChange(key)}
-            role="tab"
-            aria-selected={activeType === key}
-          >
-            <Icon size={15} />
-            {label}
-          </button>
-        ))}
-      </div>
+      {/* ── Unified Controls Bar: Type Tabs | Search + Sort ──────────────── */}
+      <div className="companies-controls-bar">
+        {/* Left: Company Type Filter */}
+        <div className="type-toggle" role="tablist" aria-label="Company type filter">
+          {TYPE_TABS.map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              className={`type-toggle-btn ${activeType === key ? 'active' : ''}`}
+              onClick={() => handleTypeChange(key)}
+              role="tab"
+              aria-selected={activeType === key}
+            >
+              <Icon size={14} />
+              {label}
+            </button>
+          ))}
+        </div>
 
-      {/* ── Search + Sort ────────────────────────────────────────────────── */}
-      <div className="companies-controls">
-        <SearchInput
-          value={query}
-          onChange={handleSearch}
-          placeholder="Search companies..."
-          debounceMs={150}
-        />
-        <div className="companies-sort">
-          <ArrowUpDown size={14} />
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="filter-select"
-          >
-            {SORT_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+        {/* Right: Search + Sort */}
+        <div className="companies-search-sort">
+          <SearchInput
+            value={query}
+            onChange={handleSearch}
+            placeholder="Search companies..."
+            debounceMs={150}
+          />
+          <div className="companies-sort">
+            <ArrowUpDown size={14} />
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="filter-select"
+            >
+              {SORT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
+
 
       {/* ── Content ──────────────────────────────────────────────────────── */}
       {loading ? (
@@ -201,7 +205,7 @@ export default function Companies() {
           }
         />
       ) : (
-        <div className="tier-sections">
+        <div className="tier-sections" key={activeType}>
           {Array.from(tierGroups.entries()).map(([tier, tierCompanies]) => {
             const tierInfo = TIER_INFO[tier];
             const TierIcon = TIER_ICONS[tier] || Building2;

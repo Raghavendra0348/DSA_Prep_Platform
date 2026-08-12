@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ArrowRight, Building2, BookOpen, Tags, TrendingUp, Target, Filter } from 'lucide-react';
+import {
+  Search, ArrowRight, Building2, BookOpen, Tags, TrendingUp,
+  Target, Filter, Sparkles, CheckCircle2, Zap, BarChart3, ChevronRight,
+  ShieldCheck, Layers, Award
+} from 'lucide-react';
 import { getStats } from '../api/stats';
 import { getCompanies } from '../api/companies';
+import { getClassification, TIER_INFO } from '../data/companyClassification';
+import CompanyLogo from '../components/ui/CompanyLogo';
+import TierBadge from '../components/ui/TierBadge';
 import Skeleton from '../components/ui/Skeleton';
 import './Landing.css';
 
-// Featured companies to highlight
+// Featured companies to highlight on landing page
 const FEATURED_SLUGS = [
   'google', 'meta', 'amazon', 'apple', 'microsoft', 'netflix',
-  'flipkart', 'paytm', 'swiggy', 'zomato', 'infosys', 'wipro',
+  'flipkart', 'paytm', 'swiggy', 'zomato', 'tcs', 'accenture',
 ];
+
+const POPULAR_SEARCHES = ['Google', 'Amazon', 'Meta', 'Flipkart', 'Dynamic Programming', 'Array', 'TCS'];
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -52,7 +61,7 @@ export default function Landing() {
     if (!statsRef.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setCountersVisible(true); },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
     observer.observe(statsRef.current);
     return () => observer.disconnect();
@@ -67,49 +76,78 @@ export default function Landing() {
 
   return (
     <div className="landing">
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
+      {/* ── 1. Hero Section ────────────────────────────────────────────────── */}
       <section className="hero">
-        <div className="hero-bg" />
+        <div className="hero-bg-glow hero-bg-glow-1" />
+        <div className="hero-bg-glow hero-bg-glow-2" />
+
         <div className="hero-content container">
+          {/* Announcement Badge */}
+          <div className="hero-announcement">
+            <span className="announcement-pill">NEW 2026 EDITION</span>
+            <span className="announcement-text">Curated Company-Wise Questions & Tier Lists</span>
+            <ChevronRight size={14} className="announcement-arrow" />
+          </div>
+
           <h1 className="hero-title">
-            Ace Your <span className="hero-highlight">Tech Interview</span>
+            Ace Your Next <span className="hero-highlight">Tech Interview</span>
           </h1>
+
           <p className="hero-subtitle">
-            Browse <strong>471+ companies'</strong> real LeetCode questions — filtered by
-            recency, difficulty &amp; topic. Track your progress and land your dream job.
+            Practice real LeetCode questions asked at <strong>471+ top companies</strong>.
+            Organized by recency, difficulty, and tier classification to fast-track your prep.
           </p>
 
+          {/* Hero Search Box */}
           <form className="hero-search" onSubmit={handleSearch}>
             <Search size={20} className="hero-search-icon" />
             <input
               type="text"
               className="hero-search-input"
-              placeholder="Search a company... (e.g. Google, Amazon)"
+              placeholder="Search your target company (e.g. Google, Amazon, Swiggy)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="btn btn-primary hero-search-btn">
-              Search
+            <button type="submit" className="btn-hero-search">
+              <span>Search</span>
+              <ArrowRight size={16} />
             </button>
           </form>
 
+          {/* Popular Tag Quick Links */}
+          <div className="hero-popular-tags">
+            <span className="popular-label">Popular:</span>
+            {POPULAR_SEARCHES.map(tag => (
+              <button
+                key={tag}
+                className="popular-tag-btn"
+                onClick={() => navigate(`/companies?q=${encodeURIComponent(tag)}`)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+
+          {/* Hero CTAs */}
           <div className="hero-actions">
-            <Link to="/companies" className="btn btn-primary btn-lg">
-              Browse All Companies <ArrowRight size={18} />
+            <Link to="/companies" className="btn-hero-primary">
+              <span>Browse All Companies</span>
+              <ArrowRight size={18} />
             </Link>
-            <Link to="/topics" className="btn btn-ghost btn-lg">
-              Explore Topics
+            <Link to="/topics" className="btn-hero-secondary">
+              <BookOpen size={18} />
+              <span>Explore Topics</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Stats Bar ──────────────────────────────────────────────────────── */}
+      {/* ── 2. Live Platform Metrics Bar ───────────────────────────────────── */}
       <section className="stats-bar" ref={statsRef}>
         <div className="stats-bar-inner container">
           {loading ? (
             <>
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3, 4].map(i => (
                 <div key={i} className="stat-card">
                   <Skeleton width={48} height={48} style={{ borderRadius: '12px' }} />
                   <Skeleton width={60} height={28} />
@@ -122,19 +160,29 @@ export default function Landing() {
               <StatCard
                 icon={Building2}
                 value={stats?.totalCompanies || 471}
-                label="Companies"
+                label="Target Companies"
+                subtext="Product & Service Based"
                 visible={countersVisible}
               />
               <StatCard
                 icon={BookOpen}
                 value={stats?.totalQuestions || 3257}
-                label="Questions"
+                label="Interview Questions"
+                subtext="Tag & Frequency Sorted"
                 visible={countersVisible}
               />
               <StatCard
                 icon={Tags}
                 value={stats?.totalTopics || 74}
                 label="DSA Topics"
+                subtext="Arrays to Dynamic Programming"
+                visible={countersVisible}
+              />
+              <StatCard
+                icon={Award}
+                value={4}
+                label="Tier Categories"
+                subtext="MAANG to Service Tier"
                 visible={countersVisible}
               />
             </>
@@ -142,95 +190,100 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Featured Companies ─────────────────────────────────────────────── */}
+      {/* ── 3. Why Prepare With Us (Features Section) ─────────────────────── */}
+     
+
+      {/* ── 4. Featured Companies Section ──────────────────────────────────── */}
       <section className="featured-section">
         <div className="container">
-          <h2 className="section-title">Featured Companies</h2>
-          <p className="section-subtitle">Start preparing for your target company</p>
+          <div className="section-header">
+            <span className="section-badge">DIRECTORY HIGHLIGHTS</span>
+            <h2 className="section-title">Top Target Companies</h2>
+            <p className="section-subtitle">Start preparing questions for top tech employers</p>
+          </div>
 
           <div className="featured-grid">
             {loading
               ? Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="card featured-card">
-                    <Skeleton width="60%" height={20} />
+                  <div key={i} className="card featured-card-skeleton">
+                    <Skeleton width="60%" height={24} />
                     <Skeleton width="40%" height={14} style={{ marginTop: 8 }} />
-                    <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-                      <Skeleton width={50} height={22} style={{ borderRadius: 6 }} />
-                      <Skeleton width={50} height={22} style={{ borderRadius: 6 }} />
-                      <Skeleton width={50} height={22} style={{ borderRadius: 6 }} />
-                    </div>
                   </div>
                 ))
-              : featured.map(company => (
-                  <Link
-                    key={company.slug}
-                    to={`/company/${company.slug}`}
-                    className="card featured-card"
-                  >
-                    <div className="featured-card-header">
-                      <h3 className="featured-card-name">{company.name}</h3>
-                      <span className="featured-card-count">
-                        {company.questionCount || company._count?.questions || '—'} problems
+              : featured.map(company => {
+                  const { tier: compTier } = getClassification(company.slug);
+                  const compTierInfo = TIER_INFO[compTier];
+
+                  return (
+                    <Link
+                      key={company.slug}
+                      to={`/company/${company.slug}`}
+                      className="card featured-card"
+                      style={{ '--card-tier-color': compTierInfo.color }}
+                    >
+                      <div className="featured-card-top">
+                        <CompanyLogo slug={company.slug} name={company.name} size={42} />
+                        <TierBadge tier={compTier} size="sm" />
+                      </div>
+
+                      <div className="featured-card-body">
+                        <h3 className="featured-card-name">{company.name}</h3>
+                        <span className="featured-card-count">
+                          {company.questionCount || company._count?.questions || 0} questions
+                        </span>
+                      </div>
+
+                      {(company.topTopics || []).length > 0 && (
+                        <div className="featured-card-topics">
+                          {company.topTopics.slice(0, 3).map(topic => (
+                            <span key={topic} className="chip">{topic}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      <span className="featured-card-cta">
+                        <span>Practice Questions</span>
+                        <ArrowRight size={14} />
                       </span>
-                    </div>
-                    <div className="featured-card-topics">
-                      {(company.topTopics || []).slice(0, 3).map(topic => (
-                        <span key={topic} className="chip">{topic}</span>
-                      ))}
-                    </div>
-                    <span className="featured-card-cta">
-                      View Problems <ArrowRight size={14} />
-                    </span>
-                  </Link>
-                ))
+                    </Link>
+                  );
+                })
             }
           </div>
-        </div>
-      </section>
 
-      {/* ── How It Works ───────────────────────────────────────────────────── */}
-      <section className="how-section">
-        <div className="container">
-          <h2 className="section-title">How It Works</h2>
-          <p className="section-subtitle">Three simple steps to ace your interviews</p>
-
-          <div className="how-steps">
-            <div className="how-step">
-              <div className="how-step-icon">
-                <Target size={28} />
-              </div>
-              <h3>Pick a Company</h3>
-              <p>Browse 471+ companies or search for your target company</p>
-            </div>
-            <div className="how-step-arrow">→</div>
-            <div className="how-step">
-              <div className="how-step-icon">
-                <Filter size={28} />
-              </div>
-              <h3>Choose Time Period</h3>
-              <p>Filter by 30 days, 3 months, 6 months, or all-time frequency</p>
-            </div>
-            <div className="how-step-arrow">→</div>
-            <div className="how-step">
-              <div className="how-step-icon">
-                <TrendingUp size={28} />
-              </div>
-              <h3>Track &amp; Solve</h3>
-              <p>Mark problems as solved, bookmark favorites, track progress</p>
-            </div>
+          <div className="featured-bottom-cta">
+            <Link to="/companies" className="btn-outline-lg">
+              <span>View All 471+ Companies</span>
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
+      {/* ── 5. How It Works (Step Workflow) ────────────────────────────────── */}
+     
+
+      {/* ── 6. Final Call To Action Banner ─────────────────────────────────── */}
       <section className="cta-section">
         <div className="container">
           <div className="cta-banner">
-            <h2>Start Your DSA Prep Today</h2>
-            <p>Join thousands of developers preparing for their dream company</p>
-            <Link to="/companies" className="btn btn-primary btn-lg">
-              Get Started <ArrowRight size={18} />
-            </Link>
+            <div className="cta-glow" />
+            <div className="cta-content">
+              <div className="cta-icon-badge">
+                <Sparkles size={28} />
+              </div>
+              <h2>Ready To Crack Your Dream Interview?</h2>
+              <p>Start practicing company-wise DSA questions completely free. No subscription required.</p>
+              <div className="cta-buttons">
+                <Link to="/companies" className="btn-cta-primary">
+                  <span>Start Practicing Now</span>
+                  <ArrowRight size={18} />
+                </Link>
+                <Link to="/topics" className="btn-cta-secondary">
+                  <span>Browse Topics</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -239,13 +292,13 @@ export default function Landing() {
 }
 
 // ── Animated Counter Card ────────────────────────────────────────────────────
-function StatCard({ icon: Icon, value, label, visible }) {
+function StatCard({ icon: Icon, value, label, subtext, visible }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!visible) return;
-    const duration = 1500;
-    const steps = 40;
+    const duration = 1400;
+    const steps = 35;
     const increment = value / steps;
     let current = 0;
     const timer = setInterval(() => {
@@ -263,10 +316,13 @@ function StatCard({ icon: Icon, value, label, visible }) {
   return (
     <div className="stat-card">
       <div className="stat-card-icon">
-        <Icon size={24} />
+        <Icon size={22} />
       </div>
-      <span className="stat-card-value">{count.toLocaleString()}+</span>
-      <span className="stat-card-label">{label}</span>
+      <div className="stat-card-content">
+        <span className="stat-card-value">{count.toLocaleString()}+</span>
+        <span className="stat-card-label">{label}</span>
+        {subtext && <span className="stat-card-subtext">{subtext}</span>}
+      </div>
     </div>
   );
 }

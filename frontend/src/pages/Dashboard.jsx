@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, CircleDot, Star, BookOpen, ArrowRight } from 'lucide-react';
+import { CheckCircle2, CircleDot, Star, BookOpen, ArrowRight, RefreshCw } from 'lucide-react';
 import { getDashboard } from '../api/dashboard';
 import { useAuth } from '../hooks/useAuth';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
@@ -13,22 +13,44 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    else setRefreshing(true);
+    try {
+      const res = await getDashboard();
+      setData(res);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  // Initial load
   useEffect(() => {
     document.title = 'Dashboard — DSA Prep';
-    async function load() {
-      try {
-        const res = await getDashboard();
-        setData(res);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
     load();
-  }, []);
+  }, [load]);
+
+  // Refetch silently when the tab/window regains focus
+  // so stats update after solving problems on other pages
+  useEffect(() => {
+    function onFocus() { load(true); }
+    function onVisible() {
+      if (document.visibilityState === 'visible') load(true);
+    }
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [load]);
 
   if (loading) {
     return (
@@ -55,21 +77,34 @@ export default function Dashboard() {
     );
   }
 
-  const stats = data?.stats || data || {};
-  const solved     = stats.solved || 0;
-  const attempted  = stats.attempted || 0;
-  const bookmarks  = stats.bookmarks || 0;
-  const total      = stats.totalQuestions || stats.total || 0;
-  const easy       = stats.easy || stats.easySolved || 0;
-  const medium     = stats.medium || stats.mediumSolved || 0;
-  const hard       = stats.hard || stats.hardSolved || 0;
-  const topCompanies = stats.topCompanies || data?.topCompanies || [];
-  const topTopics    = stats.topTopics || data?.topTopics || [];
-  const recentActivity = stats.recentActivity || data?.recentActivity || [];
+  const overview       = data?.overview       || {};
+  const difficulty     = data?.difficulty     || {};
+  const topCompanies   = data?.topCompanies   || [];
+  const topTopics      = data?.topTopics      || [];
+  const recentActivity = data?.recentActivity || [];
+
+  const solved    = overview.totalSolved    || 0;
+  const attempted = overview.totalAttempted || 0;
+  const bookmarks = overview.totalBookmarks || 0;
+  const total     = overview.totalQuestions || 0;
+  const easy      = difficulty.easy         || 0;
+  const medium    = difficulty.medium       || 0;
+  const hard      = difficulty.hard         || 0;
 
   return (
     <div className="dashboard container">
-      <h1>Welcome, {user?.name || 'User'} 👋</h1>
+      <div className="dash-header">
+        <h1>Welcome, {user?.name || 'User'} </h1>
+        <button
+          className={`dash-refresh-btn ${refreshing ? 'spinning' : ''}`}
+          onClick={() => load(true)}
+          title="Refresh stats"
+          disabled={refreshing}
+        >
+          <RefreshCw size={16} />
+          {refreshing ? 'Updating...' : 'Refresh'}
+        </button>
+      </div>
 
       {/* ── Overview Stats ─────────────────────────────────────────────────── */}
       <div className="dash-stats-grid">
@@ -124,7 +159,7 @@ export default function Dashboard() {
               {topCompanies.slice(0, 5).map((c, i) => (
                 <Link key={i} to={`/company/${c.slug}`} className="dash-list-item">
                   <span>{c.name}</span>
-                  <span className="dash-list-count">{c.solved || c.count} solved</span>
+                  <span className="dash-list-count">{c.solvedCount || 0} solved</span>
                 </Link>
               ))}
             </div>
@@ -142,7 +177,7 @@ export default function Dashboard() {
                   className="dash-list-item"
                 >
                   <span>{t.name || t.topic}</span>
-                  <span className="dash-list-count">{t.solved || t.count} solved</span>
+                  <span className="dash-list-count">{t.solvedCount || 0} solved</span>
                 </Link>
               ))}
             </div>

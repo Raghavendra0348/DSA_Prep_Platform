@@ -1,24 +1,54 @@
-.status-badge {
+.status-checkbox {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition);
-  background: none;
+  background: transparent;
   border: none;
+  padding: 0;
+  cursor: default;
 }
 
-.status-badge.clickable {
+.status-checkbox.clickable {
   cursor: pointer;
 }
 
-.status-badge.clickable:hover {
-  background: var(--bg-hover);
-  transform: scale(1.15);
+.checkbox-inner {
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(22, 27, 34, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.status-badge:disabled {
-  cursor: default;
-  opacity: 0.6;
+.status-checkbox.clickable:hover .checkbox-inner {
+  border-color: #3fb950;
+  background: rgba(35, 134, 54, 0.15);
+  box-shadow: 0 0 8px rgba(46, 160, 67, 0.3);
+  transform: scale(1.08);
+}
+
+/* Solved State */
+.status-checkbox.solved .checkbox-inner {
+  background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+  border-color: #3fb950;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(46, 160, 67, 0.4);
+}
+
+/* Attempted State */
+.status-checkbox.attempted .checkbox-inner {
+  border-color: #d29922;
+  background: rgba(210, 153, 34, 0.15);
+}
+
+.checkbox-attempted-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d29922;
 }

@@ -1,6 +1,48 @@
 /* ── Dashboard ─────────────────────────────────────────────────────────────── */
 .dashboard { padding: 40px 24px 60px; }
-.dashboard h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.dash-header h1 { font-size: 28px; font-weight: 700; margin: 0; }
+
+.dash-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8b949e;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dash-refresh-btn:hover:not(:disabled) {
+  color: #f0f6fc;
+  border-color: rgba(88, 166, 255, 0.4);
+  background: rgba(88, 166, 255, 0.08);
+}
+
+.dash-refresh-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.dash-refresh-btn.spinning svg {
+  animation: spin-icon 0.8s linear infinite;
+}
+
+@keyframes spin-icon {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 /* ── Stats Grid ───────────────────────────────────────────────────────────── */
 .dash-stats-grid {

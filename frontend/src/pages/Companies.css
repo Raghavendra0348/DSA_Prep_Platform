@@ -18,53 +18,110 @@
   font-size: 15px;
 }
 
-/* ── Type Toggle (Product / Service / All) ────────────────────────────────── */
+/* ── Type Toggle (Premium Segmented Control) ───────────────────────────── */
 .type-toggle {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   padding: 4px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  margin-bottom: 20px;
+  background: rgba(22, 27, 34, 0.9);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 2px 8px rgba(0, 0, 0, 0.3);
   width: fit-content;
+  flex-shrink: 0;
 }
 
 .type-toggle-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border-radius: var(--radius-sm);
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: #6e7681;
   white-space: nowrap;
-  transition: all 0.25s ease;
+  transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.type-toggle-btn svg {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, color 0.2s ease;
+  opacity: 0.6;
 }
 
 .type-toggle-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
+  color: #c9d1d9;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.type-toggle-btn:hover svg {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.type-toggle-btn:active {
+  transform: scale(0.95);
 }
 
 .type-toggle-btn.active {
-  color: var(--text-primary);
-  background: var(--bg-card);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: #f0f6fc;
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(56, 139, 253, 0.2) 0%, rgba(35, 134, 54, 0.15) 100%);
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(56, 139, 253, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* ── Controls ─────────────────────────────────────────────────────────────── */
-.companies-controls {
+.type-toggle-btn.active svg {
+  opacity: 1;
+  color: #58a6ff;
+  transform: scale(1.1);
+}
+
+/* Individual tab accent colors */
+.type-toggle-btn:nth-child(1).active {
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(88, 166, 255, 0.05) 100%);
+  border-color: rgba(88, 166, 255, 0.2);
+}
+
+.type-toggle-btn:nth-child(2).active {
+  background: linear-gradient(135deg, rgba(63, 185, 80, 0.15) 0%, rgba(63, 185, 80, 0.05) 100%);
+  border-color: rgba(63, 185, 80, 0.2);
+}
+.type-toggle-btn:nth-child(2).active svg { color: #3fb950; }
+
+.type-toggle-btn:nth-child(3).active {
+  background: linear-gradient(135deg, rgba(210, 153, 34, 0.15) 0%, rgba(210, 153, 34, 0.05) 100%);
+  border-color: rgba(210, 153, 34, 0.2);
+}
+.type-toggle-btn:nth-child(3).active svg { color: #d29922; }
+
+/* ── Unified Controls Bar ─────────────────────────────────────────────────── */
+.companies-controls-bar {
   display: flex;
-  gap: 12px;
-  margin-bottom: 28px;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
 }
 
-.companies-controls .search-input-wrapper {
-  flex: 1;
-  max-width: 400px;
+/* Right side: Search + Sort */
+.companies-search-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.companies-search-sort .search-input-wrapper {
+  width: 220px;
 }
 
 .companies-sort {
@@ -338,13 +395,20 @@
     font-size: 12px;
   }
 
-  .companies-controls {
+  .companies-controls-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
 
-  .companies-controls .search-input-wrapper {
-    max-width: 100%;
+  .companies-search-sort {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .companies-search-sort .search-input-wrapper {
+    flex: 1;
+    width: auto;
   }
 
   .companies-grid {

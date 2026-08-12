@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { getCompanyProblems, getCompanyStats } from '../api/company';
 import { upsertProgress } from '../api/progress';
 import { toggleBookmark as apiToggleBookmark } from '../api/bookmarks';
@@ -10,9 +10,9 @@ import FilterBar from '../components/shared/FilterBar';
 import Pagination from '../components/shared/Pagination';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
-import FrequencyBar from '../components/ui/FrequencyBar';
 import StatusBadge from '../components/ui/StatusBadge';
 import BookmarkBtn from '../components/ui/BookmarkBtn';
+import LeetCodeIcon from '../components/ui/LeetCodeIcon';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import './CompanyDetail.css';
@@ -45,13 +45,13 @@ export default function CompanyDetail() {
     setSearchParams(prev => {
       const params = new URLSearchParams(prev);
       Object.entries(updates).forEach(([k, v]) => {
-        if (v === null || v === undefined || v === '' || v === 'all' && k === 'period') {
+        if (v === null || v === undefined || v === '' || (v === 'all' && k === 'period')) {
           params.delete(k);
         } else {
           params.set(k, v);
         }
       });
-      // Reset page on filter change (unless we're setting page itself)
+      // Reset page on filter change
       if (!('page' in updates)) params.delete('page');
       return params;
     }, { replace: true });
@@ -122,7 +122,6 @@ export default function CompanyDetail() {
   const handleStatusChange = async (problemId, newStatus) => {
     if (!user) return;
 
-    // Optimistic update
     setProblems(prev =>
       prev.map(p => p.id === problemId ? { ...p, status: newStatus } : p)
     );
@@ -131,12 +130,10 @@ export default function CompanyDetail() {
       await upsertProgress({ questionId: problemId, status: newStatus });
     } catch (err) {
       console.error('Status update failed:', err);
-      // Revert on failure - refetch
       const data = await getCompanyProblems(slug, { period, difficulty, sortBy, page, limit: 50 });
       setProblems(data.problems);
     }
 
-    // Invalidate cache since status changed
     cacheRef.current = {};
   };
 
@@ -197,11 +194,11 @@ export default function CompanyDetail() {
         <div className="problem-table-skeleton">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="problem-row-skeleton">
-              <Skeleton width={24} height={14} />
-              <Skeleton width="40%" height={16} />
-              <Skeleton width={60} height={22} style={{ borderRadius: 999 }} />
-              <Skeleton width={80} height={8} />
-              <Skeleton width={40} height={14} />
+              <Skeleton width={20} height={20} style={{ borderRadius: 4 }} />
+              <Skeleton width="55%" height={16} />
+              <Skeleton width={20} height={20} style={{ borderRadius: 4 }} />
+              <Skeleton width={65} height={22} style={{ borderRadius: 999 }} />
+              <Skeleton width={150} height={22} />
               <Skeleton width={20} height={20} style={{ borderRadius: 4 }} />
             </div>
           ))}
@@ -214,75 +211,68 @@ export default function CompanyDetail() {
         <>
           <div className="problem-table">
             <div className="problem-table-header">
-              <span className="col-num">#</span>
-              <span className="col-title">Title</span>
-              <span className="col-diff">Difficulty</span>
-              <span className="col-freq">Frequency</span>
-              <span className="col-accept">Accept %</span>
-              <span className="col-topics">Topics</span>
-              {user && <span className="col-status">Status</span>}
-              {user && <span className="col-bookmark">★</span>}
+              <span className="col-status-check">STATUS</span>
+              <span className="col-title">TITLE</span>
+              <span className="col-leetcode">LEETCODE</span>
+              <span className="col-diff">DIFFICULTY</span>
+              <span className="col-topics">TOPICS</span>
+              <span className="col-bookmark">★</span>
             </div>
 
-            {problems.map((problem, idx) => (
+            {problems.map((problem) => (
               <div key={problem.id} className="problem-row">
-                <span className="col-num">
-                  {(pagination.page - 1) * (pagination.limit || 50) + idx + 1}
-                </span>
+                {/* 1. Status Checkbox */}
+                <div className="col-status-check">
+                  <StatusBadge
+                    status={problem.status || 'not-started'}
+                    onClick={user ? (newStatus) => handleStatusChange(problem.id, newStatus) : undefined}
+                  />
+                </div>
 
+                {/* 2. Title */}
                 <div className="col-title">
                   <span className="problem-title">{problem.title}</span>
-                  {problem.link && (
+                </div>
+
+                {/* 3. Original LeetCode Icon (No Background Box, Placed BEFORE Difficulty) */}
+                <div className="col-leetcode">
+                  {problem.link ? (
                     <a
                       href={problem.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="problem-link"
+                      className="leetcode-clean-icon-link"
                       title="Open on LeetCode"
                     >
-                      <ExternalLink size={13} />
+                      <LeetCodeIcon size={18} />
                     </a>
+                  ) : (
+                    <span className="no-link">—</span>
                   )}
                 </div>
 
-                <span className="col-diff">
+                {/* 4. Difficulty */}
+                <div className="col-diff">
                   <DifficultyBadge difficulty={problem.difficulty} />
-                </span>
+                </div>
 
-                <span className="col-freq">
-                  <FrequencyBar value={problem.frequency} />
-                </span>
-
-                <span className="col-accept">
-                  {problem.acceptanceRate?.toFixed(1)}%
-                </span>
-
+                {/* 5. Topics */}
                 <div className="col-topics">
-                  {(problem.topics || []).slice(0, 2).map(t => (
+                  {(problem.topics || []).slice(0, 3).map(t => (
                     <TopicChip key={t} topic={t} />
                   ))}
-                  {problem.topics?.length > 2 && (
-                    <span className="chip chip-more">+{problem.topics.length - 2}</span>
+                  {problem.topics?.length > 3 && (
+                    <span className="chip chip-more">+{problem.topics.length - 3}</span>
                   )}
                 </div>
 
-                {user && (
-                  <span className="col-status">
-                    <StatusBadge
-                      status={problem.status || 'not-started'}
-                      onClick={(newStatus) => handleStatusChange(problem.id, newStatus)}
-                    />
-                  </span>
-                )}
-
-                {user && (
-                  <span className="col-bookmark">
-                    <BookmarkBtn
-                      active={problem.bookmarked}
-                      onClick={() => handleBookmark(problem.id)}
-                    />
-                  </span>
-                )}
+                {/* 6. Bookmark Star */}
+                <div className="col-bookmark">
+                  <BookmarkBtn
+                    active={problem.bookmarked}
+                    onClick={user ? () => handleBookmark(problem.id) : undefined}
+                  />
+                </div>
               </div>
             ))}
           </div>
