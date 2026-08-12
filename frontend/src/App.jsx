@@ -8,7 +8,7 @@ import ProtectedRoute from './components/shared/ProtectedRoute';
 import ScrollToTop from './components/shared/ScrollToTop';
 import Spinner from './components/ui/Spinner';
 
-// Lazy-loaded pages — splits code per route
+// ── Lazy-loaded pages (code-splitting) ───────────────────────────────────────
 const Landing        = lazy(() => import('./pages/Landing'));
 const Companies      = lazy(() => import('./pages/Companies'));
 const CompanyDetail  = lazy(() => import('./pages/CompanyDetail'));
@@ -23,10 +23,11 @@ const Bookmarks      = lazy(() => import('./pages/Bookmarks'));
 const Profile        = lazy(() => import('./pages/Profile'));
 const NotFound       = lazy(() => import('./pages/NotFound'));
 
+// ── Suspense fallback ────────────────────────────────────────────────────────
 function PageLoader() {
   return (
     <div className="page-loader">
-      <Spinner size={28} />
+      <Spinner size={32} />
     </div>
   );
 }

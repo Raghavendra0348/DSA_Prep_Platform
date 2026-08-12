@@ -150,9 +150,9 @@ dsa_user           → JSON { id, name, email }
 
 [ ]
 
-[ ] 
+[ ]
 
-+ [ ] 
++ [ ]
 
 [ ]  Verify: `npm run dev` shows Navbar + blank page per route
 

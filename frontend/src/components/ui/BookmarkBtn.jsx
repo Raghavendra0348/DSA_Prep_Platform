@@ -7,8 +7,10 @@ export default function BookmarkBtn({ active, onClick }) {
       className={`bookmark-btn ${active ? 'active' : ''}`}
       onClick={onClick}
       title={active ? 'Remove bookmark' : 'Bookmark this problem'}
+      aria-label={active ? 'Remove bookmark' : 'Bookmark this problem'}
+      aria-pressed={active}
     >
-      <Star size={18} fill={active ? 'currentColor' : 'none'} />
+      <Star size={18} fill={active ? 'currentColor' : 'none'} aria-hidden="true" />
     </button>
   );
 }

@@ -1,0 +1,39 @@
+/* ── Topic Chip ──────────────────────────────────────────────────────────────
+   Dedicated styles for the TopicChip component.
+   Base .chip styles are in index.css — this adds component-specific refinements.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.topic-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-muted);
+  transition: all var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.topic-chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(88, 166, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.topic-chip:active {
+  transform: translateY(0);
+}
+
+/* Non-clickable variant */
+.topic-chip--static {
+  cursor: default;
+}
+
+.topic-chip--static:hover {
+  transform: none;
+}

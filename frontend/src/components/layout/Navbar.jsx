@@ -26,7 +26,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav links */}
-        <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+        <div id="navbar-links" className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <NavLink to="/companies" className="nav-link" onClick={() => setMenuOpen(false)}>
             Companies
           </NavLink>
@@ -72,8 +72,11 @@ export default function Navbar() {
               <button
                 className="user-menu-trigger"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-label="User menu"
+                aria-expanded={dropdownOpen}
+                aria-haspopup="true"
               >
-                <div className="user-avatar">
+                <div className="user-avatar" aria-hidden="true">
                   {user.name?.charAt(0).toUpperCase()}
                 </div>
                 <span className="user-name">{user.name}</span>
@@ -109,8 +112,14 @@ export default function Navbar() {
         </div>
 
         {/* Mobile hamburger */}
-        <button className="navbar-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        <button
+          className="navbar-toggle"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={menuOpen}
+          aria-controls="navbar-links"
+        >
+          {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
         </button>
       </div>
     </nav>

@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect, useCallback } from 'react';
 import './PeriodTabs.css';
 
 const PERIODS = [
@@ -9,13 +10,50 @@ const PERIODS = [
 ];
 
 export default function PeriodTabs({ active = 'all', onChange, stats = {} }) {
+  const containerRef = useRef(null);
+  const tabRefs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+
+  const updateIndicator = useCallback(() => {
+    const activeEl = tabRefs.current[active];
+    const container = containerRef.current;
+    if (activeEl && container) {
+      const containerRect = container.getBoundingClientRect();
+      const tabRect = activeEl.getBoundingClientRect();
+      setIndicator({
+        left: tabRect.left - containerRect.left,
+        width: tabRect.width,
+      });
+    }
+  }, [active]);
+
+  useEffect(() => {
+    updateIndicator();
+  }, [updateIndicator]);
+
+  // Recalculate on window resize
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [updateIndicator]);
+
   return (
-    <div className="period-tabs">
+    <div className="period-tabs" role="tablist" aria-label="Time period filter" ref={containerRef}>
+      {/* Sliding indicator */}
+      <div
+        className="period-tabs-indicator"
+        style={{ left: indicator.left, width: indicator.width }}
+      />
+
       {PERIODS.map(({ key, label }) => (
         <button
           key={key}
+          ref={(el) => { tabRefs.current[key] = el; }}
           className={`period-tab ${active === key ? 'active' : ''}`}
           onClick={() => onChange(key)}
+          role="tab"
+          aria-selected={active === key}
+          aria-label={`${label}${stats[key]?.total != null ? ` — ${stats[key].total} problems` : ''}`}
         >
           {label}
           {stats[key] != null && (

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search as SearchIcon } from 'lucide-react';
+import { Search as SearchIcon, ArrowRight } from 'lucide-react';
 import { search as apiSearch } from '../api/search';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
@@ -25,11 +25,16 @@ export default function Search() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Keep internal input synced if URL search param changes
+  useEffect(() => {
+    setQuery(q);
+  }, [q]);
+
   useEffect(() => {
     document.title = q ? `Search: ${q} — DSA Prep` : 'Search — DSA Prep';
   }, [q]);
 
-  // Debounced search
+  // Debounced search trigger
   useEffect(() => {
     if (!q || q.length < 2) { setResults(null); return; }
 
@@ -68,9 +73,25 @@ export default function Search() {
     });
   };
 
-  const questions = results?.questions || results?.results || [];
-  const topics    = results?.topics || [];
-  const companies = results?.companies || [];
+  const questions = Array.isArray(results?.questions?.results)
+    ? results.questions.results
+    : Array.isArray(results?.questions)
+    ? results.questions
+    : Array.isArray(results?.results)
+    ? results.results
+    : [];
+
+  const topics = Array.isArray(results?.topics?.results)
+    ? results.topics.results
+    : Array.isArray(results?.topics)
+    ? results.topics
+    : [];
+
+  const companies = Array.isArray(results?.companies?.results)
+    ? results.companies.results
+    : Array.isArray(results?.companies)
+    ? results.companies
+    : [];
 
   return (
     <div className="search-page container">
@@ -123,14 +144,19 @@ export default function Search() {
           <EmptyState message={`No results for "${q}"`} />
         ) : (
           <>
-            {/* Questions */}
+            {/* Questions Section */}
             {questions.length > 0 && (type === 'all' || type === 'questions') && (
               <div className="search-section">
                 <h2 className="search-section-title">
                   Questions <span className="search-count">{questions.length}</span>
                 </h2>
                 {questions.map(item => (
-                  <div key={item.id || item.slug} className="card search-result-card">
+                  <Link
+                    key={item.id || item.slug}
+                    to={`/questions/${item.slug}`}
+                    className="card search-result-card"
+                    style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                  >
                     <div className="search-result-top">
                       <span className="search-result-title">{item.title}</span>
                       <DifficultyBadge difficulty={item.difficulty} />
@@ -139,18 +165,22 @@ export default function Search() {
                       {(item.topics || []).slice(0, 3).map(t => (
                         <TopicChip key={t} topic={t} />
                       ))}
-                      {item.companies && (
+                      {item.companyCount ? (
                         <span className="search-result-companies">
-                          Asked by {item.companies.length || item.companyCount || 0} companies
+                          Asked by {item.companyCount} companies
                         </span>
-                      )}
+                      ) : item.companies ? (
+                        <span className="search-result-companies">
+                          Asked by {item.companies.length} companies
+                        </span>
+                      ) : null}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
 
-            {/* Topics */}
+            {/* Topics Section */}
             {topics.length > 0 && (type === 'all' || type === 'topics') && (
               <div className="search-section">
                 <h2 className="search-section-title">
@@ -164,14 +194,16 @@ export default function Search() {
                       className="card search-topic-card"
                     >
                       <span className="search-topic-name">{t.name}</span>
-                      <span className="search-topic-count">{t.questionCount || t.problemCount} problems</span>
+                      <span className="search-topic-count">
+                        {(t.questionCount ?? t.problemCount) || 0} problems
+                      </span>
                     </Link>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Companies */}
+            {/* Companies Section */}
             {companies.length > 0 && (type === 'all' || type === 'companies') && (
               <div className="search-section">
                 <h2 className="search-section-title">

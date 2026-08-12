@@ -1,0 +1,46 @@
+
+Product-Based Company Preparation Guide
+PRODUCT-BASED COMPANIES LIST
+Freshers + Experienced
+Target companies organized by tier – for Freshers & Experienced professionals
+● TIER 1 – Dream / FAANG+ Companies (CTC: 30-80+ LPA)
+Extremely competitive. Focus on DSA + System Design + CS Fundamentals.
+• Google• Uber• Databricks
+• Microsoft• Stripe• Snowflake
+• Amazon• Airbnb• Coinbase
+• Apple• LinkedIn• OpenAI
+• Meta (Facebook)• Twitter/X• DeepMind
+• Netflix• Palantir• Anthropic
+● TIER 2 – Top Product + Finance Companies (CTC: 18-45+ LPA)
+Strong DSA + good LLD/HLD skills. Finance companies need competitive programming skills.
+• Adobe• Oracle• Rubrik
+• Goldman Sachs• VMware (Broadcom)• Cloudera
+• Morgan Stanley• Cisco• Expedia
+• Atlassian• SAP Labs• Booking.com
+• Salesforce• Qualcomm• Walmart Global Tech
+• Intuit• Nvidia• JP Morgan Chase
+• Visa• Intel• Deutsche Bank
+• Mastercard• ServiceNow• Barclays
+• PayPal• Splunk• Tower Research
+• Samsung R&D;• Nutanix• DE Shaw
+● TIER 3 – Indian Unicorns & Top Startups (CTC: 12-35+ LPA)
+Great for Freshers! Focus on DSA + LLD. Some need HLD for experienced roles.
+• Flipkart• ShareChat• BrowserStack
+• PhonePe• Ola• Postman
+• Razorpay• Dunzo• Freshworks
+• Swiggy• Navi• Zoho
+• Zomato• Jupiter• Chargebee
+• Dream11• Paytm• Hasura
+• CRED• PolicyBazaar• Razorpay
+• Meesho• Cars24• slice
+• Groww• Urban Company• Jar
+• Zerodha• Delhivery• INDmoney
+instagram.com/sans.aura_ | youtube.com/@Sans_aura
+Page 4SANS AURA DSA DOJO
+Product-Based Company Preparation Guide
+● TIER 4 – Service-Based (Product Roles / Elevated Hiring) (CTC: 6-14 LPA)
+Good starting point. Focus on DSA basics + CS Fundamentals + Aptitude.
+• TCS Digital• Accenture (Advanced)• Virtusa
+• Infosys (Power Programmer / DSE)• LTIMindtree• Mindtree
+• Wipro Elite• Tech Mahindra• Birlasoft
+• Cognizant GenC Elevate• Hexaware• Capgemini (ADAPT)• Mphasis

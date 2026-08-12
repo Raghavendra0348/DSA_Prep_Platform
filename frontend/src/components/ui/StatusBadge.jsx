@@ -15,19 +15,23 @@ export default function StatusBadge({ status = 'not-started', onClick }) {
 
   const handleClick = () => {
     if (!onClick) return;
-    const currentIndex = CYCLE.indexOf(status);
-    const nextStatus = CYCLE[(currentIndex + 1) % CYCLE.length];
-    onClick(nextStatus);
+    const currentIdx = CYCLE.indexOf(status);
+    const next = CYCLE[(currentIdx + 1) % CYCLE.length];
+    onClick(next);
   };
+
+  const nextStatus = CYCLE[(CYCLE.indexOf(status) + 1) % CYCLE.length];
+  const nextLabel = STATUS_CONFIG[nextStatus]?.label || 'Not Started';
 
   return (
     <button
       className={`status-badge ${config.className} ${onClick ? 'clickable' : ''}`}
       onClick={handleClick}
       title={config.label}
+      aria-label={onClick ? `Status: ${config.label}. Click to mark as ${nextLabel}` : `Status: ${config.label}`}
       disabled={!onClick}
     >
-      <Icon size={18} />
+      <Icon size={18} aria-hidden="true" />
     </button>
   );
 }
