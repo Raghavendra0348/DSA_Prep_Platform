@@ -1,9 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { getCompanyProblems, getCompanyStats } from '../api/company';
-import { upsertProgress } from '../api/progress';
-import { toggleBookmark as apiToggleBookmark } from '../api/bookmarks';
+import { useCompany } from '../hooks/useCompany';
 import { useAuth } from '../hooks/useAuth';
 import PeriodTabs from '../components/shared/PeriodTabs';
 import FilterBar from '../components/shared/FilterBar';
@@ -22,26 +19,25 @@ export default function CompanyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
 
-  // Filters from URL
+  // Read URL params
   const period     = searchParams.get('period') || 'all';
   const difficulty = searchParams.get('difficulty') || '';
   const sortBy     = searchParams.get('sortBy') || 'frequency';
   const page       = Number(searchParams.get('page')) || 1;
 
-  // State
-  const [stats, setStats] = useState(null);
-  const [problems, setProblems] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [companyName, setCompanyName] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Powered by TanStack Query useCompany hook!
+  const {
+    companyInfo,
+    stats,
+    problems,
+    pagination,
+    loading,
+    error,
+    updateStatus,
+    toggleBookmark,
+  } = useCompany(slug, { period, difficulty, sortBy, page });
 
-  // Cache previously fetched tab data
-  const cacheRef = useRef({});
-
-  // Update URL params without full re-render
-  const updateParams = useCallback((updates) => {
+  const updateParams = (updates) => {
     setSearchParams(prev => {
       const params = new URLSearchParams(prev);
       Object.entries(updates).forEach(([k, v]) => {
@@ -51,110 +47,12 @@ export default function CompanyDetail() {
           params.set(k, v);
         }
       });
-      // Reset page on filter change
       if (!('page' in updates)) params.delete('page');
       return params;
     }, { replace: true });
-  }, [setSearchParams]);
-
-  // Fetch company stats (tab counts)
-  useEffect(() => {
-    async function loadStats() {
-      setStatsLoading(true);
-      try {
-        const data = await getCompanyStats(slug);
-        setStats(data.stats);
-      } catch (err) {
-        console.error('Stats load failed:', err);
-      } finally {
-        setStatsLoading(false);
-      }
-    }
-    loadStats();
-  }, [slug]);
-
-  // Fetch problems when filters change
-  useEffect(() => {
-    const cacheKey = `${period}|${difficulty}|${sortBy}|${page}`;
-
-    // Check cache
-    if (cacheRef.current[cacheKey]) {
-      const cached = cacheRef.current[cacheKey];
-      setProblems(cached.problems);
-      setPagination(cached.pagination);
-      setCompanyName(cached.company);
-      setLoading(false);
-      return;
-    }
-
-    async function loadProblems() {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getCompanyProblems(slug, {
-          period: period || 'all',
-          difficulty: difficulty || undefined,
-          sortBy,
-          page,
-          limit: 50,
-        });
-        setProblems(data.problems);
-        setPagination(data.pagination);
-        setCompanyName(data.company);
-        document.title = `${data.company} — DSA Prep`;
-
-        // Cache
-        cacheRef.current[cacheKey] = {
-          problems: data.problems,
-          pagination: data.pagination,
-          company: data.company,
-        };
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProblems();
-  }, [slug, period, difficulty, sortBy, page]);
-
-  // ── Status toggle (optimistic) ──────────────────────────────────────────
-  const handleStatusChange = async (problemId, newStatus) => {
-    if (!user) return;
-
-    setProblems(prev =>
-      prev.map(p => p.id === problemId ? { ...p, status: newStatus } : p)
-    );
-
-    try {
-      await upsertProgress({ questionId: problemId, status: newStatus });
-    } catch (err) {
-      console.error('Status update failed:', err);
-      const data = await getCompanyProblems(slug, { period, difficulty, sortBy, page, limit: 50 });
-      setProblems(data.problems);
-    }
-
-    cacheRef.current = {};
   };
 
-  // ── Bookmark toggle (optimistic) ────────────────────────────────────────
-  const handleBookmark = async (problemId) => {
-    if (!user) return;
-
-    setProblems(prev =>
-      prev.map(p => p.id === problemId ? { ...p, bookmarked: !p.bookmarked } : p)
-    );
-
-    try {
-      await apiToggleBookmark(problemId);
-    } catch (err) {
-      console.error('Bookmark toggle failed:', err);
-      setProblems(prev =>
-        prev.map(p => p.id === problemId ? { ...p, bookmarked: !p.bookmarked } : p)
-      );
-    }
-  };
-
+  const companyName = companyInfo?.name || slug;
   const difficultyArr = difficulty ? difficulty.split(',') : [];
 
   return (
@@ -164,7 +62,7 @@ export default function CompanyDetail() {
         <Link to="/companies" className="back-link">
           <ArrowLeft size={18} /> Companies
         </Link>
-        <h1>{companyName || slug}</h1>
+        <h1>{companyName}</h1>
         {stats?.all && (
           <p className="company-meta">
             {stats.all.total} problems • {stats.all.topTopics?.slice(0, 5).map(t => (
@@ -225,16 +123,18 @@ export default function CompanyDetail() {
                 <div className="col-status-check">
                   <StatusBadge
                     status={problem.status || 'not-started'}
-                    onClick={user ? (newStatus) => handleStatusChange(problem.id, newStatus) : undefined}
+                    onClick={user ? (newStatus) => updateStatus(problem.id, newStatus) : undefined}
                   />
                 </div>
 
                 {/* 2. Title */}
                 <div className="col-title">
-                  <span className="problem-title">{problem.title}</span>
+                  <Link to={`/questions/${problem.slug}`} className="problem-title" title={problem.title}>
+                    {problem.title}
+                  </Link>
                 </div>
 
-                {/* 3. Original LeetCode Icon (No Background Box, Placed BEFORE Difficulty) */}
+                {/* 3. LeetCode Icon */}
                 <div className="col-leetcode">
                   {problem.link ? (
                     <a
@@ -270,7 +170,7 @@ export default function CompanyDetail() {
                 <div className="col-bookmark">
                   <BookmarkBtn
                     active={problem.bookmarked}
-                    onClick={user ? () => handleBookmark(problem.id) : undefined}
+                    onClick={user ? () => toggleBookmark(problem.id) : undefined}
                   />
                 </div>
               </div>

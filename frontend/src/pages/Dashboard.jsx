@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, CircleDot, Star, BookOpen, ArrowRight, RefreshCw } from 'lucide-react';
-import { getDashboard } from '../api/dashboard';
+import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../hooks/useAuth';
+import StatCard from '../components/ui/StatCard';
+import ProgressBar from '../components/ui/ProgressBar';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import ProgressRing from '../components/ui/ProgressRing';
 import Skeleton from '../components/ui/Skeleton';
@@ -11,46 +13,11 @@ import './Dashboard.css';
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
+  const { dashboardData, loading, error, isRefetching, refresh } = useDashboard();
 
-  const load = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    else setRefreshing(true);
-    try {
-      const res = await getDashboard();
-      setData(res);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  // Initial load
   useEffect(() => {
     document.title = 'Dashboard — DSA Prep';
-    load();
-  }, [load]);
-
-  // Refetch silently when the tab/window regains focus
-  // so stats update after solving problems on other pages
-  useEffect(() => {
-    function onFocus() { load(true); }
-    function onVisible() {
-      if (document.visibilityState === 'visible') load(true);
-    }
-    window.addEventListener('focus', onFocus);
-    document.addEventListener('visibilitychange', onVisible);
-    return () => {
-      window.removeEventListener('focus', onFocus);
-      document.removeEventListener('visibilitychange', onVisible);
-    };
-  }, [load]);
+  }, []);
 
   if (loading) {
     return (
@@ -77,11 +44,11 @@ export default function Dashboard() {
     );
   }
 
-  const overview       = data?.overview       || {};
-  const difficulty     = data?.difficulty     || {};
-  const topCompanies   = data?.topCompanies   || [];
-  const topTopics      = data?.topTopics      || [];
-  const recentActivity = data?.recentActivity || [];
+  const overview       = dashboardData?.overview       || {};
+  const difficulty     = dashboardData?.difficulty     || {};
+  const topCompanies   = dashboardData?.topCompanies   || [];
+  const topTopics      = dashboardData?.topTopics      || [];
+  const recentActivity = dashboardData?.recentActivity || [];
 
   const solved    = overview.totalSolved    || 0;
   const attempted = overview.totalAttempted || 0;
@@ -92,59 +59,63 @@ export default function Dashboard() {
   const hard      = difficulty.hard         || 0;
 
   return (
-    <div className="dashboard container">
+    <div className="dashboard container animate-in">
       <div className="dash-header">
-        <h1>Welcome, {user?.name || 'User'} </h1>
+        <h1>Welcome, {user?.name || 'User'}</h1>
         <button
-          className={`dash-refresh-btn ${refreshing ? 'spinning' : ''}`}
-          onClick={() => load(true)}
+          className={`dash-refresh-btn ${isRefetching ? 'spinning' : ''}`}
+          onClick={() => refresh()}
           title="Refresh stats"
-          disabled={refreshing}
+          disabled={isRefetching}
         >
           <RefreshCw size={16} />
-          {refreshing ? 'Updating...' : 'Refresh'}
+          {isRefetching ? 'Updating...' : 'Refresh'}
         </button>
       </div>
 
-      {/* ── Overview Stats ─────────────────────────────────────────────────── */}
+      {/* ── Overview Stat Cards (With Count-Up Animation) ────────────────────── */}
       <div className="dash-stats-grid">
-        <div className="card dash-stat-card dash-stat-solved">
-          <CheckCircle2 size={22} />
-          <span className="dash-stat-value">{solved}</span>
-          <span className="dash-stat-label">Solved</span>
-        </div>
-        <div className="card dash-stat-card dash-stat-attempted">
-          <CircleDot size={22} />
-          <span className="dash-stat-value">{attempted}</span>
-          <span className="dash-stat-label">Attempted</span>
-        </div>
-        <div className="card dash-stat-card dash-stat-bookmarks">
-          <Star size={22} />
-          <span className="dash-stat-value">{bookmarks}</span>
-          <span className="dash-stat-label">Bookmarks</span>
-        </div>
-        <div className="card dash-stat-card dash-stat-total">
-          <BookOpen size={22} />
-          <span className="dash-stat-value">{total}</span>
-          <span className="dash-stat-label">Total</span>
-        </div>
+        <StatCard
+          icon={CheckCircle2}
+          value={solved}
+          label="Solved"
+          color="var(--easy, #00b8a3)"
+        />
+        <StatCard
+          icon={CircleDot}
+          value={attempted}
+          label="Attempted"
+          color="var(--medium, #ffa116)"
+        />
+        <StatCard
+          icon={Star}
+          value={bookmarks}
+          label="Bookmarks"
+          color="#e3b341"
+        />
+        <StatCard
+          icon={BookOpen}
+          value={total}
+          label="Total Questions"
+          color="var(--accent, #58a6ff)"
+        />
       </div>
 
-      {/* ── Difficulty Breakdown ───────────────────────────────────────────── */}
+      {/* ── Difficulty Breakdown & Overall Progress ──────────────────────────── */}
       <div className="dash-row">
         <div className="card dash-difficulty-card">
           <h2>Difficulty Breakdown</h2>
-          <div className="dash-difficulty-bars">
-            <DiffBar label="Easy" count={easy} total={total} color="var(--easy)" />
-            <DiffBar label="Medium" count={medium} total={total} color="var(--medium)" />
-            <DiffBar label="Hard" count={hard} total={total} color="var(--hard)" />
+          <div className="dash-difficulty-bars" style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 16 }}>
+            <ProgressBar label="Easy" value={easy} max={total} color="var(--easy, #00b8a3)" />
+            <ProgressBar label="Medium" value={medium} max={total} color="var(--medium, #ffa116)" />
+            <ProgressBar label="Hard" value={hard} max={total} color="var(--hard, #ef4743)" />
           </div>
         </div>
 
         <div className="card dash-progress-card">
           <h2>Overall Progress</h2>
           <div className="dash-progress-center">
-            <ProgressRing solved={solved} total={total || 1} size={100} strokeWidth={8} />
+            <ProgressRing solved={solved} total={total || 1} size={110} strokeWidth={9} />
             <p className="dash-progress-text">{solved} / {total} solved</p>
           </div>
         </div>
@@ -215,19 +186,6 @@ export default function Dashboard() {
           }
         />
       )}
-    </div>
-  );
-}
-
-function DiffBar({ label, count, total, color }) {
-  const pct = total > 0 ? (count / total) * 100 : 0;
-  return (
-    <div className="dash-diff-row">
-      <span className="dash-diff-label" style={{ color }}>{label}</span>
-      <div className="dash-diff-track">
-        <div className="dash-diff-fill" style={{ width: `${pct}%`, background: color }} />
-      </div>
-      <span className="dash-diff-count">{count}</span>
     </div>
   );
 }

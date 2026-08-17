@@ -80,7 +80,9 @@ export default function Bookmarks() {
               return (
                 <div key={qId || i} className="card bookmark-row">
                   <div className="bookmark-main">
-                    <span className="bookmark-title">{q.title}</span>
+                    <Link to={`/questions/${q.slug}`} className="bookmark-title">
+                      {q.title}
+                    </Link>
                     <DifficultyBadge difficulty={q.difficulty} />
                     {q.link && (
                       <a href={q.link} target="_blank" rel="noopener noreferrer" className="bookmark-ext">

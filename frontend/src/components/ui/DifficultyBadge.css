@@ -1,1 +1,26 @@
 /* DifficultyBadge styles are in index.css (.badge, .badge-easy, etc.) */
+
+/* ── Hard badge pulse animation ───────────────────────────────────────────── */
+.badge-hard {
+  position: relative;
+}
+
+.badge-hard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(239, 71, 67, 0.2);
+  animation: pulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── Hover lift for all badges ────────────────────────────────────────────── */
+.badge {
+  transition: transform var(--duration-fast, 150ms) ease,
+              box-shadow var(--duration-fast, 150ms) ease;
+}
+
+.badge:hover {
+  transform: translateY(-1px);
+}

@@ -1,0 +1,51 @@
+/* ── Wrapper ───────────────────────────────────────────────────────────────── */
+.progress-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* ── Meta row (label + count) ─────────────────────────────────────────────── */
+.progress-bar-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.progress-bar-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.progress-bar-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #e6edf3);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-bar-max {
+  color: var(--text-muted, #7d8590);
+  font-weight: 400;
+}
+
+/* ── Track ────────────────────────────────────────────────────────────────── */
+.progress-bar-track {
+  width: 100%;
+  background: var(--bg-hover, #21262d);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+}
+
+/* ── Fill ─────────────────────────────────────────────────────────────────── */
+.progress-bar-fill {
+  border-radius: var(--radius-full, 9999px);
+  transition: width 0.1s ease;
+  will-change: width;
+}
+
+.progress-fill-animate {
+  animation: progressFill 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

@@ -1,0 +1,195 @@
+/* ── Animation Keyframes ───────────────────────────────────────────────────── */
+
+/* ── Page Entrance ─────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Progress & Fill ───────────────────────────────────────────────────────── */
+@keyframes progressFill {
+  from { width: 0%; }
+  to   { width: var(--target-width, 100%); }
+}
+
+@keyframes progressFillH {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ── Loaders ───────────────────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Micro-interactions ────────────────────────────────────────────────────── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.6; }
+  to   { transform: scale(3.5); opacity: 0; }
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  70%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+@keyframes checkmark {
+  from { stroke-dashoffset: 24; opacity: 0; }
+  to   { stroke-dashoffset: 0;  opacity: 1; }
+}
+
+@keyframes starBurst {
+  0%   { transform: scale(1) rotate(0deg); }
+  30%  { transform: scale(1.4) rotate(-15deg); }
+  60%  { transform: scale(0.88) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ── Modal / Overlay ───────────────────────────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(16px) scale(0.97); }
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(4px); }
+}
+
+/* ── Toast ─────────────────────────────────────────────────────────────────── */
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(110%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastSlideOut {
+  from { opacity: 1; transform: translateX(0); max-height: 80px; margin-bottom: 8px; }
+  to   { opacity: 0; transform: translateX(110%); max-height: 0; margin-bottom: 0; }
+}
+
+/* ── Floating / Glow ───────────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(88, 166, 255, 0.2); }
+  50%       { box-shadow: 0 0 28px rgba(88, 166, 255, 0.45); }
+}
+
+/* ── Stagger Animation Utilities ───────────────────────────────────────────── */
+.animate-in {
+  animation: fadeInUp var(--duration-normal) var(--ease-smooth) both;
+}
+
+.animate-in-scale {
+  animation: fadeInScale var(--duration-normal) var(--ease-spring) both;
+}
+
+.animate-in-left {
+  animation: fadeInLeft var(--duration-normal) var(--ease-smooth) both;
+}
+
+.animate-in-right {
+  animation: fadeInRight var(--duration-normal) var(--ease-smooth) both;
+}
+
+.animate-fade {
+  animation: fadeIn var(--duration-fast) var(--ease-smooth) both;
+}
+
+/* Stagger delays */
+.stagger-1  { animation-delay: 40ms; }
+.stagger-2  { animation-delay: 80ms; }
+.stagger-3  { animation-delay: 120ms; }
+.stagger-4  { animation-delay: 160ms; }
+.stagger-5  { animation-delay: 200ms; }
+.stagger-6  { animation-delay: 240ms; }
+.stagger-7  { animation-delay: 280ms; }
+.stagger-8  { animation-delay: 320ms; }
+
+/* Floating element */
+.animate-float {
+  animation: float 3.5s var(--ease-in-out) infinite;
+}
+
+/* Glow pulse */
+.animate-glow {
+  animation: glowPulse 2.5s var(--ease-in-out) infinite;
+}
+
+/* ── Reduced Motion Override ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-in-scale,
+  .animate-in-left,
+  .animate-in-right,
+  .animate-fade,
+  .animate-float,
+  .animate-glow {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .stagger-1, .stagger-2, .stagger-3, .stagger-4,
+  .stagger-5, .stagger-6, .stagger-7, .stagger-8 {
+    animation-delay: 0ms;
+  }
+}

@@ -1,5 +1,6 @@
-/* ── Company Logo ────────────────────────────────────────────────────────────── */
+/* ── Company Logo Container ───────────────────────────────────────────────── */
 .company-logo {
+  position: relative;
   border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
@@ -7,26 +8,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--duration-normal, 250ms) var(--ease-smooth),
+              box-shadow var(--duration-normal, 250ms) var(--ease-smooth);
 }
 
 .company-card:hover .company-logo {
-  transform: scale(1.05);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
-.company-logo img {
+/* ── Image ────────────────────────────────────────────────────────────────── */
+.company-logo-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   border-radius: 10px;
   background: #ffffff;
   padding: 6px;
+  opacity: 0;
+  transition: opacity var(--duration-normal, 250ms) ease;
 }
 
-/* ── Fallback letter avatar ──────────────────────────────────────────────── */
+.company-logo-img.loaded {
+  opacity: 1;
+}
+
+/* ── Skeleton placeholder ─────────────────────────────────────────────────── */
+.company-logo-skeleton {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Fallback letter avatar ───────────────────────────────────────────────── */
 .company-logo--fallback {
   background: hsl(var(--logo-hue, 200), 50%, 18%);
   color: hsl(var(--logo-hue, 200), 75%, 70%);

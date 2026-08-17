@@ -11,6 +11,8 @@ export default function BookmarkBtn({ active, onClick }) {
       aria-pressed={active}
     >
       <Star size={18} fill={active ? 'currentColor' : 'none'} aria-hidden="true" />
+      {/* Ripple element for animation */}
+      <span className="bookmark-ripple" aria-hidden="true" />
     </button>
   );
 }

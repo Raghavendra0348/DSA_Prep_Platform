@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { User, Lock, AlertCircle, Check } from 'lucide-react';
 import { getMe, updateProfile, changePassword } from '../api/user';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../components/ui/Toast';
 import Spinner from '../components/ui/Spinner';
 import Skeleton from '../components/ui/Skeleton';
 import './Profile.css';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
+  const { toast } = useToast();
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +44,11 @@ export default function Profile() {
   // ── Profile Edit ───────────────────────────────────────────────────────
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (!editForm.name.trim()) { setEditError('Name is required'); return; }
+    if (!editForm.name.trim()) {
+      setEditError('Name is required');
+      toast.error('Name is required');
+      return;
+    }
 
     setEditLoading(true);
     setEditError('');
@@ -53,9 +59,12 @@ export default function Profile() {
       updateUser({ ...user, name: updated.name });
       setEditing(false);
       setEditSuccess('Profile updated');
+      toast.success('Profile updated successfully');
       setTimeout(() => setEditSuccess(''), 3000);
     } catch (err) {
-      setEditError(err.message || 'Update failed');
+      const msg = err.message || 'Update failed';
+      setEditError(msg);
+      toast.error(msg);
     } finally {
       setEditLoading(false);
     }
@@ -67,15 +76,21 @@ export default function Profile() {
     setPwError('');
 
     if (!pwForm.currentPassword || !pwForm.newPassword) {
-      setPwError('All fields are required');
+      const msg = 'All fields are required';
+      setPwError(msg);
+      toast.error(msg);
       return;
     }
     if (pwForm.newPassword.length < 6) {
-      setPwError('New password must be at least 6 characters');
+      const msg = 'New password must be at least 6 characters';
+      setPwError(msg);
+      toast.error(msg);
       return;
     }
     if (pwForm.newPassword !== pwForm.confirmPassword) {
-      setPwError('Passwords do not match');
+      const msg = 'Passwords do not match';
+      setPwError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -87,10 +102,13 @@ export default function Profile() {
       });
       setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setPwSuccess('Password changed successfully');
+      toast.success('Password changed successfully');
       setTimeout(() => setPwSuccess(''), 3000);
     } catch (err) {
-      if (err.code === 'INVALID_PASSWORD') setPwError('Current password is incorrect');
-      else setPwError(err.message || 'Password change failed');
+      let msg = err.message || 'Password change failed';
+      if (err.code === 'INVALID_PASSWORD') msg = 'Current password is incorrect';
+      setPwError(msg);
+      toast.error(msg);
     } finally {
       setPwLoading(false);
     }

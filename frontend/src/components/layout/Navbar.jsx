@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
+  
   Code2, Menu, X, LayoutDashboard, Bookmark, User, LogOut,
   Building2, BookOpen, Search, ChevronDown, Sparkles, Command,
   ArrowRight

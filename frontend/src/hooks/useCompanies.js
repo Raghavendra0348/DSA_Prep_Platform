@@ -1,26 +1,27 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getCompanies } from '../api/companies';
+import { QUERY_KEYS } from '../lib/queryKeys';
 
+/**
+ * Company list via TanStack Query with local filter + sort.
+ * - Server-state (fetch/cache) handled by React Query
+ * - Client-state (search/sort) stays in useState (instant, no network needed)
+ */
 export function useCompanies(initialSort = 'name-asc') {
-  const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState(initialSort);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getCompanies();
-        setCompanies(data.companies || data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: QUERY_KEYS.companies(),
+    queryFn:  async () => {
+      const res = await getCompanies();
+      return res.companies ?? res;
+    },
+    staleTime: 1000 * 60 * 5, // companies list changes rarely
+  });
+
+  const companies = data ?? [];
 
   const filteredAndSorted = useMemo(() => {
     let result = [...companies];
@@ -34,10 +35,10 @@ export function useCompanies(initialSort = 'name-asc') {
     }
 
     result.sort((a, b) => {
-      if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
-      if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
-      if (sortBy === 'questions-desc') return (b.questionCount || 0) - (a.questionCount || 0);
-      if (sortBy === 'questions-asc') return (a.questionCount || 0) - (b.questionCount || 0);
+      if (sortBy === 'name-asc')        return a.name.localeCompare(b.name);
+      if (sortBy === 'name-desc')       return b.name.localeCompare(a.name);
+      if (sortBy === 'questions-desc')  return (b.questionCount || 0) - (a.questionCount || 0);
+      if (sortBy === 'questions-asc')   return (a.questionCount || 0) - (b.questionCount || 0);
       return 0;
     });
 
@@ -45,13 +46,14 @@ export function useCompanies(initialSort = 'name-asc') {
   }, [companies, search, sortBy]);
 
   return {
-    companies: filteredAndSorted,
+    companies:  filteredAndSorted,
     totalCount: companies.length,
-    loading,
-    error,
+    loading:    isPending,
+    error:      isError ? (error?.message ?? 'Failed to load companies') : null,
     search,
     setSearch,
     sortBy,
     setSortBy,
+    refetch,
   };
 }

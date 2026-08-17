@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { register as apiRegister } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../components/ui/Toast';
 import Spinner from '../components/ui/Spinner';
 import './Auth.css';
 
 export default function Register() {
   const navigate = useNavigate();
   const { user, login } = useAuth();
+  const { toast } = useToast();
 
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
@@ -16,7 +18,7 @@ export default function Register() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
+    if (user) navigate('/companies', { replace: true });
   }, [user, navigate]);
 
   useEffect(() => {
@@ -42,6 +44,7 @@ export default function Register() {
     const validationError = validate();
     if (validationError) {
       setError(validationError);
+      toast.error(validationError);
       return;
     }
 
@@ -51,15 +54,19 @@ export default function Register() {
     try {
       const data = await apiRegister(form);
       login(data); // Auto-login after registration
-      navigate('/dashboard', { replace: true });
+      toast.success(`Account created! Welcome, ${data.user?.name || 'User'}!`);
+      navigate('/companies', { replace: true });
     } catch (err) {
+      let msg = 'Registration failed. Please try again.';
       if (err.code === 'EMAIL_EXISTS') {
-        setError('An account with this email already exists');
+        msg = 'An account with this email already exists';
       } else if (err.code === 'VALIDATION_ERROR') {
-        setError(err.issues?.[0]?.message || 'Please check your input');
-      } else {
-        setError(err.message || 'Registration failed. Please try again.');
+        msg = err.issues?.[0]?.message || 'Please check your input';
+      } else if (err.message) {
+        msg = err.message;
       }
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

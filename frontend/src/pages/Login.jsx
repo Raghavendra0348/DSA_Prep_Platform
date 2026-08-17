@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 import { login as apiLogin } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../components/ui/Toast';
 import Spinner from '../components/ui/Spinner';
 import './Auth.css';
 
@@ -10,6 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, login } = useAuth();
+  const { toast } = useToast();
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -17,7 +19,7 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
+    if (user) navigate('/companies', { replace: true });
   }, [user, navigate]);
 
   useEffect(() => {
@@ -34,7 +36,9 @@ export default function Login() {
 
     // Client-side validation
     if (!form.email.trim() || !form.password.trim()) {
-      setError('Please fill in all fields');
+      const msg = 'Please fill in all fields';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -44,18 +48,22 @@ export default function Login() {
     try {
       const data = await apiLogin(form);
       login(data);
+      toast.success(`Welcome back, ${data.user?.name || 'User'}!`);
 
       // Redirect to where they came from, or dashboard
       const from = location.state?.from || '/dashboard';
       navigate(from, { replace: true });
     } catch (err) {
+      let msg = 'Login failed. Please try again.';
       if (err.code === 'INVALID_CREDENTIALS') {
-        setError('Invalid email or password');
+        msg = 'Invalid email or password';
       } else if (err.code === 'VALIDATION_ERROR') {
-        setError('Please enter a valid email');
-      } else {
-        setError(err.message || 'Login failed. Please try again.');
+        msg = 'Please enter a valid email';
+      } else if (err.message) {
+        msg = err.message;
       }
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

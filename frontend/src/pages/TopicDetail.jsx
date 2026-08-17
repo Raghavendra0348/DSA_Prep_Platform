@@ -28,11 +28,12 @@ export default function TopicDetail() {
   const difficulty = searchParams.get('difficulty') || '';
   const page = Number(searchParams.get('page')) || 1;
 
+  const activeDiff = useMemo(() => difficulty ? difficulty.split(',').filter(Boolean) : [], [difficulty]);
+
   const [problems, setProblems] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeDiff, setActiveDiff] = useState(difficulty ? difficulty.split(',') : []);
   const [searchQuery, setSearchQuery] = useState('');
 
   const topicName = topic.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
@@ -65,7 +66,6 @@ export default function TopicDetail() {
     const next = activeDiff.includes(diffKey)
       ? activeDiff.filter(d => d !== diffKey)
       : [...activeDiff, diffKey];
-    setActiveDiff(next);
     setSearchParams(prev => {
       const p = new URLSearchParams(prev);
       if (next.length) p.set('difficulty', next.join(','));
@@ -237,7 +237,9 @@ export default function TopicDetail() {
 
                 {/* 2. Title */}
                 <div className="col-title">
-                  <span className="problem-title" title={problem.title}>{problem.title}</span>
+                  <Link to={`/questions/${problem.slug}`} className="problem-title" title={problem.title}>
+                    {problem.title}
+                  </Link>
                 </div>
 
                 {/* 3. LeetCode Clean Icon */}
