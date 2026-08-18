@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, Building2, BookOpen, Code2,
-  LayoutDashboard, Bookmark, User, X, Command,
+  LayoutDashboard, Bookmark, User, X,
 } from 'lucide-react';
 import { search as apiSearch } from '../../api/search';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -23,34 +23,42 @@ export default function CommandPalette({ isOpen, onClose }) {
   const inputRef = useRef(null);
   const debouncedQuery = useDebounce(query, 220);
 
-  // Focus input on open
+  // Focus input when opened
   useEffect(() => {
-    if (isOpen) {
-      setQuery('');
-      setResults(null);
-      setSelectedIdx(0);
-      setTimeout(() => inputRef.current?.focus(), 40);
-    }
+    if (!isOpen) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 40);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
-  // Fetch results
+  // Fetch results when debounced query changes
   useEffect(() => {
-    if (!debouncedQuery.trim() || debouncedQuery.trim().length < 2) {
-      setResults(null);
-      setLoading(false);
-      return;
-    }
+    const trimmed = debouncedQuery.trim();
+    if (trimmed.length < 2) return;
+
     let cancelled = false;
-    setLoading(true);
-    apiSearch(debouncedQuery.trim(), 'all', undefined, 5)
-      .then(data => { if (!cancelled) { setResults(data); setSelectedIdx(0); } })
-      .catch(() => {})
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+    const timer = setTimeout(() => {
+      setLoading(true);
+      apiSearch(trimmed, 'all', undefined, 5)
+        .then(data => {
+          if (!cancelled) {
+            setResults(data);
+            setSelectedIdx(0);
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [debouncedQuery]);
 
-  // Flatten results into a navigable list
-  const flatItems = buildFlatItems(results, query);
+  const activeResults = debouncedQuery.trim().length >= 2 ? results : null;
+  const flatItems = buildFlatItems(activeResults, query);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e) => {
@@ -117,8 +125,7 @@ export default function CommandPalette({ isOpen, onClose }) {
           )}
           {flatItems.length > 0 && (
             <ResultGroups
-              results={results}
-              flatItems={flatItems}
+              results={activeResults}
               selectedIdx={selectedIdx}
               onSelect={handleSelect}
               onHover={setSelectedIdx}
@@ -163,7 +170,7 @@ function QuickActions({ onSelect }) {
 }
 
 // ── Result Groups ─────────────────────────────────────────────────────────────
-function ResultGroups({ results, flatItems, selectedIdx, onSelect, onHover }) {
+function ResultGroups({ results, selectedIdx, onSelect, onHover }) {
   const questions = results?.questions?.results ?? results?.questions ?? [];
   const companies = results?.companies?.results ?? results?.companies ?? [];
   const topics    = results?.topics?.results    ?? results?.topics    ?? [];

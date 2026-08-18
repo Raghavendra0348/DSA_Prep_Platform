@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search as SearchIcon, ArrowRight } from 'lucide-react';
+import { Search as SearchIcon } from 'lucide-react';
 import { search as apiSearch } from '../api/search';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
@@ -20,15 +20,17 @@ export default function Search() {
   const q    = searchParams.get('q') || '';
   const type = searchParams.get('type') || 'all';
 
+  const [prevQ, setPrevQ] = useState(q);
   const [query, setQuery] = useState(q);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Keep internal input synced if URL search param changes
-  useEffect(() => {
+  // Sync internal input if URL search param changes externally
+  if (prevQ !== q) {
+    setPrevQ(q);
     setQuery(q);
-  }, [q]);
+  }
 
   useEffect(() => {
     document.title = q ? `Search: ${q} — DSA Prep` : 'Search — DSA Prep';
@@ -36,22 +38,26 @@ export default function Search() {
 
   // Debounced search trigger
   useEffect(() => {
-    if (!q || q.length < 2) { setResults(null); return; }
+    if (!q || q.length < 2) return;
 
+    let cancelled = false;
     const timer = setTimeout(async () => {
       setLoading(true);
       setError(null);
       try {
         const data = await apiSearch(q, type);
-        setResults(data);
+        if (!cancelled) setResults(data);
       } catch (err) {
-        setError(err.message);
+        if (!cancelled) setError(err.message);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }, 300);
 
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [q, type]);
 
   const handleInputChange = (e) => {
@@ -73,24 +79,26 @@ export default function Search() {
     });
   };
 
-  const questions = Array.isArray(results?.questions?.results)
-    ? results.questions.results
-    : Array.isArray(results?.questions)
-    ? results.questions
-    : Array.isArray(results?.results)
-    ? results.results
+  const activeResults = q && q.length >= 2 ? results : null;
+
+  const questions = Array.isArray(activeResults?.questions?.results)
+    ? activeResults.questions.results
+    : Array.isArray(activeResults?.questions)
+    ? activeResults.questions
+    : Array.isArray(activeResults?.results)
+    ? activeResults.results
     : [];
 
-  const topics = Array.isArray(results?.topics?.results)
-    ? results.topics.results
-    : Array.isArray(results?.topics)
-    ? results.topics
+  const topics = Array.isArray(activeResults?.topics?.results)
+    ? activeResults.topics.results
+    : Array.isArray(activeResults?.topics)
+    ? activeResults.topics
     : [];
 
-  const companies = Array.isArray(results?.companies?.results)
-    ? results.companies.results
-    : Array.isArray(results?.companies)
-    ? results.companies
+  const companies = Array.isArray(activeResults?.companies?.results)
+    ? activeResults.companies.results
+    : Array.isArray(activeResults?.companies)
+    ? activeResults.companies
     : [];
 
   return (
@@ -105,7 +113,6 @@ export default function Search() {
             placeholder="Search questions, topics, or companies..."
             value={query}
             onChange={handleInputChange}
-            autoFocus
           />
         </div>
 

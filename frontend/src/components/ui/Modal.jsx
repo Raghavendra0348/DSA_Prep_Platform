@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import './Modal.css';
@@ -16,7 +16,8 @@ import './Modal.css';
  */
 export default function Modal({ isOpen, onClose, title, children, size = 'md', hideClose = false }) {
   const panelRef = useRef(null);
-  const titleId = `modal-title-${useRef(Math.random().toString(36).slice(2)).current}`;
+  const generatedId = useId();
+  const titleId = `modal-title-${generatedId}`;
 
   // Prevent background scroll
   useEffect(() => {

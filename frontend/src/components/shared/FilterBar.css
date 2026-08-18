@@ -1,20 +1,22 @@
 .filter-bar {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
   padding: 12px 0;
+  width: 100%;
 }
 
 .filter-group {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .filter-label {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -22,17 +24,22 @@
 
 .filter-toggles {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .filter-toggle {
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
   border: 1px solid var(--border);
   color: var(--text-secondary);
   transition: all var(--transition);
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filter-toggle:hover {
@@ -45,7 +52,7 @@
 .filter-toggle.filter-hard.active   { background: rgba(239, 71, 67, 0.15);  color: var(--hard);   border-color: var(--hard); }
 
 .filter-select {
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -54,8 +61,26 @@
   font-family: inherit;
   cursor: pointer;
   outline: none;
+  min-height: 32px;
 }
 
 .filter-select:focus {
   border-color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .filter-bar {
+    gap: 12px;
+    justify-content: space-between;
+  }
+  
+  .filter-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filter-select {
+    flex: 1;
+    max-width: 180px;
+  }
 }

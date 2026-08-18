@@ -62,6 +62,18 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
   // Debounced search call
   const handleSearchInput = useCallback((e) => {
     const val = e.target.value;
@@ -331,9 +343,11 @@ export default function Navbar() {
 
         {/* ── Mobile Navigation Drawer ─────────────────────────────────── */}
         {menuOpen && (
-          <div className="mobile-drawer">
+          <>
+            <div className="mobile-drawer-backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />
+            <div className="mobile-drawer">
             <div className="mobile-drawer-content">
-              <form
+              {/* <form
                 className="mobile-search-form"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -352,7 +366,7 @@ export default function Navbar() {
                   onChange={handleSearchInput}
                   autoComplete="off"
                 />
-              </form>
+              </form> */}
 
               <div className="mobile-nav-group">
                 <p className="mobile-group-title">Navigation</p>
@@ -392,8 +406,9 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        )}
-      </nav>
+        </>
+      )}
+    </nav>
     </header>
   );
 }

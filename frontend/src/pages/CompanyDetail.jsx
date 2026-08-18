@@ -52,7 +52,7 @@ export default function CompanyDetail() {
     }, { replace: true });
   };
 
-  const companyName = companyInfo?.name || slug;
+  const companyName = typeof companyInfo === 'string' ? companyInfo : (companyInfo?.name || slug);
   const difficultyArr = difficulty ? difficulty.split(',') : [];
 
   return (

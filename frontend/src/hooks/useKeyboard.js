@@ -9,19 +9,19 @@ import { useEffect } from 'react';
  * @param {{ ctrl?: boolean, meta?: boolean, shift?: boolean, alt?: boolean }} modifiers
  */
 export function useKeyboard(key, handler, modifiers = {}) {
+  const { ctrl = false, meta = false, shift = false, alt = false, ctrlOrMeta = false } = modifiers;
+
   useEffect(() => {
     if (!handler) return;
 
     function onKeyDown(e) {
-      const { ctrl = false, meta = false, shift = false, alt = false } = modifiers;
-
       if (ctrl && !e.ctrlKey) return;
       if (meta && !e.metaKey) return;
       if (shift && !e.shiftKey) return;
       if (alt && !e.altKey) return;
 
       // Support both ctrl and meta (Cmd on Mac) with ctrlOrMeta
-      if (modifiers.ctrlOrMeta && !(e.ctrlKey || e.metaKey)) return;
+      if (ctrlOrMeta && !(e.ctrlKey || e.metaKey)) return;
 
       if (e.key === key) {
         handler(e);
@@ -30,5 +30,5 @@ export function useKeyboard(key, handler, modifiers = {}) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [key, handler, modifiers]);
+  }, [key, handler, ctrl, meta, shift, alt, ctrlOrMeta]);
 }

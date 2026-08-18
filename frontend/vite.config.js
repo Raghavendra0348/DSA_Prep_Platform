@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -27,6 +30,7 @@ export default defineConfig({
     port: 5173,
     host: '0.0.0.0',
     strictPort: false,
+    open: true, // Automatically open browser on dev server start
   },
 
   clearScreen: false,

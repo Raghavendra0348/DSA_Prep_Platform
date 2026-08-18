@@ -16,9 +16,7 @@ export default function Footer() {
         <div className="footer-links">
           <Link to="/companies">Companies</Link>
           <Link to="/topics">Topics</Link>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-            <ExternalLink size={14} /> GitHub
-          </a>
+
         </div>
         <p className="footer-copy">© {new Date().getFullYear()} DSA Prep Platform</p>
       </div>

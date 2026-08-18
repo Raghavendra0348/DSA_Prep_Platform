@@ -1,15 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 import './SearchInput.css';
 
-export default function SearchInput({ value = '', onChange, placeholder = 'Search...', debounceMs = 300, autoFocus = false }) {
+export default function SearchInput({ value = '', onChange, placeholder = 'Search...', debounceMs = 300 }) {
+  const [prevValue, setPrevValue] = useState(value);
   const [localValue, setLocalValue] = useState(value);
   const timerRef = useRef(null);
 
-  // Sync from parent
-  useEffect(() => {
+  // Sync from parent if prop changed externally
+  if (prevValue !== value) {
+    setPrevValue(value);
     setLocalValue(value);
-  }, [value]);
+  }
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -35,10 +37,9 @@ export default function SearchInput({ value = '', onChange, placeholder = 'Searc
         value={localValue}
         onChange={handleChange}
         placeholder={placeholder}
-        autoFocus={autoFocus}
       />
       {localValue && (
-        <button className="search-input-clear" onClick={handleClear}>
+        <button className="search-input-clear" onClick={handleClear} aria-label="Clear search">
           <X size={16} />
         </button>
       )}

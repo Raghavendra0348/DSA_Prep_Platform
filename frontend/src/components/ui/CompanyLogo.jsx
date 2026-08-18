@@ -15,9 +15,9 @@ export default function CompanyLogo({ slug, name, size = 48 }) {
   const [loaded, setLoaded] = useState(false);
 
   const logoSources = [
-    `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://${domain}&size=128`,
     `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
     `https://unavatar.io/${domain}?fallback=false`,
+    `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`,
   ];
 
   const letter = (name || slug || '?').charAt(0).toUpperCase();

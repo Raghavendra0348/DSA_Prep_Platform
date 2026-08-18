@@ -1,30 +1,30 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useCallback } from 'react';
 import { logout as apiLogout } from '../api/auth';
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // On mount — restore from localStorage
-  useEffect(() => {
+  const [token, setToken] = useState(() => {
     try {
-      const savedToken = localStorage.getItem('dsa_token');
-      const savedUser  = localStorage.getItem('dsa_user');
-      if (savedToken && savedUser) {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
-      }
+      return localStorage.getItem('dsa_token') || null;
     } catch {
-      // Corrupted localStorage — clear it
+      return null;
+    }
+  });
+
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('dsa_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
       localStorage.removeItem('dsa_token');
       localStorage.removeItem('dsa_refresh_token');
       localStorage.removeItem('dsa_user');
+      return null;
     }
-    setIsLoading(false);
-  }, []);
+  });
+
+  const [isLoading] = useState(false);
 
   // login — called after successful POST /api/auth/login or /register
   const login = useCallback((data) => {

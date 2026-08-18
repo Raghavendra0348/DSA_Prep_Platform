@@ -56,7 +56,7 @@ export default function QuestionDetail() {
     setQuestion(prev => ({ ...prev, bookmarked: !prev.bookmarked }));
     try {
       await apiToggleBookmark(question.id);
-    } catch (err) {
+    } catch {
       setQuestion(prev => ({ ...prev, bookmarked: !prev.bookmarked }));
     }
   };
@@ -163,7 +163,7 @@ export default function QuestionDetail() {
           <h2>Your Progress</h2>
           <div className="qd-user-controls">
             <div className="qd-control-group">
-              <label>Status</label>
+              <span className="qd-label-text">Status</span>
               <StatusBadge
                 status={question.status || 'not-started'}
                 onClick={handleStatusChange}
@@ -174,7 +174,7 @@ export default function QuestionDetail() {
             </div>
 
             <div className="qd-control-group">
-              <label>Bookmark</label>
+              <span className="qd-label-text">Bookmark</span>
               <BookmarkBtn
                 active={question.bookmarked}
                 onClick={handleBookmark}
@@ -186,9 +186,10 @@ export default function QuestionDetail() {
           <div className="qd-notes">
             <div className="qd-notes-header">
               <FileText size={16} />
-              <label>Notes</label>
+              <label htmlFor="qd-notes-input">Notes</label>
             </div>
             <textarea
+              id="qd-notes-input"
               className="input qd-notes-input"
               placeholder="Add your solution notes, approach, complexity analysis..."
               value={notes}

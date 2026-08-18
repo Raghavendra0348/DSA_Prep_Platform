@@ -214,6 +214,7 @@
 /* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .cp-root    { padding-top: 0; align-items: flex-end; }
-  .cp-panel   { max-width: 100%; margin: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; max-height: 80vh; }
+  .cp-panel   { max-width: 100%; margin: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; max-height: 85vh; }
   .cp-footer  { display: none; }
+  .cp-esc-hint { display: none; }
 }

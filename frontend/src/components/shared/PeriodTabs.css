@@ -6,7 +6,15 @@
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   position: relative;
+  width: 100%;
+}
+
+.period-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Sliding active indicator ─────────────────────────────────────────────── */
@@ -36,6 +44,7 @@
   transition: color var(--transition);
   position: relative;
   z-index: 1;
+  min-height: 36px;
 }
 
 .period-tab:hover {
@@ -57,4 +66,16 @@
 .period-tab.active .period-tab-count {
   background: rgba(88, 166, 255, 0.15);
   color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .period-tabs {
+    padding: 3px;
+    gap: 2px;
+  }
+  .period-tab {
+    padding: 7px 11px;
+    font-size: 12.5px;
+    gap: 4px;
+  }
 }

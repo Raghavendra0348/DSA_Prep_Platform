@@ -1,20 +1,13 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import './Toast.css';
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react';
+import { ToastContext } from '../../context/ToastContext';
 
-// ── Context ───────────────────────────────────────────────────────────────────
-const ToastContext = createContext(null);
-
-export function useToast() {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error('useToast must be used within ToastProvider');
-  return ctx;
-}
+let nextToastId = 0;
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
-  const counterRef = useRef(0);
 
   const dismiss = useCallback((id) => {
     setToasts(prev =>
@@ -23,8 +16,8 @@ export function ToastProvider({ children }) {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 380);
   }, []);
 
-  const toast = useCallback((message, type = 'info', duration = 3500) => {
-    const id = ++counterRef.current;
+  const showToast = useCallback((message, type = 'info', duration = 3500) => {
+    const id = ++nextToastId;
     setToasts(prev => [...prev, { id, message, type, exiting: false }]);
     if (duration > 0) {
       setTimeout(() => dismiss(id), duration);
@@ -32,14 +25,23 @@ export function ToastProvider({ children }) {
     return id;
   }, [dismiss]);
 
-  // Convenience helpers
-  toast.success = (msg, dur) => toast(msg, 'success', dur);
-  toast.error   = (msg, dur) => toast(msg, 'error', dur ?? 5000);
-  toast.warning = (msg, dur) => toast(msg, 'warning', dur);
-  toast.info    = (msg, dur) => toast(msg, 'info', dur);
+  // Convenience helpers constructed immutably
+  const toast = useMemo(() => {
+    return Object.assign(
+      (message, type, duration) => showToast(message, type, duration),
+      {
+        success: (msg, dur) => showToast(msg, 'success', dur),
+        error:   (msg, dur) => showToast(msg, 'error', dur ?? 5000),
+        warning: (msg, dur) => showToast(msg, 'warning', dur),
+        info:    (msg, dur) => showToast(msg, 'info', dur),
+      }
+    );
+  }, [showToast]);
+
+  const value = useMemo(() => ({ toast, dismiss }), [toast, dismiss]);
 
   return (
-    <ToastContext.Provider value={{ toast, dismiss }}>
+    <ToastContext.Provider value={value}>
       {children}
       <ToastContainer toasts={toasts} dismiss={dismiss} />
     </ToastContext.Provider>

@@ -21,7 +21,7 @@ export function useCompanies(initialSort = 'name-asc') {
     staleTime: 1000 * 60 * 5, // companies list changes rarely
   });
 
-  const companies = data ?? [];
+  const companies = useMemo(() => data ?? [], [data]);
 
   const filteredAndSorted = useMemo(() => {
     let result = [...companies];

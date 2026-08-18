@@ -40,7 +40,7 @@ export default function Bookmarks() {
     setBookmarks(prev => prev.filter(b => (b.questionId || b.question?.id || b.id) !== questionId));
     try {
       await apiToggleBookmark(questionId);
-    } catch (err) {
+    } catch {
       // Re-fetch on failure
       const data = await getBookmarks({ page, limit: 30 });
       setBookmarks(data.bookmarks || []);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { User, Lock, AlertCircle, Check } from 'lucide-react';
 import { getMe, updateProfile, changePassword } from '../api/user';
 import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../components/ui/Toast';
+import { useToast } from '../hooks/useToast';
 import Spinner from '../components/ui/Spinner';
 import Skeleton from '../components/ui/Skeleton';
 import './Profile.css';
@@ -106,7 +106,7 @@ export default function Profile() {
       setTimeout(() => setPwSuccess(''), 3000);
     } catch (err) {
       let msg = err.message || 'Password change failed';
-      if (err.code === 'INVALID_PASSWORD') msg = 'Current password is incorrect';
+      if (err.code === 'INVALID_PASSWORD' || err.code === 'WRONG_PASSWORD') msg = 'Current password is incorrect';
       setPwError(msg);
       toast.error(msg);
     } finally {
@@ -145,12 +145,12 @@ export default function Profile() {
               </div>
             )}
             <div className="auth-field">
-              <label>Name</label>
+              <label htmlFor="profile-name">Name</label>
               <input
+                id="profile-name"
                 className="input"
                 value={editForm.name}
                 onChange={(e) => setEditForm({ name: e.target.value })}
-                autoFocus
               />
             </div>
             <div className="profile-edit-actions">
@@ -196,8 +196,9 @@ export default function Profile() {
 
         <form className="profile-pw-form" onSubmit={handlePwSubmit}>
           <div className="auth-field">
-            <label>Current Password</label>
+            <label htmlFor="profile-current-password">Current Password</label>
             <input
+              id="profile-current-password"
               className="input"
               type="password"
               value={pwForm.currentPassword}
@@ -206,8 +207,9 @@ export default function Profile() {
             />
           </div>
           <div className="auth-field">
-            <label>New Password</label>
+            <label htmlFor="profile-new-password">New Password</label>
             <input
+              id="profile-new-password"
               className="input"
               type="password"
               value={pwForm.newPassword}
@@ -216,8 +218,9 @@ export default function Profile() {
             />
           </div>
           <div className="auth-field">
-            <label>Confirm New Password</label>
+            <label htmlFor="profile-confirm-password">Confirm New Password</label>
             <input
+              id="profile-confirm-password"
               className="input"
               type="password"
               value={pwForm.confirmPassword}

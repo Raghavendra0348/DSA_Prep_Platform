@@ -111,4 +111,17 @@
   /* ── Border Radius Extended ────────────────────────────────────────────── */
   --radius-xs:   4px;
   --radius-full: 9999px;
+
+  /* ── Responsive Breakpoints ─────────────────────────────────────────────── */
+  --bp-xs: 400px;
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
+  /* ── Layout & Container ─────────────────────────────────────────────────── */
+  --container-max: 1240px;
+  --container-pad-desktop: 24px;
+  --container-pad-tablet: 20px;
+  --container-pad-mobile: 16px;
 }

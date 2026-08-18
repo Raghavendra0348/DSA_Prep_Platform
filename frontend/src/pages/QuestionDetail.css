@@ -68,7 +68,16 @@
 
 .qd-notes-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .question-detail { padding: 24px 16px 40px; }
+  .qd-header h1 { font-size: 22px; }
   .qd-user-controls { flex-direction: column; gap: 16px; }
+  .qd-companies-list { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .qd-leetcode-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .question-detail { padding: 20px 12px 40px; }
+  .qd-user-section { padding: 18px 14px; }
+  .qd-companies-list { grid-template-columns: 1fr; }
 }

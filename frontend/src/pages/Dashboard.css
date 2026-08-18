@@ -116,10 +116,21 @@
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .dash-stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .dash-row { grid-template-columns: 1fr; }
+  .dashboard { padding: 24px 16px 48px; }
+  .dash-header h1 { font-size: 24px; }
+  .dash-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dash-stat-card { padding: 14px 12px; }
+  .dash-stat-value { font-size: 22px; }
+  .dash-row { grid-template-columns: 1fr; gap: 12px; }
+  .dash-row .card { padding: 18px 16px; }
+  .dash-activity-card { padding: 18px 16px; }
 }
 
 @media (max-width: 480px) {
-  .dash-stats-grid { grid-template-columns: 1fr 1fr; }
+  .dashboard { padding: 20px 12px 40px; }
+  .dash-header { flex-wrap: wrap; gap: 10px; }
+  .dash-stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dash-stat-card { padding: 12px 10px; }
+  .dash-stat-value { font-size: 20px; }
+  .dash-stat-label { font-size: 11px; }
 }

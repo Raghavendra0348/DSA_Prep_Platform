@@ -51,7 +51,7 @@ export default class ErrorBoundary extends Component {
             {import.meta.env.DEV && this.state.error && (
               <details className="error-boundary-details">
                 <summary>Error details</summary>
-                <pre>{this.state.error.toString()}</pre>
+                <pre>{this.state.error?.message || String(this.state.error || 'Unknown error')}</pre>
                 <pre>{this.state.errorInfo?.componentStack}</pre>
               </details>
             )}

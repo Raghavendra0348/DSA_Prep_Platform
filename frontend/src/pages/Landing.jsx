@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Search, ArrowRight, Building2, BookOpen, Tags, TrendingUp,
-  Target, Filter, Sparkles, CheckCircle2, Zap, BarChart3, ChevronRight,
-  ShieldCheck, Layers, Award
+  Search, ArrowRight, Building2, BookOpen, Tags,
+  Sparkles, Award,
 } from 'lucide-react';
+
 import { getStats } from '../api/stats';
 import { getCompanies } from '../api/companies';
 import { getClassification, TIER_INFO } from '../data/companyClassification';
@@ -26,6 +26,7 @@ export default function Landing() {
   const [searchQuery, setSearchQuery] = useState('');
   const [stats, setStats] = useState(null);
   const [featured, setFeatured] = useState([]);
+  const [allCompanies, setAllCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const statsRef = useRef(null);
   const [countersVisible, setCountersVisible] = useState(false);
@@ -42,7 +43,8 @@ export default function Landing() {
         setStats(statsRes);
 
         // Match featured companies from full list
-        const companies = companiesRes.companies || companiesRes;
+        const companies = companiesRes.companies || (Array.isArray(companiesRes) ? companiesRes : []);
+        setAllCompanies(companies);
         const featuredList = FEATURED_SLUGS
           .map(slug => companies.find(c => c.slug === slug))
           .filter(Boolean);
@@ -67,11 +69,44 @@ export default function Landing() {
     return () => observer.disconnect();
   }, []);
 
+  const performSearch = (term) => {
+    const clean = term?.trim();
+    if (!clean) return;
+
+    const lower = clean.toLowerCase();
+    const slugCandidate = lower.replace(/\s+/g, '-');
+
+    // Check if query matches a company by slug or name
+    const matchedCompany = allCompanies.find(
+      c => c.slug?.toLowerCase() === slugCandidate ||
+           c.slug?.toLowerCase() === lower ||
+           c.name?.toLowerCase() === lower
+    );
+
+    if (matchedCompany) {
+      navigate(`/company/${matchedCompany.slug}`);
+      return;
+    }
+
+
+    // Check if query matches a known DSA topic
+    const knownTopics = [
+      'array', 'dynamic-programming', 'string', 'tree', 'graph',
+      'hash-table', 'sorting', 'greedy', 'binary-search', 'two-pointers',
+      'stack', 'matrix', 'sliding-window', 'backtracking', 'linked-list', 'bit-manipulation'
+    ];
+    if (knownTopics.includes(slugCandidate)) {
+      navigate(`/topics/${slugCandidate}`);
+      return;
+    }
+
+    // Default fallback to companies list search filter
+    navigate(`/companies?q=${encodeURIComponent(clean)}`);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/companies?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
+    performSearch(searchQuery);
   };
 
   return (
@@ -86,7 +121,7 @@ export default function Landing() {
           <div className="hero-announcement">
             <span className="announcement-pill">NEW 2026 EDITION</span>
             <span className="announcement-text">Curated Company-Wise Questions & Tier Lists</span>
-            <ChevronRight size={14} className="announcement-arrow" />
+            {/* <ChevronRight size={14} className="announcement-arrow" /> */}
           </div>
 
           <h1 className="hero-title">
@@ -121,7 +156,7 @@ export default function Landing() {
               <button
                 key={tag}
                 className="popular-tag-btn"
-                onClick={() => navigate(`/companies?q=${encodeURIComponent(tag)}`)}
+                onClick={() => performSearch(tag)}
               >
                 {tag}
               </button>

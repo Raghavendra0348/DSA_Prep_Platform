@@ -31,7 +31,15 @@
 .bookmark-remove { flex-shrink: 0; color: var(--hard); border-color: rgba(239, 71, 67, 0.3); }
 .bookmark-remove:hover { background: rgba(239, 71, 67, 0.1); }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
+  .bookmarks-page { padding: 24px 16px 48px; }
+  .bookmarks-page h1 { font-size: 24px; }
+  .bookmark-row { padding: 12px 14px; gap: 8px; }
+}
+
+@media (max-width: 480px) {
+  .bookmarks-page { padding: 20px 12px 40px; }
   .bookmark-row { flex-direction: column; align-items: flex-start; }
-  .bookmark-remove { align-self: flex-end; }
+  .bookmark-main { width: 100%; }
+  .bookmark-remove { align-self: flex-end; margin-top: -24px; }
 }

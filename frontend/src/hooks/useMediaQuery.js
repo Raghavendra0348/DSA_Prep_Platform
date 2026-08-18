@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore, useCallback } from 'react';
 
 /**
  * Returns true if the viewport currently matches the given media query.
@@ -11,20 +11,21 @@ import { useState, useEffect } from 'react';
  * const isMobile = useMediaQuery('(max-width: 768px)');
  */
 export function useMediaQuery(query) {
-  const [matches, setMatches] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(query).matches
-  );
-
-  useEffect(() => {
+  const subscribe = useCallback((callback) => {
+    if (typeof window === 'undefined') return () => {};
     const mql = window.matchMedia(query);
-    setMatches(mql.matches);
-
-    const listener = (e) => setMatches(e.matches);
-    mql.addEventListener('change', listener);
-    return () => mql.removeEventListener('change', listener);
+    mql.addEventListener('change', callback);
+    return () => mql.removeEventListener('change', callback);
   }, [query]);
 
-  return matches;
+  const getSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  }, [query]);
+
+  const getServerSnapshot = () => false;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 // ── Predefined breakpoints for convenience ────────────────────────────────────

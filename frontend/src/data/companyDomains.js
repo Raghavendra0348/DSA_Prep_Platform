@@ -165,8 +165,16 @@ const DOMAIN_OVERRIDES = {
   'capgemini':             'capgemini.com',
   'tech-mahindra':         'techmahindra.com',
   'hcl':                   'hcltech.com',
-  'mindtree':              'mindtree.com',
-  'lti':                   'lntinfotech.com',
+  'hcl-technologies':      'hcltech.com',
+  'mindtree':              'ltimindtree.com',
+  'lti':                   'ltimindtree.com',
+  'l-t-infotech':          'ltimindtree.com',
+  'lnt-infotech':          'ltimindtree.com',
+  'wissen-technology':     'wissen.com',
+  'josh-technology':       'joshtechnologygroup.com',
+  'josh-technology-group': 'joshtechnologygroup.com',
+  'airbus':                'airbus.com',
+  'airbus-se':             'airbus.com',
   'virtusa':               'virtusa.com',
   'dxc-technology':        'dxc.com',
   'genpact':               'genpact.com',
@@ -295,7 +303,7 @@ export function getCompanyDomain(slug) {
 
 export function getLogoUrl(slug, size = 128) {
   const domain = getCompanyDomain(slug);
-  return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://${domain}&size=128`;
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
 }
 
 export default DOMAIN_OVERRIDES;

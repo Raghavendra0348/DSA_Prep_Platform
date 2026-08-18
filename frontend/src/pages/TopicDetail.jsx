@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, Search, CheckCircle2, Flame, Layers } from 'lucide-react';
+import { ArrowLeft, Search, Layers } from 'lucide-react';
 import { getTopicProblems } from '../api/topics';
 import { upsertProgress } from '../api/progress';
 import { toggleBookmark as apiToggleBookmark } from '../api/bookmarks';

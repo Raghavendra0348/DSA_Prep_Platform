@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Layers, ArrowUpDown, Code2, Network, GitBranch, Terminal,
   Cpu, Hash, Database, Binary, Binary as MatrixIcon, AlignLeft,
-  Share2, Zap, CircleDot, Compass, Map as MapIcon, Grid, CheckCircle2, Flame, BookOpen
+  Share2, Zap, CircleDot, Compass, Map as MapIcon, Grid, BookOpen
 } from 'lucide-react';
 import { getTopics } from '../api/topics';
 import SearchInput from '../components/shared/SearchInput';

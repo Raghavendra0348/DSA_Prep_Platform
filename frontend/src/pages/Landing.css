@@ -130,7 +130,7 @@
 }
 
 .hero-search-icon {
-  color: #8b949e;
+  color: #4ef30d75;
   flex-shrink: 0;
   margin-right: 12px;
 }
@@ -703,12 +703,118 @@
 }
 
 /* ── Responsive Breakpoints ───────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .featured-section { padding: 60px 0; }
+  .featured-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+
 @media (max-width: 768px) {
-  .hero { padding: 60px 0 40px; }
-  .hero-search { flex-direction: column; padding: 10px; }
+  .hero { padding: 50px 0 36px; }
+  .hero-announcement { margin-bottom: 18px; padding: 4px 12px 4px 5px; }
+  .announcement-text { font-size: 12px; }
+  
+  .hero-search {
+    flex-direction: row;
+    padding: 6px 6px 6px 14px;
+    margin-bottom: 14px;
+  }
+  .hero-search-input { font-size: 14px; }
+  .btn-hero-search { padding: 8px 14px; font-size: 13px; }
+
+  .hero-popular-tags {
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .popular-tag-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 340px;
+    gap: 10px;
+  }
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+  }
+
+  .stats-bar { padding: 24px 0; }
+  .stats-bar-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stat-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .stat-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .stat-card-value { font-size: 22px; }
+  .stat-card-label { font-size: 12px; }
+  .stat-card-subtext { display: none; }
+
+  .section-title { font-size: 24px; }
+  .section-subtitle { font-size: 14px; margin-bottom: 24px; }
+  .featured-section { padding: 48px 0; }
+  .featured-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .featured-card {
+    padding: 16px;
+    min-height: 160px;
+  }
+  .featured-card-name { font-size: 15px; }
+  .featured-card-count { font-size: 12px; }
+  .featured-card-topics .chip { font-size: 11px; padding: 2px 7px; }
+
+  .cta-section { padding: 40px 0 60px; }
+  .cta-banner { padding: 36px 20px; border-radius: 18px; }
+  .cta-banner h2 { font-size: 24px; }
+  .cta-banner p { font-size: 14px; margin-bottom: 24px; }
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-search {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+  }
   .hero-search-icon { display: none; }
-  .hero-search-input { width: 100%; text-align: center; margin-bottom: 8px; }
+  .hero-search-input { width: 100%; text-align: center; }
   .btn-hero-search { width: 100%; justify-content: center; }
-  .section-title { font-size: 26px; }
-  .cta-banner { padding: 40px 20px; }
+
+  .stats-bar-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .stat-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 }

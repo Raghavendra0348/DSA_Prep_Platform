@@ -341,9 +341,20 @@
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .phase-topics-grid,
+  .topics-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .topics-page {
-    padding: 24px 16px 40px;
+    padding: 28px 16px 48px;
+  }
+
+  .topics-header h1 {
+    font-size: 24px;
   }
 
   .topics-controls-bar {
@@ -363,10 +374,13 @@
   .view-toggle-btn {
     flex: 1;
     justify-content: center;
+    padding: 8px 10px;
+    font-size: 12px;
   }
 
   .phase-card {
     padding: 18px 16px;
+    border-radius: 16px;
   }
 
   .phase-header {
@@ -374,22 +388,22 @@
   }
 
   .phase-number-badge {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
   }
 
   .phase-number-badge strong {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .phase-title {
-    font-size: 16.5px;
+    font-size: 16px;
   }
 
   .phase-topics-grid,
   .topics-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
   }
 
@@ -406,5 +420,45 @@
 
   .topic-card-name {
     font-size: 13.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topics-page {
+    padding: 20px 12px 40px;
+  }
+
+  .topics-header h1 {
+    font-size: 22px;
+  }
+
+  .topics-header-title-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .phase-topics-grid,
+  .topics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .topic-card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .topic-card-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .topic-card-name {
+    font-size: 12.5px;
+  }
+
+  .topic-card-count {
+    font-size: 11px;
   }
 }
