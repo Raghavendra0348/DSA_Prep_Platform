@@ -10,7 +10,6 @@ import ErrorBoundary from './components/shared/ErrorBoundary';
 import ScrollToTop from './components/shared/ScrollToTop';
 import Spinner from './components/ui/Spinner';
 import CommandPalette from './components/ui/CommandPalette';
-
 // ── Lazy-loaded pages (code-splitting) ───────────────────────────────────────
 const Landing        = lazy(() => import('./pages/Landing'));
 const Companies      = lazy(() => import('./pages/Companies'));
@@ -24,6 +23,10 @@ const Register       = lazy(() => import('./pages/Register'));
 const Dashboard      = lazy(() => import('./pages/Dashboard'));
 const Bookmarks      = lazy(() => import('./pages/Bookmarks'));
 const Profile        = lazy(() => import('./pages/Profile'));
+const About          = lazy(() => import('./pages/About'));
+const Privacy        = lazy(() => import('./pages/Privacy'));
+const Terms          = lazy(() => import('./pages/Terms'));
+const Contact        = lazy(() => import('./pages/Contact'));
 const NotFound       = lazy(() => import('./pages/NotFound'));
 
 // ── Suspense fallback ────────────────────────────────────────────────────────
@@ -59,6 +62,13 @@ function App() {
                     <Route path="/search" element={<Search />} />
                     <Route path="/topics" element={<Topics />} />
                     <Route path="/topics/:topic" element={<TopicDetail />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/privacy-policy" element={<Privacy />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/terms-of-service" element={<Terms />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/support" element={<Contact />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 

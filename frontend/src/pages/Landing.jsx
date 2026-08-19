@@ -183,10 +183,16 @@ export default function Landing() {
           {loading ? (
             <>
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="stat-card">
-                  <Skeleton width={48} height={48} style={{ borderRadius: '12px' }} />
-                  <Skeleton width={60} height={28} />
-                  <Skeleton width={80} height={14} />
+                <div key={i} className="stat-card stat-card-skeleton">
+                  <div className="stat-card-header">
+                    <Skeleton width={44} height={44} style={{ borderRadius: '12px' }} />
+                    <Skeleton width={90} height={24} style={{ borderRadius: '999px' }} />
+                  </div>
+                  <div className="stat-card-body" style={{ marginTop: '16px' }}>
+                    <Skeleton width={100} height={32} style={{ borderRadius: '6px', marginBottom: '8px' }} />
+                    <Skeleton width={140} height={18} style={{ borderRadius: '4px', marginBottom: '6px' }} />
+                    <Skeleton width={180} height={14} style={{ borderRadius: '4px' }} />
+                  </div>
                 </div>
               ))}
             </>
@@ -196,21 +202,30 @@ export default function Landing() {
                 icon={Building2}
                 value={stats?.totalCompanies || 471}
                 label="Target Companies"
-                subtext="Product & Service Based"
+                subtext="Product & Service Leaders"
+                badge="FAANG & Tech"
+                theme="cyan"
+                to="/companies"
                 visible={countersVisible}
               />
               <StatCard
                 icon={BookOpen}
                 value={stats?.totalQuestions || 3257}
                 label="Interview Questions"
-                subtext="Tag & Frequency Sorted"
+                subtext="Tag & Frequency Ranked"
+                badge="Real LeetCode"
+                theme="purple"
+                to="/companies"
                 visible={countersVisible}
               />
               <StatCard
                 icon={Tags}
                 value={stats?.totalTopics || 74}
                 label="DSA Topics"
-                subtext="Arrays to Dynamic Programming"
+                subtext="Arrays to Graph & DP"
+                badge="Roadmap Ready"
+                theme="emerald"
+                to="/topics"
                 visible={countersVisible}
               />
               <StatCard
@@ -218,6 +233,9 @@ export default function Landing() {
                 value={4}
                 label="Tier Categories"
                 subtext="MAANG to Service Tier"
+                badge="Tier Classified"
+                theme="amber"
+                to="/companies"
                 visible={countersVisible}
               />
             </>
@@ -327,7 +345,16 @@ export default function Landing() {
 }
 
 // ── Animated Counter Card ────────────────────────────────────────────────────
-function StatCard({ icon: Icon, value, label, subtext, visible }) {
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+  subtext,
+  badge,
+  theme = 'cyan',
+  to,
+  visible,
+}) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -348,16 +375,40 @@ function StatCard({ icon: Icon, value, label, subtext, visible }) {
     return () => clearInterval(timer);
   }, [visible, value]);
 
+  const CardWrapper = to ? Link : 'div';
+  const wrapperProps = to
+    ? { to, className: `stat-card stat-card-${theme} stat-card-link` }
+    : { className: `stat-card stat-card-${theme}` };
+
   return (
-    <div className="stat-card">
-      <div className="stat-card-icon">
-        <Icon size={22} />
+    <CardWrapper {...wrapperProps}>
+      <div className="stat-card-header">
+        <div className="stat-card-icon">
+          <Icon size={20} />
+        </div>
+        {badge && (
+          <span className="stat-card-badge">
+            <span className="stat-badge-dot" />
+            {badge}
+          </span>
+        )}
       </div>
-      <div className="stat-card-content">
-        <span className="stat-card-value">{count.toLocaleString()}+</span>
-        <span className="stat-card-label">{label}</span>
-        {subtext && <span className="stat-card-subtext">{subtext}</span>}
+
+      <div className="stat-card-body">
+        <div className="stat-card-value-wrap">
+          <span className="stat-card-value">{count.toLocaleString()}</span>
+          <span className="stat-card-plus">+</span>
+        </div>
+        <h3 className="stat-card-label">{label}</h3>
+        {subtext && <p className="stat-card-subtext">{subtext}</p>}
       </div>
-    </div>
+
+      <div className="stat-card-footer">
+        <span className="stat-card-action">
+          <span>Explore</span>
+          <ArrowRight size={13} className="stat-card-arrow" />
+        </span>
+      </div>
+    </CardWrapper>
   );
 }

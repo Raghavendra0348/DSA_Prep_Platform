@@ -1,10 +1,21 @@
-/* ── Stat Card ────────────────────────────────────────────────────────────── */
-.stat-card {
+/* ── Stat Card UI Component (Clean / Matte Modern) ────────────────────────── */
+.stat-card.card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
-  padding: 20px;
+  gap: 8px;
+  padding: 18px 20px;
+  border-radius: var(--radius-md, 12px);
+  background: #161b22;
+  border: 1px solid #30363d;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.stat-card.card:hover {
+  transform: translateY(-2px);
+  background: #1c2128;
+  border-color: #444c56;
 }
 
 /* ── Icon ─────────────────────────────────────────────────────────────────── */
@@ -12,41 +23,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md, 10px);
-  background: rgba(255, 255, 255, 0.05);
-  margin-bottom: 4px;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md, 12px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2px;
   flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.stat-card.card:hover .stat-icon {
+  transform: scale(1.06);
 }
 
 /* ── Value ────────────────────────────────────────────────────────────────── */
 .stat-value {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
+  color: var(--text-primary, #ffffff);
 }
 
 /* ── Label ────────────────────────────────────────────────────────────────── */
 .stat-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted, #7d8590);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted, #8b949e);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
 /* ── Trend ────────────────────────────────────────────────────────────────── */
 .stat-trend {
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
   font-weight: 600;
   margin-top: 2px;
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
-.stat-trend-up   { color: var(--solved, #3fb950); }
-.stat-trend-down { color: var(--hard,   #ef4743); }
+.stat-trend-up {
+  color: var(--solved, #3fb950);
+  background: rgba(63, 185, 80, 0.1);
+  border: 1px solid rgba(63, 185, 80, 0.2);
+}
+
+.stat-trend-down {
+  color: var(--hard, #ef4743);
+  background: rgba(239, 71, 67, 0.1);
+  border: 1px solid rgba(239, 71, 67, 0.2);
+}
 
 /* ── Size: Small ──────────────────────────────────────────────────────────── */
 .stat-card-sm {
@@ -54,4 +86,5 @@
 }
 
 .stat-card-sm .stat-value { font-size: 22px; }
-.stat-card-sm .stat-icon  { width: 32px; height: 32px; }
+.stat-card-sm .stat-icon  { width: 34px; height: 34px; border-radius: 8px; }
+
