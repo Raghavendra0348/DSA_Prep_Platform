@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Lock, AlertCircle, Check } from 'lucide-react';
+import { Lock, AlertCircle, Check, CalendarDays, Mail, ShieldCheck, Sparkles, UserRoundPen } from 'lucide-react';
 import { getMe, updateProfile, changePassword } from '../api/user';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -117,11 +117,17 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="profile-page container">
-        <Skeleton width={200} height={28} />
-        <div className="card" style={{ padding: 24, marginTop: 24 }}>
+        <div className="profile-loading-heading">
+          <Skeleton width={116} height={12} />
+          <Skeleton width={260} height={38} style={{ marginTop: 12 }} />
+          <Skeleton width={360} height={16} style={{ marginTop: 10 }} />
+        </div>
+        <div className="card profile-loading-card">
           <Skeleton width={64} height={64} style={{ borderRadius: '50%' }} />
-          <Skeleton width="40%" height={20} style={{ marginTop: 16 }} />
-          <Skeleton width="30%" height={14} style={{ marginTop: 8 }} />
+          <div className="profile-loading-lines">
+            <Skeleton width="45%" height={20} />
+            <Skeleton width="30%" height={14} style={{ marginTop: 8 }} />
+          </div>
         </div>
       </div>
     );
@@ -129,16 +135,35 @@ export default function Profile() {
 
   return (
     <div className="profile-page container">
-      <h1>Profile</h1>
+      <header className="profile-page-header">
+        <span className="profile-eyebrow"><Sparkles size={13} /> Account workspace</span>
+        <h1>Profile settings</h1>
+        <p>Manage your identity and keep your DSA Prep account secure.</p>
+      </header>
 
       {/* ── Profile Info ───────────────────────────────────────────────────── */}
-      <div className="card profile-card">
-        <div className="profile-avatar">
-          {(profile?.name || 'U').charAt(0).toUpperCase()}
+      <section className="card profile-card">
+        <div className="profile-card-orb profile-card-orb-one" aria-hidden="true" />
+        <div className="profile-card-orb profile-card-orb-two" aria-hidden="true" />
+
+        <div className="profile-avatar profile-avatar-large">
+          {profile?.avatar ? (
+            <img src={profile.avatar} alt={`${profile.name || 'User'} avatar`} />
+          ) : (
+            (profile?.name || 'U').charAt(0).toUpperCase()
+          )}
+          <span className="profile-online-indicator" title="Account active" />
         </div>
 
         {editing ? (
           <form className="profile-edit-form" onSubmit={handleEditSubmit}>
+            <div className="profile-section-heading">
+              <span className="profile-section-icon"><UserRoundPen size={17} /></span>
+              <div>
+                <h2>Update your profile</h2>
+                <p>Choose the name shown across your workspace.</p>
+              </div>
+            </div>
             {editError && (
               <div className="auth-error">
                 <AlertCircle size={16} /> {editError}
@@ -164,24 +189,51 @@ export default function Profile() {
           </form>
         ) : (
           <div className="profile-info">
-            <h2>{profile?.name}</h2>
-            <p className="profile-email">{profile?.email}</p>
-            {profile?.createdAt && (
-              <p className="profile-joined">Joined {new Date(profile.createdAt).toLocaleDateString()}</p>
-            )}
-            <button className="btn btn-ghost btn-sm" onClick={() => setEditing(true)}>
-              <User size={14} /> Edit Profile
+            <div className="profile-info-topline">
+              <span className="profile-member-badge"><ShieldCheck size={13} /> Member account</span>
+              {editSuccess && (
+                <span className="profile-success"><Check size={14} /> {editSuccess}</span>
+              )}
+            </div>
+            <h2>{profile?.name || 'Your profile'}</h2>
+            <p className="profile-email">Your personal DSA preparation workspace.</p>
+
+            <div className="profile-detail-grid">
+              <div className="profile-detail-item">
+                <span className="profile-detail-icon"><Mail size={15} /></span>
+                <div>
+                  <span className="profile-detail-label">Email address</span>
+                  <span className="profile-detail-value">{profile?.email || '—'}</span>
+                </div>
+              </div>
+              <div className="profile-detail-item">
+                <span className="profile-detail-icon"><CalendarDays size={15} /></span>
+                <div>
+                  <span className="profile-detail-label">Member since</span>
+                  <span className="profile-detail-value">
+                    {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '—'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <button className="btn btn-ghost profile-edit-button" onClick={() => setEditing(true)}>
+              <UserRoundPen size={15} /> Edit profile
             </button>
-            {editSuccess && (
-              <span className="profile-success"><Check size={14} /> {editSuccess}</span>
-            )}
           </div>
         )}
-      </div>
+      </section>
 
       {/* ── Change Password ────────────────────────────────────────────────── */}
-      <div className="card profile-pw-card">
-        <h2><Lock size={18} /> Change Password</h2>
+      <section className="card profile-pw-card">
+        <div className="profile-section-heading">
+          <span className="profile-section-icon profile-section-icon-security"><Lock size={18} /></span>
+          <div>
+            <h2>Security</h2>
+            <p>Use a strong, unique password to protect your account.</p>
+          </div>
+          <span className="profile-security-status"><ShieldCheck size={15} /> Protected</span>
+        </div>
 
         {pwError && (
           <div className="auth-error">
@@ -232,7 +284,7 @@ export default function Profile() {
             {pwLoading ? <Spinner size={14} /> : 'Update Password'}
           </button>
         </form>
-      </div>
+      </section>
     </div>
   );
 }
