@@ -4,11 +4,15 @@
   "description": "DSA Interview Prep Platform — Backend API",
   "main": "src/server.js",
   "scripts": {
-    "dev":    "nodemon src/server.js",
-    "start":  "node src/server.js",
-    "import": "node scripts/import-data.js",
-    "studio": "npx prisma studio",
-    "test":   "jest --runInBand --forceExit"
+    "dev":         "nodemon src/server.js",
+    "start":       "node src/server.js",
+    "postinstall": "prisma generate",
+    "import":      "node scripts/import-data.js",
+    "studio":      "npx prisma studio",
+    "test":        "jest --runInBand --forceExit"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "keywords": [],
   "author": "",
