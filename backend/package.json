@@ -7,6 +7,7 @@
     "dev":         "nodemon src/server.js",
     "start":       "node src/server.js",
     "postinstall": "prisma generate",
+    "migrate":     "prisma migrate deploy",
     "import":      "node scripts/import-data.js",
     "studio":      "npx prisma studio",
     "test":        "jest --runInBand --forceExit"
