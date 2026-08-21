@@ -172,39 +172,57 @@ router.get('/:slug', async (req, res, next) => {
 
 // ── GET /api/company/:slug/stats ───────────────────────────────────────────
 // Returns difficulty + topic breakdown per time period.
-// All 5 periods fetched in parallel (Promise.all — not sequential for-loop).
+//
+// PERF: Previously fired 5 findMany queries, each loading ALL CompanyQuestion
+// rows for a period just to count them in JS. Now uses 2 raw SQL queries that
+// let PostgreSQL do the aggregation — goes from O(N_rows × 5) to O(1).
 router.get('/:slug/stats', async (req, res, next) => {
   try {
     const company = await prisma.company.findUnique({ where: { slug: req.params.slug } });
     if (!company) return res.status(404).json({ error: 'Company not found' });
 
+    // ── 2 queries instead of 5 findMany calls ─────────────────────────────
+    // Query 1: difficulty counts grouped by period — DB does the counting
+    // Query 2: topic frequencies via unnest() — DB explodes the array and counts
+    const [diffRows, topicRows] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT cq.period, q.difficulty, COUNT(*)::int AS count
+        FROM   "CompanyQuestion" cq
+        JOIN   "Question" q ON q.id = cq."questionId"
+        WHERE  cq."companyId" = ${company.id}
+        GROUP  BY cq.period, q.difficulty
+      `,
+      prisma.$queryRaw`
+        SELECT cq.period, unnest(q.topics) AS topic, COUNT(*)::int AS count
+        FROM   "CompanyQuestion" cq
+        JOIN   "Question" q ON q.id = cq."questionId"
+        WHERE  cq."companyId" = ${company.id}
+        GROUP  BY cq.period, topic
+        ORDER  BY cq.period, count DESC
+      `,
+    ]);
+
+    // ── Assemble stats object from flat result rows ─────────────────────────
     const PERIODS = ['30days', '3months', '6months', '6plus', 'all'];
+    const stats   = {};
 
-    const results = await Promise.all(
-      PERIODS.map(period =>
-        prisma.companyQuestion.findMany({
-          where:   { companyId: company.id, period },
-          include: { question: { select: { difficulty: true, topics: true } } },
-        })
-      )
-    );
+    for (const period of PERIODS) {
+      const diffs = diffRows.filter(r => r.period === period);
+      if (!diffs.length) continue;
 
-    const stats = {};
-    PERIODS.forEach((period, i) => {
-      const rows = results[i];
-      if (!rows.length) return;
-
-      const topicMap = {};
-      rows.forEach(r => r.question.topics.forEach(t => topicMap[t] = (topicMap[t] || 0) + 1));
+      const get = (diff) => diffs.find(r => r.difficulty === diff)?.count ?? 0;
 
       stats[period] = {
-        total:     rows.length,
-        easy:      rows.filter(r => r.question.difficulty === 'EASY').length,
-        medium:    rows.filter(r => r.question.difficulty === 'MEDIUM').length,
-        hard:      rows.filter(r => r.question.difficulty === 'HARD').length,
-        topTopics: Object.entries(topicMap).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([t]) => t),
+        total:     diffs.reduce((s, r) => s + r.count, 0),
+        easy:      get('EASY'),
+        medium:    get('MEDIUM'),
+        hard:      get('HARD'),
+        topTopics: topicRows
+          .filter(r => r.period === period)
+          .slice(0, 5)
+          .map(r => r.topic),
       };
-    });
+    }
 
     res.json({ success: true, company: company.name, stats });
   } catch (e) { next(e); }

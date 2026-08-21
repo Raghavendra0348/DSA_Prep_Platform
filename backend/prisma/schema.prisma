@@ -42,7 +42,10 @@ model CompanyQuestion {
   question Question @relation(fields: [questionId], references: [id])
 
   @@id([companyId, questionId, period])
-  @@index([companyId, period])
+  // Covering indexes: WHERE companyId+period is satisfied AND ORDER BY is free
+  // (Postgres can walk the index in order without a separate sort step)
+  @@index([companyId, period, frequency(sort: Desc)])
+  @@index([companyId, period, acceptanceRate(sort: Desc)])
   @@index([questionId])
 }
 
@@ -70,6 +73,8 @@ model Progress {
   question Question @relation(fields: [questionId], references: [id])
 
   @@id([userId, questionId])
+  // Speeds up batch progress lookup: WHERE userId=X AND questionId IN (...)
+  @@index([userId, questionId])
 }
 
 model Bookmark {
@@ -81,6 +86,8 @@ model Bookmark {
   question Question @relation(fields: [questionId], references: [id])
 
   @@id([userId, questionId])
+  // Speeds up batch bookmark lookup: WHERE userId=X AND questionId IN (...)
+  @@index([userId, questionId])
 }
 
 // Stores refresh tokens for server-side logout + token rotation.
