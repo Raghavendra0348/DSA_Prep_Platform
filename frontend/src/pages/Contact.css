@@ -412,3 +412,7 @@
     font-size: 30px;
   }
 }
+
+@media (max-width: 360px) {
+  .contact-hero h1 { font-size: 22px; }
+}

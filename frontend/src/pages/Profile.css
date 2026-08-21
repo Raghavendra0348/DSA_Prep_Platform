@@ -383,3 +383,17 @@
 
   .profile-edit-actions { flex-direction: column; }
 }
+
+/* ── 768px — tablet (missing) ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .profile-page { padding-top: 36px; padding-bottom: 60px; }
+  .profile-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .profile-card { padding: 24px; }
+}
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .profile-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .profile-page-header h1 { font-size: 20px; }
+  .profile-card, .profile-pw-card { padding: 16px; }
+}

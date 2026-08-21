@@ -110,3 +110,10 @@
   .search-type-btn { padding: 5px 12px; font-size: 12px; }
   .search-topics-grid, .search-companies-grid { grid-template-columns: 1fr; }
 }
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .search-page { padding: 16px 10px 32px; }
+  .search-large-field { font-size: 14px; padding: 10px 8px; }
+  .search-type-btn { padding: 4px 10px; font-size: 11px; }
+}

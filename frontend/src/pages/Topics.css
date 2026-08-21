@@ -462,3 +462,11 @@
     font-size: 11px;
   }
 }
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .topics-page { padding: 16px 10px 32px; }
+  .topics-header h1 { font-size: 18px; }
+  .phase-topics-grid, .topics-grid { grid-template-columns: 1fr; gap: 6px; }
+  .topic-card { padding: 10px; }
+}

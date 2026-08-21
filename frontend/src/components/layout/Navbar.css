@@ -606,3 +606,16 @@
 
   .navbar-toggle { display: block; }
 }
+
+/* ── 360px — smallest phones (Samsung Galaxy S8, iPhone SE) ─────────────── */
+@media (max-width: 360px) {
+  .navbar-inner { padding: 0 12px; gap: 8px; }
+  .brand-name { font-size: 15px; }
+  /* Ensure dropdown never escapes viewport on tiny screens */
+  .user-dropdown {
+    width: calc(100vw - 24px);
+    right: -8px;
+  }
+  .mobile-drawer { padding: 14px 14px 24px; }
+  .mobile-search-form { padding: 8px 12px; }
+}

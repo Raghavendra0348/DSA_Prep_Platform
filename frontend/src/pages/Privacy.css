@@ -283,3 +283,7 @@
     font-size: 26px;
   }
 }
+
+@media (max-width: 360px) {
+  .privacy-hero h1 { font-size: 22px; }
+}

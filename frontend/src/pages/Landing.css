@@ -975,7 +975,7 @@
   .btn-hero-search { width: 100%; justify-content: center; }
 
   .stats-bar-inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
   .stat-card {
@@ -987,4 +987,15 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
+}
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .hero { padding: 36px 0 28px; }
+  .hero-actions { max-width: 100%; }
+  .stats-bar-inner { grid-template-columns: 1fr; gap: 8px; }
+  .featured-grid { grid-template-columns: 1fr; }
+  .cta-banner { padding: 28px 14px; border-radius: 14px; }
+  .cta-banner h2 { font-size: 20px; }
+  .stat-card-value { font-size: 22px; }
 }

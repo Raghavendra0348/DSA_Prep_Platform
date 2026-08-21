@@ -68,6 +68,19 @@
 
 .qd-notes-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
 
+@media (max-width: 1024px) {
+  .qd-meta { flex-wrap: wrap; gap: 8px; }
+  .qd-companies-list { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .question-detail { padding: 28px 18px 48px; }
+  .qd-header h1 { font-size: 24px; }
+  .qd-meta { gap: 6px; }
+  .qd-companies-list { grid-template-columns: repeat(2, 1fr); }
+  .qd-user-section { padding: 20px 18px; }
+}
+
 @media (max-width: 640px) {
   .question-detail { padding: 24px 16px 40px; }
   .qd-header h1 { font-size: 22px; }
@@ -81,3 +94,10 @@
   .qd-user-section { padding: 18px 14px; }
   .qd-companies-list { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 360px) {
+  .question-detail { padding: 16px 10px 32px; }
+  .qd-header h1 { font-size: 18px; }
+  .qd-meta-chip { font-size: 11px; padding: 3px 8px; }
+}
+

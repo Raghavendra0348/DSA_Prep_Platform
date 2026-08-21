@@ -440,3 +440,10 @@
   .bookmarks-stat-pill-value { font-size: 18px; }
 }
 
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .bookmarks-page { padding: 16px 10px 32px; }
+  .bookmarks-hero h1 { font-size: 19px; }
+  .bookmarks-stat-pill { padding: 8px 10px; min-width: 52px; }
+}

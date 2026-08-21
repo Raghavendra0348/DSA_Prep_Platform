@@ -801,7 +801,7 @@
     flex-wrap: wrap;
   }
   .dash-ui-stats-bar {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
   .dash-ui-radar-body {
@@ -812,4 +812,23 @@
   .dash-ui-diff-tracks {
     width: 100%;
   }
+}
+
+/* ── 480px — phones ──────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .dash-ui { padding: 16px 12px 48px; }
+  .dash-ui-hero { padding: 16px 14px; gap: 10px; }
+  .dash-ui-hero h1 { font-size: 20px; }
+  .dash-ui-hero p  { font-size: 13px; }
+  .dash-ui-hero-actions { gap: 8px; }
+  .dash-ui-hero-actions .btn { flex: 1; justify-content: center; }
+  .dash-ui-stats-bar { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .dash-ui-hero h1 { font-size: 18px; }
+  .dash-ui-stats-bar { grid-template-columns: 1fr; }
+  .dash-ui-hero-actions { flex-direction: column; }
+  .dash-ui-hero-actions .btn { width: 100%; }
 }

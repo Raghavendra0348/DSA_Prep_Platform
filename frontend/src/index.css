@@ -142,6 +142,12 @@ ul, ol {
   }
 }
 
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+}
+
 /* ── Touch Scroll Utility (No Scrollbar) ─────────────────────────────────── */
 .scroll-x-touch {
   overflow-x: auto;
@@ -153,6 +159,18 @@ ul, ol {
 .scroll-x-touch::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Overflow-safe row — for tab/chip rows that must never overflow ────────── */
+/* Use on any flex row where items should scroll horizontally instead of wrap  */
+.overflow-x-safe {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex-wrap: nowrap;
+}
+
+.overflow-x-safe::-webkit-scrollbar { display: none; }
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
 .btn {

@@ -47,3 +47,16 @@
   gap: 10px;
   margin-top: 12px;
 }
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .not-found { padding: 32px 16px; }
+  .not-found h1 { font-size: 20px; }
+  .not-found p { font-size: 14px; max-width: 280px; }
+  .not-found-actions { flex-direction: column; width: 100%; max-width: 280px; }
+  .not-found-actions .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 360px) {
+  .not-found { padding: 24px 12px; }
+  .not-found h1 { font-size: 18px; }
+}

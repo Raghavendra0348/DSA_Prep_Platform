@@ -212,9 +212,7 @@ export default function Dashboard() {
               <span className="dash-ui-badge-greeting">
                 <Sparkles size={12} /> {greeting}
               </span>
-              <span className="dash-ui-badge-tier">
-                <Target size={12} /> Target: MAANG & Tier 1
-              </span>
+              
             </div>
             <h1 className="dash-ui-title">{user?.name || 'Software Engineer'}</h1>
             <p className="dash-ui-desc">
