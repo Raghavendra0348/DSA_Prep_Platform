@@ -21,7 +21,7 @@ export default function PeriodTabs({ active = 'all', onChange, stats = {} }) {
       const containerRect = container.getBoundingClientRect();
       const tabRect = activeEl.getBoundingClientRect();
       setIndicator({
-        left: tabRect.left - containerRect.left,
+        left: tabRect.left - containerRect.left + container.scrollLeft,
         width: tabRect.width,
       });
     }
@@ -29,12 +29,25 @@ export default function PeriodTabs({ active = 'all', onChange, stats = {} }) {
 
   useEffect(() => {
     updateIndicator();
-  }, [updateIndicator]);
+    const activeEl = tabRefs.current[active];
+    if (activeEl && typeof activeEl.scrollIntoView === 'function') {
+      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  }, [active, updateIndicator]);
 
-  // Recalculate on window resize
+  // Recalculate on window resize or scroll
   useEffect(() => {
+    const container = containerRef.current;
     window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
+    if (container) {
+      container.addEventListener('scroll', updateIndicator);
+    }
+    return () => {
+      window.removeEventListener('resize', updateIndicator);
+      if (container) {
+        container.removeEventListener('scroll', updateIndicator);
+      }
+    };
   }, [updateIndicator]);
 
   return (

@@ -441,39 +441,51 @@
   }
 
   .problem-row {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas:
+      "status title leetcode bookmark"
+      ". diff diff diff";
+    gap: 8px 10px;
     align-items: center;
-    gap: 8px 12px;
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .col-status-check {
-    order: 1;
+    grid-area: status;
     flex-shrink: 0;
   }
 
   .col-title {
-    order: 2;
-    flex: 1;
-    min-width: 140px;
+    grid-area: title;
+    min-width: 0;
     padding-right: 4px;
   }
 
+  .problem-title {
+    font-size: 14px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.35;
+  }
+
   .col-leetcode {
-    order: 3;
+    grid-area: leetcode;
     flex-shrink: 0;
   }
 
   .col-bookmark {
-    order: 4;
+    grid-area: bookmark;
     flex-shrink: 0;
   }
 
   .col-diff {
-    order: 5;
+    grid-area: diff;
     flex-shrink: 0;
-    margin-top: 2px;
   }
 }
 
@@ -493,8 +505,8 @@
   }
 
   .problem-row {
-    padding: 12px;
-    gap: 6px 10px;
+    padding: 10px 12px;
+    gap: 6px 8px;
   }
 
   .problem-title {
