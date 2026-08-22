@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import { logout as apiLogout } from '../api/auth';
 
 export const AuthContext = createContext(null);
@@ -14,8 +14,10 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(() => {
     try {
-      const savedUser = localStorage.getItem('dsa_user');
-      return savedUser ? JSON.parse(savedUser) : null;
+      const savedToken = localStorage.getItem('dsa_token');
+      const savedUser  = localStorage.getItem('dsa_user');
+      if (!savedToken || !savedUser) return null;
+      return JSON.parse(savedUser);
     } catch {
       localStorage.removeItem('dsa_token');
       localStorage.removeItem('dsa_refresh_token');
@@ -25,6 +27,19 @@ export function AuthProvider({ children }) {
   });
 
   const [isLoading] = useState(false);
+
+  // Listen for auth expiration from API client
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('dsa_token');
+      localStorage.removeItem('dsa_refresh_token');
+      localStorage.removeItem('dsa_user');
+    };
+    window.addEventListener('dsa_auth_expired', handleAuthExpired);
+    return () => window.removeEventListener('dsa_auth_expired', handleAuthExpired);
+  }, []);
 
   // login — called after successful POST /api/auth/login or /register
   const login = useCallback((data) => {

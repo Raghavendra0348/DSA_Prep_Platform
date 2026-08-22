@@ -205,7 +205,7 @@ export default function Landing() {
           ) : (
             <>
               <StatCard
-                icon={Building2}
+               
                 value={stats?.totalCompanies || 471}
                 label="Target Companies"
                 subtext="Product & Service Leaders"
@@ -215,7 +215,7 @@ export default function Landing() {
                 visible={countersVisible}
               />
               <StatCard
-                icon={BookOpen}
+                
                 value={stats?.totalQuestions || 3257}
                 label="Interview Questions"
                 subtext="Tag & Frequency Ranked"
@@ -225,7 +225,7 @@ export default function Landing() {
                 visible={countersVisible}
               />
               <StatCard
-                icon={Tags}
+                
                 value={stats?.totalTopics || 74}
                 label="DSA Topics"
                 subtext="Arrays to Graph & DP"
@@ -235,7 +235,6 @@ export default function Landing() {
                 visible={countersVisible}
               />
               <StatCard
-                icon={Award}
                 value={4}
                 label="Tier Categories"
                 subtext="MAANG to Service Tier"
@@ -389,9 +388,11 @@ function StatCard({
   return (
     <CardWrapper {...wrapperProps}>
       <div className="stat-card-header">
-        <div className="stat-card-icon">
-          <Icon size={20} />
-        </div>
+        {Icon && (
+          <div className="stat-card-icon">
+            <Icon size={20} />
+          </div>
+        )}
         {badge && (
           <span className="stat-card-badge">
             <span className="stat-badge-dot" />

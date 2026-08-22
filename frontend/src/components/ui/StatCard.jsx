@@ -31,11 +31,7 @@ export default function StatCard({
 
   return (
     <div className={`stat-card card animate-in stat-card-${size}`}>
-      {Icon && (
-        <div className="stat-icon" style={{ color }} aria-hidden="true">
-          <Icon size={size === 'sm' ? 18 : 22} />
-        </div>
-      )}
+     
       <span className="stat-value text-code" style={{ color }}>
         {shown.toLocaleString()}{suffix}
       </span>

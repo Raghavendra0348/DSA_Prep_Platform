@@ -3,7 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import Spinner from '../ui/Spinner';
 
 export default function ProtectedRoute({ children }) {
-  const { user, isLoading } = useAuth();
+  const { user, token, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  if (!user) {
+  if (!user || !token) {
     // Save where they were trying to go — redirect back after login
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }

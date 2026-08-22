@@ -62,14 +62,21 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // prevent infinite retry loops
+    if (error.response?.status === 401) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true; // prevent infinite retry loops
 
-      const refreshed = await tryRefresh();
-      if (refreshed) {
-        const newToken = localStorage.getItem('dsa_token');
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return axiosClient(originalRequest); // retry with new token
+        const refreshed = await tryRefresh();
+        if (refreshed) {
+          const newToken = localStorage.getItem('dsa_token');
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return axiosClient(originalRequest); // retry with new token
+        }
+      }
+
+      // If refresh failed or already retried, notify auth context to logout/sync
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('dsa_auth_expired'));
       }
     }
 
