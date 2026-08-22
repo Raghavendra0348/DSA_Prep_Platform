@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 import { getStats } from '../api/stats';
-import { getCompanies } from '../api/companies';
+import { getFeaturedCompanies, getCompanySlugs } from '../api/companies';
 import { getClassification, TIER_INFO } from '../data/companyClassification';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import TierBadge from '../components/ui/TierBadge';
@@ -36,23 +36,29 @@ export default function Landing() {
 
     async function loadData() {
       try {
-        const [statsRes, companiesRes] = await Promise.all([
+        // ── Fast path: only fetch stats + 12 featured companies ──────────
+        // This avoids the heavy /api/companies query (all 471+ companies)
+        // that was previously blocking the entire landing page render.
+        const [statsRes, featuredRes] = await Promise.all([
           getStats(),
-          getCompanies(),
+          getFeaturedCompanies(FEATURED_SLUGS),
         ]);
-        setStats(statsRes);
-
-        // Match featured companies from full list
-        const companies = companiesRes.companies || (Array.isArray(companiesRes) ? companiesRes : []);
-        setAllCompanies(companies);
-        const featuredList = FEATURED_SLUGS
-          .map(slug => companies.find(c => c.slug === slug))
-          .filter(Boolean);
-        setFeatured(featuredList);
+        setStats(statsRes.stats || statsRes);
+        setFeatured(featuredRes.companies || []);
       } catch (err) {
         console.error('Failed to load landing data:', err);
       } finally {
         setLoading(false);
+      }
+
+      // ── Deferred: load lightweight slug list for search matching ──────
+      // This runs AFTER the page has already rendered, so users see content
+      // immediately. Only slug+name are fetched (no questionCount/topTopics).
+      try {
+        const slugsRes = await getCompanySlugs();
+        setAllCompanies(slugsRes.companies || []);
+      } catch {
+        // Search matching will fall back to /companies?q= redirect
       }
     }
     loadData();

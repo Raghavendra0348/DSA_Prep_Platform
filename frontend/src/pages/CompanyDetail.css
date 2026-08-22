@@ -82,7 +82,7 @@
 }
 
 /* ── Problem Table Container (Desktop / Tablet) ────────────────────────────── */
-.problem-table {
+.company-detail .problem-table {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   overflow: hidden;
@@ -92,7 +92,7 @@
 }
 
 /* Table Header */
-.problem-table-header {
+.company-detail .problem-table-header {
   display: grid;
   grid-template-columns: 54px 1fr 90px 110px 240px 42px;
   align-items: center;
@@ -108,7 +108,7 @@
 }
 
 /* Table Rows */
-.problem-row {
+.company-detail .problem-row {
   display: grid;
   grid-template-columns: 54px 1fr 90px 110px 240px 42px;
   align-items: center;
@@ -119,30 +119,30 @@
   transition: all 0.18s ease;
 }
 
-.problem-row:last-child {
+.company-detail .problem-row:last-child {
   border-bottom: none;
 }
 
-.problem-row:hover {
+.company-detail .problem-row:hover {
   background: rgba(255, 255, 255, 0.035);
 }
 
 /* Column 1: Status Checkbox */
-.col-status-check {
+.company-detail .col-status-check {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 /* Column 2: Title */
-.col-title {
+.company-detail .col-title {
   display: flex;
   align-items: center;
   min-width: 0;
   padding-right: 12px;
 }
 
-.problem-title {
+.company-detail .problem-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -153,18 +153,18 @@
   transition: color 0.15s ease;
 }
 
-.problem-row:hover .problem-title {
+.company-detail .problem-row:hover .problem-title {
   color: #ffffff;
 }
 
 /* Column 3: LeetCode Clean Icon */
-.col-leetcode {
+.company-detail .col-leetcode {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.leetcode-clean-icon-link {
+.company-detail .leetcode-clean-icon-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -178,25 +178,25 @@
   border-radius: 6px;
 }
 
-.leetcode-clean-icon-link:hover {
+.company-detail .leetcode-clean-icon-link:hover {
   transform: scale(1.22);
   filter: drop-shadow(0 0 8px rgba(255, 161, 22, 0.7));
   background: rgba(255, 161, 22, 0.1);
 }
 
-.no-link {
+.company-detail .no-link {
   color: #484f58;
   font-size: 13px;
 }
 
 /* Column 4: Difficulty */
-.col-diff {
+.company-detail .col-diff {
   display: flex;
   align-items: center;
 }
 
 /* Column 5: Topics */
-.col-topics {
+.company-detail .col-topics {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -204,7 +204,7 @@
   overflow: hidden;
 }
 
-.chip-more {
+.company-detail .chip-more {
   background: rgba(255, 255, 255, 0.06);
   color: #8b949e;
   font-size: 11px;
@@ -215,14 +215,14 @@
 }
 
 /* Column 6: Bookmark Star */
-.col-bookmark {
+.company-detail .col-bookmark {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 /* ── Skeleton Table ───────────────────────────────────────────────────────── */
-.problem-table-skeleton {
+.company-detail .problem-table-skeleton {
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -231,7 +231,7 @@
   margin-top: 16px;
 }
 
-.problem-row-skeleton {
+.company-detail .problem-row-skeleton {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -239,19 +239,19 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.problem-row-skeleton:last-child {
+.company-detail .problem-row-skeleton:last-child {
   border-bottom: none;
 }
 
 /* ── Responsive: Tablet / Narrow Laptop ────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .problem-table-header,
-  .problem-row {
+  .company-detail .problem-table-header,
+  .company-detail .problem-row {
     grid-template-columns: 48px 1fr 70px 90px 160px 36px;
     gap: 8px;
     padding: 12px 14px;
   }
-  .col-topics .chip { font-size: 11px; padding: 2px 7px; }
+  .company-detail .col-topics .chip { font-size: 11px; padding: 2px 7px; }
 }
 
 /* ── Responsive: Mobile Phones (Clean Modern Cards View) ─────────────────── */
@@ -282,11 +282,11 @@
   }
 
   /* ── Turn Desktop Table into Clean Mobile Cards ── */
-  .problem-table-header {
+  .company-detail .problem-table-header {
     display: none;
   }
 
-  .problem-table {
+  .company-detail .problem-table {
     background: transparent;
     border: none;
     box-shadow: none;
@@ -297,7 +297,7 @@
     margin-top: 14px;
   }
 
-  .problem-row {
+  .company-detail .problem-row {
     background: #161b22;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
@@ -314,28 +314,28 @@
     transition: transform 0.15s ease, border-color 0.15s ease;
   }
 
-  .problem-row:last-child {
+  .company-detail .problem-row:last-child {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .problem-row:active {
+  .company-detail .problem-row:active {
     transform: scale(0.99);
     border-color: rgba(88, 166, 255, 0.25);
   }
 
-  .col-status-check {
+  .company-detail .col-status-check {
     grid-area: status;
     flex-shrink: 0;
     justify-content: flex-start;
   }
 
-  .col-title {
+  .company-detail .col-title {
     grid-area: title;
     min-width: 0;
     padding-right: 0;
   }
 
-  .problem-title {
+  .company-detail .problem-title {
     font-size: 14.5px;
     font-weight: 600;
     color: #f0f6fc;
@@ -348,18 +348,18 @@
     overflow: hidden;
   }
 
-  .col-bookmark {
+  .company-detail .col-bookmark {
     grid-area: bookmark;
     justify-self: end;
     flex-shrink: 0;
   }
 
-  .col-diff {
+  .company-detail .col-diff {
     grid-area: diff;
     flex-shrink: 0;
   }
 
-  .col-topics {
+  .company-detail .col-topics {
     grid-area: topics;
     display: flex;
     align-items: center;
@@ -372,30 +372,30 @@
     padding-bottom: 1px;
   }
 
-  .col-topics::-webkit-scrollbar {
+  .company-detail .col-topics::-webkit-scrollbar {
     display: none;
   }
 
-  .col-topics .chip {
+  .company-detail .col-topics .chip {
     font-size: 11px;
     padding: 2px 7px;
     flex-shrink: 0;
   }
 
-  .col-leetcode {
+  .company-detail .col-leetcode {
     grid-area: leetcode;
     justify-self: end;
     flex-shrink: 0;
   }
 
-  .leetcode-clean-icon-link {
+  .company-detail .leetcode-clean-icon-link {
     padding: 4px;
     border-radius: 6px;
     background: rgba(255, 161, 22, 0.08);
   }
 
   /* Skeleton Mobile Cards */
-  .problem-table-skeleton {
+  .company-detail .problem-table-skeleton {
     background: transparent;
     border: none;
     box-shadow: none;
@@ -406,7 +406,7 @@
     margin-top: 14px;
   }
 
-  .problem-row-skeleton {
+  .company-detail .problem-row-skeleton {
     background: #161b22;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
@@ -416,7 +416,7 @@
     gap: 10px;
   }
 
-  .problem-row-skeleton:last-child {
+  .company-detail .problem-row-skeleton:last-child {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
@@ -435,12 +435,12 @@
     font-size: 22px;
   }
 
-  .problem-row {
+  .company-detail .problem-row {
     padding: 11px 12px;
     gap: 8px 10px;
   }
 
-  .problem-title {
+  .company-detail .problem-title {
     font-size: 13.5px;
   }
 }
@@ -455,12 +455,12 @@
     font-size: 19px;
   }
 
-  .problem-row {
+  .company-detail .problem-row {
     padding: 10px;
     gap: 6px 8px;
   }
 
-  .problem-title {
+  .company-detail .problem-title {
     font-size: 13px;
   }
 

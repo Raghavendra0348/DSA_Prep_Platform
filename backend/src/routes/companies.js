@@ -13,6 +13,75 @@ function isCacheValid() {
   return _cache !== null && Date.now() - _cacheAt < CACHE_TTL;
 }
 
+// ── GET /api/companies/featured?slugs=google,meta,amazon ──────────────────
+// Lightweight endpoint — returns only the requested companies with counts
+// and top topics. Designed for landing page; avoids the full /api/companies
+// aggregation that processes all 471+ companies.
+router.get('/featured', async (req, res, next) => {
+  try {
+    const slugParam = req.query.slugs || '';
+    const slugs = slugParam.split(',').map(s => s.trim()).filter(Boolean);
+
+    if (slugs.length === 0) {
+      return res.json({ success: true, companies: [] });
+    }
+
+    // Fetch only the requested companies by slug
+    const companies = await prisma.company.findMany({
+      where: { slug: { in: slugs } },
+      select: { id: true, name: true, slug: true },
+    });
+
+    if (companies.length === 0) {
+      return res.json({ success: true, companies: [] });
+    }
+
+    const companyIds = companies.map(c => c.id);
+
+    // Get question counts and top topics only for these companies
+    const [countRows, topicRows] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT   cq."companyId", COUNT(cq."questionId")::int AS "questionCount"
+        FROM     "CompanyQuestion" cq
+        WHERE    cq."companyId" = ANY(${companyIds}::int[]) AND cq.period = 'all'
+        GROUP BY cq."companyId"
+      `,
+      prisma.$queryRaw`
+        SELECT   cq."companyId",
+                 unnest(q.topics) AS topic,
+                 COUNT(*)::int    AS freq
+        FROM     "CompanyQuestion" cq
+        JOIN     "Question" q ON q.id = cq."questionId"
+        WHERE    cq."companyId" = ANY(${companyIds}::int[]) AND cq.period = 'all'
+        GROUP BY cq."companyId", topic
+        ORDER BY cq."companyId", freq DESC
+      `,
+    ]);
+
+    const countMap = {};
+    for (const row of countRows) countMap[row.companyId] = row.questionCount;
+
+    const topicsMap = {};
+    for (const row of topicRows) {
+      if (!topicsMap[row.companyId]) topicsMap[row.companyId] = [];
+      if (topicsMap[row.companyId].length < 5) topicsMap[row.companyId].push(row.topic);
+    }
+
+    // Preserve the order from the request
+    const slugOrder = new Map(slugs.map((s, i) => [s, i]));
+    const result = companies
+      .map(c => ({
+        name:          c.name,
+        slug:          c.slug,
+        questionCount: countMap[c.id] ?? 0,
+        topTopics:     topicsMap[c.id] ?? [],
+      }))
+      .sort((a, b) => (slugOrder.get(a.slug) ?? 99) - (slugOrder.get(b.slug) ?? 99));
+
+    res.json({ success: true, companies: result });
+  } catch (e) { next(e); }
+});
+
 // ── GET /api/companies/slugs ───────────────────────────────────────────────
 // Lightweight endpoint — returns only name + slug for all companies.
 // Used for navigation; skips questionCount + topTopics computation entirely.
