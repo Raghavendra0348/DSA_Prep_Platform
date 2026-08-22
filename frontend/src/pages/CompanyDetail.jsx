@@ -2,6 +2,7 @@ import { useSearchParams, Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useCompany } from '../hooks/useCompany';
 import { useAuth } from '../hooks/useAuth';
+import CompanyLogo from '../components/ui/CompanyLogo';
 import PeriodTabs from '../components/shared/PeriodTabs';
 import FilterBar from '../components/shared/FilterBar';
 import Pagination from '../components/shared/Pagination';
@@ -60,16 +61,27 @@ export default function CompanyDetail() {
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="company-header">
         <Link to="/companies" className="back-link">
-          <ArrowLeft size={18} /> Companies
+          <ArrowLeft size={16} />
+          <span>All Companies</span>
         </Link>
-        <h1>{companyName}</h1>
-        {stats?.all && (
-          <p className="company-meta">
-            {stats.all.total} problems • {stats.all.topTopics?.slice(0, 5).map(t => (
-              <TopicChip key={t} topic={t} />
-            ))}
-          </p>
-        )}
+        <div className="company-header-main">
+          <CompanyLogo slug={slug} name={companyName} size={46} />
+          <div className="company-header-info">
+            <h1>{companyName}</h1>
+            {stats?.all && (
+              <div className="company-meta">
+                <span className="company-total-badge">{stats.all.total} problems</span>
+                {stats.all.topTopics?.length > 0 && (
+                  <div className="company-topics-scroll">
+                    {stats.all.topTopics.slice(0, 5).map(t => (
+                      <TopicChip key={t} topic={t} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* ── Period Tabs ────────────────────────────────────────────────────── */}

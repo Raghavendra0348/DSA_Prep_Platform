@@ -407,7 +407,7 @@
 
 @media (max-width: 768px) {
   .topic-detail {
-    padding: 24px 16px 48px;
+    padding: 20px 16px 48px;
   }
 
   .topic-controls-bar {
@@ -432,54 +432,76 @@
     font-size: 12px;
   }
 
+  /* ── Turn Table into Cards on Mobile ── */
   .problem-table-header {
     display: none;
   }
 
   .problem-table {
-    border-radius: 14px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
   }
 
   .problem-row {
+    background: #161b22;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
     grid-template-areas:
-      "status title leetcode bookmark"
-      ". diff diff diff";
-    gap: 8px 10px;
+      "status title   bookmark"
+      "diff   .       leetcode";
+    gap: 10px 12px;
     align-items: center;
-    padding: 12px 14px;
+    padding: 13px 14px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .problem-row:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .problem-row:active {
+    transform: scale(0.99);
+    border-color: rgba(88, 166, 255, 0.25);
   }
 
   .col-status-check {
     grid-area: status;
     flex-shrink: 0;
+    justify-content: flex-start;
   }
 
   .col-title {
     grid-area: title;
     min-width: 0;
-    padding-right: 4px;
+    padding-right: 0;
   }
 
   .problem-title {
-    font-size: 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #f0f6fc;
+    line-height: 1.35;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.35;
-  }
-
-  .col-leetcode {
-    grid-area: leetcode;
-    flex-shrink: 0;
   }
 
   .col-bookmark {
     grid-area: bookmark;
+    justify-self: end;
     flex-shrink: 0;
   }
 
@@ -487,11 +509,49 @@
     grid-area: diff;
     flex-shrink: 0;
   }
+
+  .col-leetcode {
+    grid-area: leetcode;
+    justify-self: end;
+    flex-shrink: 0;
+  }
+
+  .leetcode-clean-icon-link {
+    padding: 4px;
+    border-radius: 6px;
+    background: rgba(255, 161, 22, 0.08);
+  }
+
+  /* Skeleton Mobile Cards */
+  .problem-table-skeleton {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .problem-row-skeleton {
+    background: #161b22;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .problem-row-skeleton:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
 }
 
 @media (max-width: 480px) {
   .topic-detail {
-    padding: 20px 12px 40px;
+    padding: 16px 12px 40px;
   }
 
   .topic-banner h1 {
@@ -505,18 +565,19 @@
   }
 
   .problem-row {
-    padding: 10px 12px;
-    gap: 6px 8px;
+    padding: 11px 12px;
+    gap: 8px 10px;
   }
 
   .problem-title {
     font-size: 13.5px;
   }
 }
+
 /* ── 360px — smallest phones ─────────────────────────────────────────────── */
 @media (max-width: 360px) {
-  .topic-detail { padding: 16px 10px 32px; }
+  .topic-detail { padding: 14px 8px 32px; }
   .topic-banner h1 { font-size: 18px; }
-  .problem-row { padding: 10px; }
+  .problem-row { padding: 10px; gap: 6px 8px; }
   .problem-title { font-size: 13px; }
 }
