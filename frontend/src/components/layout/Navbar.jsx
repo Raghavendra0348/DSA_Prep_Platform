@@ -2,12 +2,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
-  
   Code2, Menu, X, LayoutDashboard, Bookmark, User, LogOut,
   Building2, BookOpen, Search, ChevronDown, Sparkles, Command,
   ArrowRight
 } from 'lucide-react';
-import { search as apiSearch } from '../../api/search';
+import { useSearch } from '../../hooks/useSearch';
 import LeetCodeIcon from '../ui/LeetCodeIcon';
 import './Navbar.css';
 
@@ -16,17 +15,19 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // Quick Search state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState(null);
-  const [searchLoading, setSearchLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const dropdownRef = useRef(null);
-  const searchRef = useRef(null);
+  const searchRef   = useRef(null);
   const searchInputRef = useRef(null);
-  const debounceRef = useRef(null);
+
+  // ── TanStack Query — search cached per query, debounced 280ms inside hook ──
+  const {
+    query:         searchQuery,
+    setQuery:      setSearchQuery,
+    results:       searchResults,
+    loading:       searchLoading,
+  } = useSearch('', 'all');
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -74,34 +75,15 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  // Debounced search call
+  // Debounced input — setQuery triggers the useSearch hook
   const handleSearchInput = useCallback((e) => {
     const val = e.target.value;
     setSearchQuery(val);
     setSearchOpen(true);
-
-    clearTimeout(debounceRef.current);
-    if (val.trim().length < 2) {
-      setSearchResults(null);
-      return;
-    }
-
-    debounceRef.current = setTimeout(async () => {
-      setSearchLoading(true);
-      try {
-        const data = await apiSearch(val.trim(), 'all', undefined, 6);
-        setSearchResults(data);
-      } catch (err) {
-        console.error('Search error:', err);
-      } finally {
-        setSearchLoading(false);
-      }
-    }, 280);
-  }, []);
+  }, [setSearchQuery]);
 
   const clearSearch = () => {
     setSearchQuery('');
-    setSearchResults(null);
     setSearchOpen(false);
   };
 
@@ -125,17 +107,8 @@ export default function Navbar() {
     navigate('/');
   };
 
-  // Flatten search results
-  const questions = Array.isArray(searchResults?.questions?.results)
-    ? searchResults.questions.results
-    : Array.isArray(searchResults?.questions) ? searchResults.questions : [];
-  const topics = Array.isArray(searchResults?.topics?.results)
-    ? searchResults.topics.results
-    : Array.isArray(searchResults?.topics) ? searchResults.topics : [];
-  const companies = Array.isArray(searchResults?.companies?.results)
-    ? searchResults.companies.results
-    : Array.isArray(searchResults?.companies) ? searchResults.companies : [];
-
+  // Flatten search results from the hook
+  const { questions, topics, companies } = searchResults;
   const hasResults = questions.length > 0 || topics.length > 0 || companies.length > 0;
   const showDropdown = searchOpen && searchQuery.trim().length >= 2;
 

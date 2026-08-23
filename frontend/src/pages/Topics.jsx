@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Layers, ArrowUpDown, Code2, Network, GitBranch, Terminal,
   Cpu, Hash, Database, Binary, Binary as MatrixIcon, AlignLeft,
   Share2, Zap, CircleDot, Compass, Map as MapIcon, Grid, BookOpen
 } from 'lucide-react';
-import { getTopics } from '../api/topics';
+import { useTopics } from '../hooks/useTopics';
 import SearchInput from '../components/shared/SearchInput';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
@@ -138,34 +138,16 @@ const SORT_OPTIONS = [
 ];
 
 export default function Topics() {
-  const [topics, setTopics] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [sort, setSort] = useState('most');
   const [viewMode, setViewMode] = useState('phases'); // 'phases' | 'grid'
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    document.title = 'DSA Topics & Learning Roadmap — DSA Prep';
-    async function load() {
-      try {
-        const data = await getTopics();
-        setTopics(data.topics || data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  // TanStack Query — fetch once, cached for 5 min. Search is client-side via hook.
+  const { topics, loading, error, search, setSearch } = useTopics();
 
-  // Filtered topics
-  const filteredTopics = useMemo(() => {
-    if (!search) return topics;
-    const q = search.toLowerCase();
-    return topics.filter(t => (t.name || t.topic || '').toLowerCase().includes(q));
-  }, [topics, search]);
+  useMemo(() => { document.title = 'DSA Topics & Learning Roadmap — DSA Prep'; }, []);
+
+  // useTopics already returns the search-filtered list as `topics`
+  const filteredTopics = topics;
 
   // Group topics into the 10 Learning Phases
   const phaseGroups = useMemo(() => {
@@ -225,6 +207,7 @@ export default function Topics() {
     });
   }, [filteredTopics, sort]);
 
+  // rawCount is the total across ALL topics (unfiltered) from the hook
   const totalProblems = useMemo(() => {
     return topics.reduce((acc, t) => acc + (t.problemCount || t.questionCount || 0), 0);
   }, [topics]);

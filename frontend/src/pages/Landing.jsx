@@ -1,67 +1,30 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Search, ArrowRight, Building2, BookOpen, Tags,
-  Sparkles, Award,
+  Search, ArrowRight, BookOpen,
+  Sparkles,
 } from 'lucide-react';
 
-import { getStats } from '../api/stats';
-import { getFeaturedCompanies, getCompanySlugs } from '../api/companies';
+import { useLanding } from '../hooks/useLanding';
 import { getClassification, TIER_INFO } from '../data/companyClassification';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import TierBadge from '../components/ui/TierBadge';
 import Skeleton from '../components/ui/Skeleton';
 import './Landing.css';
 
-// Featured companies to highlight on landing page
-const FEATURED_SLUGS = [
-  'google', 'meta', 'amazon', 'apple', 'microsoft', 'netflix',
-  'flipkart', 'paytm', 'swiggy', 'zomato', 'tcs', 'accenture',
-];
-
 const POPULAR_SEARCHES = ['Google', 'Amazon', 'Meta', 'Flipkart', 'Dynamic Programming', 'Array', 'TCS'];
 
 export default function Landing() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [stats, setStats] = useState(null);
-  const [featured, setFeatured] = useState([]);
-  const [allCompanies, setAllCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
   const statsRef = useRef(null);
   const [countersVisible, setCountersVisible] = useState(false);
 
+  // ── TanStack Query — all three queries run in parallel, cached 10 min ──
+  const { stats, featured, allCompanies, loading } = useLanding();
+
   useEffect(() => {
     document.title = 'DSA Prep — Company-Wise LeetCode Questions';
-
-    async function loadData() {
-      try {
-        // ── Fast path: only fetch stats + 12 featured companies ──────────
-        // This avoids the heavy /api/companies query (all 471+ companies)
-        // that was previously blocking the entire landing page render.
-        const [statsRes, featuredRes] = await Promise.all([
-          getStats(),
-          getFeaturedCompanies(FEATURED_SLUGS),
-        ]);
-        setStats(statsRes.stats || statsRes);
-        setFeatured(featuredRes.companies || []);
-      } catch (err) {
-        console.error('Failed to load landing data:', err);
-      } finally {
-        setLoading(false);
-      }
-
-      // ── Deferred: load lightweight slug list for search matching ──────
-      // This runs AFTER the page has already rendered, so users see content
-      // immediately. Only slug+name are fetched (no questionCount/topTopics).
-      try {
-        const slugsRes = await getCompanySlugs();
-        setAllCompanies(slugsRes.companies || []);
-      } catch {
-        // Search matching will fall back to /companies?q= redirect
-      }
-    }
-    loadData();
   }, []);
 
   // Count-up animation trigger on scroll
@@ -127,7 +90,6 @@ export default function Landing() {
           <div className="hero-announcement">
             <span className="announcement-pill">NEW 2026 EDITION</span>
             <span className="announcement-text">Curated Company-Wise Questions & Tier Lists</span>
-            {/* <ChevronRight size={14} className="announcement-arrow" /> */}
           </div>
 
           <h1 className="hero-title">

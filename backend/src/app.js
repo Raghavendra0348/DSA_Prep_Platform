@@ -51,6 +51,7 @@ app.use('/api/questions',  apiLimiter,  require('./routes/questions'));  // NEW:
 app.use('/api/search',     apiLimiter,  require('./routes/search'));
 app.use('/api/topics',     apiLimiter,  require('./routes/topics'));
 app.use('/api/stats',      apiLimiter,  require('./routes/stats'));
+app.use('/api/contact',    apiLimiter,  require('./routes/contact'));
 
 // ── Auth Routes (strict rate limit) ──────────────────────────────────────
 // Covers: POST /register | POST /login | POST /refresh | POST /logout | GET /me (via auth.js)

@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useSearchParams, Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useCompany } from '../hooks/useCompany';
 import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/ui/AuthModal';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import PeriodTabs from '../components/shared/PeriodTabs';
 import FilterBar from '../components/shared/FilterBar';
@@ -19,6 +21,7 @@ export default function CompanyDetail() {
   const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Read URL params
   const period     = searchParams.get('period') || 'all';
@@ -133,9 +136,12 @@ export default function CompanyDetail() {
               <div key={problem.id} className="problem-row">
                 {/* 1. Status Checkbox */}
                 <div className="col-status-check">
-                  <StatusBadge
+                                  <StatusBadge
                     status={problem.status || 'not-started'}
-                    onClick={user ? (newStatus) => updateStatus(problem.id, newStatus) : undefined}
+                    onClick={user
+                      ? (newStatus) => updateStatus(problem.id, newStatus)
+                      : () => setAuthModalOpen(true)
+                    }
                   />
                 </div>
 
@@ -180,9 +186,12 @@ export default function CompanyDetail() {
 
                 {/* 6. Bookmark Star */}
                 <div className="col-bookmark">
-                  <BookmarkBtn
+                                  <BookmarkBtn
                     active={problem.bookmarked}
-                    onClick={user ? () => toggleBookmark(problem.id) : undefined}
+                    onClick={user
+                      ? () => toggleBookmark(problem.id)
+                      : () => setAuthModalOpen(true)
+                    }
                   />
                 </div>
               </div>
@@ -196,6 +205,12 @@ export default function CompanyDetail() {
           />
         </>
       )}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode="login"
+        onSuccess={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 }

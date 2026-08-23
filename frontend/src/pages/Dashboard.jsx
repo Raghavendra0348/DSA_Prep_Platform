@@ -7,7 +7,6 @@ import {
   BookOpen,
   ArrowRight,
   RefreshCw,
-  Trophy,
   Flame,
   Layers,
   Clock,
@@ -16,8 +15,6 @@ import {
   Compass,
   Building2,
   Sparkles,
-  Zap,
-  Target,
   ArrowUpRight,
 } from 'lucide-react';
 import { useDashboard } from '../hooks/useDashboard';
@@ -524,50 +521,7 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Quick Launchpad Paths */}
-          {/* <div className="dash-ui-panel dash-ui-launchpad-panel">
-            <div className="dash-ui-panel-head">
-              <div>
-                <span className="dash-ui-section-tag">HIGH YIELD</span>
-                <h2>Quick Launchpad</h2>
-              </div>
-            </div>
-
-            <div className="dash-ui-launchpad-list">
-              <Link to="/companies" className="dash-ui-launch-item item-maang">
-                <div className="dash-ui-launch-icon">
-                  <Trophy size={16} />
-                </div>
-                <div className="dash-ui-launch-text">
-                  <div className="dash-ui-launch-title">MAANG Tier List</div>
-                  <div className="dash-ui-launch-sub">Top Tier Product Employers</div>
-                </div>
-                <ArrowRight size={14} className="dash-ui-launch-arrow" />
-              </Link>
-
-              <Link to="/topics/dynamic-programming" className="dash-ui-launch-item item-dp">
-                <div className="dash-ui-launch-icon">
-                  <Zap size={16} />
-                </div>
-                <div className="dash-ui-launch-text">
-                  <div className="dash-ui-launch-title">Dynamic Programming</div>
-                  <div className="dash-ui-launch-sub">Essential Subsequence & Knapsack</div>
-                </div>
-                <ArrowRight size={14} className="dash-ui-launch-arrow" />
-              </Link>
-
-              <Link to="/bookmarks" className="dash-ui-launch-item item-bookmarks">
-                <div className="dash-ui-launch-icon">
-                  <Star size={16} />
-                </div>
-                <div className="dash-ui-launch-text">
-                  <div className="dash-ui-launch-title">Saved Bookmarks</div>
-                  <div className="dash-ui-launch-sub">{bookmarks} questions saved for revision</div>
-                </div>
-                <ArrowRight size={14} className="dash-ui-launch-arrow" />
-              </Link>
-            </div>
-          </div> */}
+         
         </div>
       </div>
     </motion.div>

@@ -1,15 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Building2, ArrowUpDown, ChevronDown, ChevronRight,
   Trophy, Star, Rocket, Briefcase,
   LayoutGrid, Code2, Layers,
 } from 'lucide-react';
-import { getCompanies } from '../api/companies';
+import { useCompanies } from '../hooks/useCompanies';
 import { TIER_INFO, TYPE_INFO, getClassification, filterByType, groupByTier } from '../data/companyClassification';
 import { getLogoUrl } from '../data/companyDomains';
 import SearchInput from '../components/shared/SearchInput';
-
 import CompanyLogo from '../components/ui/CompanyLogo';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
@@ -38,9 +37,6 @@ const TIER_ICONS = {
 
 export default function Companies() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [sort, setSort] = useState('az');
   const [collapsedTiers, setCollapsedTiers] = useState(new Set());
   const [expandedOther, setExpandedOther] = useState(false);
@@ -48,20 +44,11 @@ export default function Companies() {
   const query = searchParams.get('q') || '';
   const activeType = searchParams.get('type') || 'all';
 
-  useEffect(() => {
-    document.title = 'Companies — DSA Prep';
-    async function load() {
-      try {
-        const data = await getCompanies();
-        setCompanies(data.companies || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  // TanStack Query — fetch once, cached for 5 min, navigate-back is instant
+  const { companies, loading, error } = useCompanies();
+
+  // page title
+  useMemo(() => { document.title = 'Companies — DSA Prep'; }, []);
 
   // ── URL handlers ────────────────────────────────────────────────────────
   const handleSearch = (q) => {

@@ -1,47 +1,46 @@
 import { useState, useEffect } from 'react';
 import { Lock, AlertCircle, Check, CalendarDays, Mail, ShieldCheck, Sparkles, UserRoundPen } from 'lucide-react';
-import { getMe, updateProfile, changePassword } from '../api/user';
-import { useAuth } from '../hooks/useAuth';
+import { useProfile } from '../hooks/useProfile';
 import { useToast } from '../hooks/useToast';
 import Spinner from '../components/ui/Spinner';
 import Skeleton from '../components/ui/Skeleton';
 import './Profile.css';
 
 export default function Profile() {
-  const { user, updateUser } = useAuth();
   const { toast } = useToast();
 
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: '' });
-  const [editLoading, setEditLoading] = useState(false);
-  const [editError, setEditError] = useState('');
+  // ── TanStack Query hook ──────────────────────────────────────────────────
+  const {
+    profile,
+    loading,
+    updateProfile,
+    updatePending,
+    updateError: _updateErrorMsg,
+    changePassword,
+    passwordPending,
+    passwordError: _passwordErrorMsg,
+  } = useProfile();
+
+  // ── Local UI state ───────────────────────────────────────────────────────
+  const [editing,     setEditing]     = useState(false);
+  const [editForm,    setEditForm]    = useState({ name: '' });
+  const [editError,   setEditError]   = useState('');
   const [editSuccess, setEditSuccess] = useState('');
 
-  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-  const [pwLoading, setPwLoading] = useState(false);
-  const [pwError, setPwError] = useState('');
-  const [pwSuccess, setPwSuccess] = useState('');
+  const [pwForm,     setPwForm]     = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [pwError,    setPwError]    = useState('');
+  const [pwSuccess,  setPwSuccess]  = useState('');
 
   useEffect(() => {
     document.title = 'Profile — DSA Prep';
-    async function load() {
-      try {
-        const data = await getMe();
-        const p = data.user || data;
-        setProfile(p);
-        setEditForm({ name: p.name || '' });
-      } catch (err) {
-        console.error('Profile load failed:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
   }, []);
 
-  // ── Profile Edit ───────────────────────────────────────────────────────
+  // Seed edit form once profile loads
+  useEffect(() => {
+    if (profile?.name) setEditForm({ name: profile.name });
+  }, [profile?.name]);
+
+  // ── Profile Edit ──────────────────────────────────────────────────────────
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!editForm.name.trim()) {
@@ -50,13 +49,9 @@ export default function Profile() {
       return;
     }
 
-    setEditLoading(true);
     setEditError('');
     try {
-      const data = await updateProfile({ name: editForm.name.trim() });
-      const updated = data.user || data;
-      setProfile(updated);
-      updateUser({ ...user, name: updated.name });
+      await updateProfile({ name: editForm.name.trim() });
       setEditing(false);
       setEditSuccess('Profile updated');
       toast.success('Profile updated successfully');
@@ -65,12 +60,10 @@ export default function Profile() {
       const msg = err.message || 'Update failed';
       setEditError(msg);
       toast.error(msg);
-    } finally {
-      setEditLoading(false);
     }
   };
 
-  // ── Password Change ────────────────────────────────────────────────────
+  // ── Password Change ───────────────────────────────────────────────────────
   const handlePwSubmit = async (e) => {
     e.preventDefault();
     setPwError('');
@@ -94,7 +87,6 @@ export default function Profile() {
       return;
     }
 
-    setPwLoading(true);
     try {
       await changePassword({
         currentPassword: pwForm.currentPassword,
@@ -106,11 +98,10 @@ export default function Profile() {
       setTimeout(() => setPwSuccess(''), 3000);
     } catch (err) {
       let msg = err.message || 'Password change failed';
-      if (err.code === 'INVALID_PASSWORD' || err.code === 'WRONG_PASSWORD') msg = 'Current password is incorrect';
+      if (err.code === 'INVALID_PASSWORD' || err.code === 'WRONG_PASSWORD')
+        msg = 'Current password is incorrect';
       setPwError(msg);
       toast.error(msg);
-    } finally {
-      setPwLoading(false);
     }
   };
 
@@ -179,10 +170,14 @@ export default function Profile() {
               />
             </div>
             <div className="profile-edit-actions">
-              <button type="submit" className="btn btn-primary btn-sm" disabled={editLoading}>
-                {editLoading ? <Spinner size={14} /> : 'Save'}
+              <button type="submit" className="btn btn-primary btn-sm" disabled={updatePending}>
+                {updatePending ? <Spinner size={14} /> : 'Save'}
               </button>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setEditing(false); setEditError(''); }}>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={() => { setEditing(false); setEditError(''); }}
+              >
                 Cancel
               </button>
             </div>
@@ -211,7 +206,9 @@ export default function Profile() {
                 <div>
                   <span className="profile-detail-label">Member since</span>
                   <span className="profile-detail-value">
-                    {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '—'}
+                    {profile?.createdAt
+                      ? new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+                      : '—'}
                   </span>
                 </div>
               </div>
@@ -280,8 +277,8 @@ export default function Profile() {
               autoComplete="new-password"
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-sm" disabled={pwLoading}>
-            {pwLoading ? <Spinner size={14} /> : 'Update Password'}
+          <button type="submit" className="btn btn-primary btn-sm" disabled={passwordPending}>
+            {passwordPending ? <Spinner size={14} /> : 'Update Password'}
           </button>
         </form>
       </section>

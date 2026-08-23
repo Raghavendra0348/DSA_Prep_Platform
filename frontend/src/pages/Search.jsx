@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Search as SearchIcon } from 'lucide-react';
-import { search as apiSearch } from '../api/search';
+import { useSearch } from '../hooks/useSearch';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
 import Skeleton from '../components/ui/Skeleton';
@@ -17,48 +17,20 @@ const TYPES = [
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const q    = searchParams.get('q') || '';
-  const type = searchParams.get('type') || 'all';
+  const urlQ    = searchParams.get('q')    || '';
+  const urlType = searchParams.get('type') || 'all';
 
-  const [prevQ, setPrevQ] = useState(q);
-  const [query, setQuery] = useState(q);
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Sync internal input if URL search param changes externally
-  if (prevQ !== q) {
-    setPrevQ(q);
-    setQuery(q);
-  }
+  // ── TanStack Query hook ──────────────────────────────────────────────────
+  // Initialised from URL params so the page is shareable / deep-linkable
+  const {
+    query, setQuery,
+    type,  setType,
+    results, loading, error,
+  } = useSearch(urlQ, urlType);
 
   useEffect(() => {
-    document.title = q ? `Search: ${q} — DSA Prep` : 'Search — DSA Prep';
-  }, [q]);
-
-  // Debounced search trigger
-  useEffect(() => {
-    if (!q || q.length < 2) return;
-
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await apiSearch(q, type);
-        if (!cancelled) setResults(data);
-      } catch (err) {
-        if (!cancelled) setError(err.message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }, 300);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [q, type]);
+    document.title = query ? `Search: ${query} — DSA Prep` : 'Search — DSA Prep';
+  }, [query]);
 
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -71,6 +43,7 @@ export default function Search() {
   };
 
   const handleTypeChange = (newType) => {
+    setType(newType);
     setSearchParams(prev => {
       const params = new URLSearchParams(prev);
       if (newType === 'all') params.delete('type');
@@ -79,27 +52,7 @@ export default function Search() {
     });
   };
 
-  const activeResults = q && q.length >= 2 ? results : null;
-
-  const questions = Array.isArray(activeResults?.questions?.results)
-    ? activeResults.questions.results
-    : Array.isArray(activeResults?.questions)
-    ? activeResults.questions
-    : Array.isArray(activeResults?.results)
-    ? activeResults.results
-    : [];
-
-  const topics = Array.isArray(activeResults?.topics?.results)
-    ? activeResults.topics.results
-    : Array.isArray(activeResults?.topics)
-    ? activeResults.topics
-    : [];
-
-  const companies = Array.isArray(activeResults?.companies?.results)
-    ? activeResults.companies.results
-    : Array.isArray(activeResults?.companies)
-    ? activeResults.companies
-    : [];
+  const { questions, topics, companies } = results;
 
   return (
     <div className="search-page container">
@@ -142,13 +95,13 @@ export default function Search() {
           </div>
         ) : error ? (
           <EmptyState message={error} />
-        ) : !q || q.length < 2 ? (
+        ) : !query || query.length < 2 ? (
           <EmptyState
             icon={SearchIcon}
             message="Type at least 2 characters to search"
           />
-        ) : results && questions.length === 0 && topics.length === 0 && companies.length === 0 ? (
-          <EmptyState message={`No results for "${q}"`} />
+        ) : questions.length === 0 && topics.length === 0 && companies.length === 0 ? (
+          <EmptyState message={`No results for "${query}"`} />
         ) : (
           <>
             {/* Questions Section */}

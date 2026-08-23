@@ -45,19 +45,41 @@ router.get('/:topic', async (req, res, next) => {
     if (!resolvedTopic)
       return res.status(404).json({ success: false, error: `Topic '${topic}' not found` });
 
+    // Parse comma-separated difficulty filter (e.g. EASY,MEDIUM or MEDIUM,EASY)
+    let difficultyFilter;
+    if (difficulty) {
+      const parsed = difficulty.toUpperCase().split(',').map(d => d.trim()).filter(Boolean);
+      if (parsed.length > 0) {
+        difficultyFilter = { in: parsed };
+      }
+    }
+
     const where = {
       topics: { has: resolvedTopic },          // exact DB value, correct casing
-      ...(difficulty && { difficulty }),
+      ...(difficultyFilter && { difficulty: difficultyFilter }),
     };
 
-    const [questions, total] = await Promise.all([
+    const statsWhere = { topics: { has: resolvedTopic } };
+
+    const [questions, total, allTopicQuestions] = await Promise.all([
       prisma.question.findMany({
         where,
         take: Math.min(Number(limit), 200),
         skip: (Number(page) - 1) * Math.min(Number(limit), 200),
       }),
       prisma.question.count({ where }),
+      prisma.question.findMany({
+        where: statsWhere,
+        select: { difficulty: true },
+      }),
     ]);
+
+    const stats = {
+      total: allTopicQuestions.length,
+      easy: allTopicQuestions.filter(q => q.difficulty === 'EASY').length,
+      medium: allTopicQuestions.filter(q => q.difficulty === 'MEDIUM').length,
+      hard: allTopicQuestions.filter(q => q.difficulty === 'HARD').length,
+    };
 
     // ── Optional auth — enrich with user progress + bookmarks ────────────────
     // Mirrors the company route: if the user is logged in, batch-fetch their
@@ -96,6 +118,7 @@ router.get('/:topic', async (req, res, next) => {
       success:       true,
       topic:         resolvedTopic,
       total,
+      stats,
       authenticated: !!user,
       pagination: {
         page:       Number(page),

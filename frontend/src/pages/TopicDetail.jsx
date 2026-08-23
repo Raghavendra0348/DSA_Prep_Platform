@@ -1,10 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Search, Layers } from 'lucide-react';
-import { getTopicProblems } from '../api/topics';
-import { upsertProgress } from '../api/progress';
-import { toggleBookmark as apiToggleBookmark } from '../api/bookmarks';
+import { useTopicDetail } from '../hooks/useTopicDetail';
 import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/ui/AuthModal';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import StatusBadge from '../components/ui/StatusBadge';
 import BookmarkBtn from '../components/ui/BookmarkBtn';
@@ -24,43 +23,39 @@ export default function TopicDetail() {
   const { topic } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const difficulty = searchParams.get('difficulty') || '';
-  const page = Number(searchParams.get('page')) || 1;
+  const page       = Number(searchParams.get('page')) || 1;
 
-  const activeDiff = useMemo(() => difficulty ? difficulty.split(',').filter(Boolean) : [], [difficulty]);
+  const activeDiff = useMemo(
+    () => difficulty ? difficulty.split(',').filter(Boolean) : [],
+    [difficulty],
+  );
 
-  const [problems, setProblems] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Display name — optimistic from URL while data loads
   const topicName = topic.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   useEffect(() => {
     document.title = `${topicName} — DSA Prep`;
   }, [topicName]);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await getTopicProblems(topic, {
-          difficulty: activeDiff.length > 0 ? activeDiff.join(',') : undefined,
-          page,
-          limit: 50,
-        });
-        setProblems(data.problems || data.questions || []);
-        setPagination(data.pagination || { page: 1, totalPages: 1, total: data.total || 0 });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [topic, activeDiff, page]);
+  // ── TanStack Query hook ──────────────────────────────────────────────────
+  const {
+    problems,
+    pagination,
+    stats,
+    loading,
+    isFetching,
+    error,
+    updateStatus,
+    toggleBookmark,
+  } = useTopicDetail(topic, {
+    difficulty: activeDiff.length > 0 ? activeDiff.join(',') : '',
+    page,
+  });
 
   const toggleDifficulty = (diffKey) => {
     const next = activeDiff.includes(diffKey)
@@ -84,26 +79,6 @@ export default function TopicDetail() {
     }, { replace: true });
   };
 
-  const handleStatusChange = async (problemId, newStatus) => {
-    if (!user) return;
-    // Save previous state so we can roll back on error
-    const prevProblems = problems;
-    setProblems(prev => prev.map(p => p.id === problemId ? { ...p, status: newStatus } : p));
-    try {
-      await upsertProgress({ questionId: problemId, status: newStatus });
-    } catch {
-      // API call failed — revert optimistic update so checkbox doesn't stay falsely checked
-      setProblems(prevProblems);
-    }
-  };
-
-  const handleBookmark = async (problemId) => {
-    if (!user) return;
-    setProblems(prev => prev.map(p => p.id === problemId ? { ...p, bookmarked: !p.bookmarked } : p));
-    try { await apiToggleBookmark(problemId); }
-    catch { setProblems(prev => prev.map(p => p.id === problemId ? { ...p, bookmarked: !p.bookmarked } : p)); }
-  };
-
   // Local title filter
   const filteredProblems = useMemo(() => {
     if (!searchQuery) return problems;
@@ -111,19 +86,27 @@ export default function TopicDetail() {
     return problems.filter(p => p.title.toLowerCase().includes(q));
   }, [problems, searchQuery]);
 
-  // Counts breakdown
+  // Counts breakdown (from overall topic stats if present, fallback to local problems)
   const diffCounts = useMemo(() => {
+    if (stats) {
+      return {
+        EASY: stats.easy || 0,
+        MEDIUM: stats.medium || 0,
+        HARD: stats.hard || 0,
+      };
+    }
     const counts = { EASY: 0, MEDIUM: 0, HARD: 0 };
     problems.forEach(p => {
       const d = (p.difficulty || '').toUpperCase();
       if (counts[d] !== undefined) counts[d]++;
     });
     return counts;
-  }, [problems]);
+  }, [problems, stats]);
 
-  const solvedCount = useMemo(() => {
-    return problems.filter(p => p.status === 'solved' || p.status === 'COMPLETED').length;
-  }, [problems]);
+  const solvedCount = useMemo(
+    () => problems.filter(p => p.status === 'solved' || p.status === 'COMPLETED').length,
+    [problems],
+  );
 
   return (
     <div className="topic-detail container">
@@ -142,8 +125,10 @@ export default function TopicDetail() {
           <div>
             <h1>{topicName}</h1>
             <p className="topic-banner-sub">
-              {pagination.total != null ? `${pagination.total} Total Questions` : 'DSA Topic'}
+              {(stats?.total ?? pagination.total) != null ? `${stats?.total ?? pagination.total} Total Questions` : 'DSA Topic'}
+              {activeDiff.length > 0 && pagination.total != null && ` (${pagination.total} matching)`}
               {user && ` • ${solvedCount} Solved`}
+              {isFetching && !loading && <span className="refetch-dot" title="Refreshing…"> ·</span>}
             </p>
           </div>
         </div>
@@ -217,7 +202,7 @@ export default function TopicDetail() {
         <EmptyState
           message={searchQuery
             ? `No questions match "${searchQuery}" in ${topicName}`
-            : "No problems match your filters"
+            : 'No problems match your filters'
           }
         />
       ) : (
@@ -237,7 +222,10 @@ export default function TopicDetail() {
                 <div className="col-status-check">
                   <StatusBadge
                     status={problem.status || 'not-started'}
-                    onClick={user ? (s) => handleStatusChange(problem.id, s) : undefined}
+                    onClick={user
+                      ? (s) => updateStatus(problem.id, s)
+                      : () => setAuthModalOpen(true)
+                    }
                   />
                 </div>
 
@@ -274,7 +262,10 @@ export default function TopicDetail() {
                 <div className="col-bookmark">
                   <BookmarkBtn
                     active={problem.bookmarked}
-                    onClick={user ? () => handleBookmark(problem.id) : undefined}
+                    onClick={user
+                      ? () => toggleBookmark(problem.id)
+                      : () => setAuthModalOpen(true)
+                    }
                   />
                 </div>
               </div>
@@ -288,6 +279,12 @@ export default function TopicDetail() {
           />
         </>
       )}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode="login"
+        onSuccess={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 }

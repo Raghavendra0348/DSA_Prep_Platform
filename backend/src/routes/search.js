@@ -33,6 +33,15 @@ router.get('/', async (req, res, next) => {
     const searchTopics    = (type === 'all' || type === 'topics');
     const searchCompanies = (type === 'all' || type === 'companies');
 
+    // Multi-difficulty filter parsing (e.g. EASY,MEDIUM)
+    let searchDiffFilter;
+    if (difficulty) {
+      const parsedDiff = difficulty.toUpperCase().split(',').map(d => d.trim()).filter(Boolean);
+      if (parsedDiff.length > 0) {
+        searchDiffFilter = { in: parsedDiff };
+      }
+    }
+
     // Run only the needed queries — skip the rest
     const [questionResults, allQuestionsForTopics, companyResults] = await Promise.all([
 
@@ -41,7 +50,7 @@ router.get('/', async (req, res, next) => {
         ? prisma.question.findMany({
             where: {
               title: { contains: q, mode: 'insensitive' },
-              ...(difficulty && { difficulty: difficulty.toUpperCase() }),
+              ...(searchDiffFilter && { difficulty: searchDiffFilter }),
             },
             include: {
               companies: {

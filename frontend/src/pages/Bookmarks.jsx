@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Bookmark, Search, Trash2 } from 'lucide-react';
 import LeetCodeIcon from '../components/ui/LeetCodeIcon';
-import { getBookmarks, toggleBookmark as apiToggleBookmark } from '../api/bookmarks';
+import { useBookmarks } from '../hooks/useBookmarks';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
 import Pagination from '../components/shared/Pagination';
@@ -11,72 +11,22 @@ import EmptyState from '../components/ui/EmptyState';
 import './Bookmarks.css';
 
 export default function Bookmarks() {
-  const [bookmarks, setBookmarks] = useState([]);
-  const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [search, setSearch] = useState('');
-  const [sort, setSort] = useState('default');
 
-  useEffect(() => {
-    document.title = 'Bookmarks — DSA Prep';
-  }, []);
+  useEffect(() => { document.title = 'Bookmarks — DSA Prep'; }, []);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await getBookmarks({ page, limit: 30 });
-        setBookmarks(data.bookmarks || []);
-        setPagination(data.pagination || {});
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [page]);
-
-  const handleUnbookmark = async (questionId) => {
-    setBookmarks(prev => prev.filter(b => (b.questionId || b.question?.id || b.id) !== questionId));
-    try {
-      await apiToggleBookmark(questionId);
-    } catch {
-      const data = await getBookmarks({ page, limit: 30 });
-      setBookmarks(data.bookmarks || []);
-    }
-  };
-
-  // Derived stats
-  const stats = useMemo(() => {
-    const all = bookmarks.map(bm => bm.question || bm);
-    const d = (v) => (v || '').toLowerCase();
-    return {
-      total: all.length,
-      easy:   all.filter(q => d(q.difficulty) === 'easy').length,
-      medium: all.filter(q => d(q.difficulty) === 'medium').length,
-      hard:   all.filter(q => d(q.difficulty) === 'hard').length,
-    };
-  }, [bookmarks]);
-
-  // Filtered + sorted list
-  const filtered = useMemo(() => {
-    let list = bookmarks.map((bm, i) => ({ bm, q: bm.question || bm, origIndex: i }));
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(({ q: question }) => question.title?.toLowerCase().includes(q));
-    }
-    if (sort === 'az') list.sort((a, b) => (a.q.title || '').localeCompare(b.q.title || ''));
-    if (sort === 'za') list.sort((a, b) => (b.q.title || '').localeCompare(a.q.title || ''));
-    if (sort === 'diff') {
-      const d = (v) => (v || '').toLowerCase();
-      const order = { easy: 0, medium: 1, hard: 2 };
-      list.sort((a, b) => (order[d(a.q.difficulty)] ?? 3) - (order[d(b.q.difficulty)] ?? 3));
-    }
-    return list;
-  }, [bookmarks, search, sort]);
+  // ── TanStack Query hook ──────────────────────────────────────────────────
+  const {
+    bookmarks,
+    filtered,
+    pagination,
+    stats,
+    loading,
+    error,
+    search,    setSearch,
+    sort,      setSort,
+    removeBookmark,
+  } = useBookmarks(page);
 
   return (
     <div className="bookmarks-page container">
@@ -239,7 +189,7 @@ export default function Bookmarks() {
                     <div className="bookmark-actions bm-col-actions">
                       <button
                         className="bookmark-remove"
-                        onClick={() => handleUnbookmark(qId)}
+                        onClick={() => removeBookmark(qId)}
                         title="Remove bookmark"
                       >
                         <Trash2 size={12} />

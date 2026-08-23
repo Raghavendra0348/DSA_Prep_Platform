@@ -5,6 +5,7 @@ import {
   ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { sendContactMessage } from '../api/contact';
 import './Contact.css';
 
 function GithubIcon({ size = 20 }) {
@@ -65,7 +66,7 @@ export default function Contact() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
       toast?.error?.('Please fill in all required fields.');
@@ -73,12 +74,15 @@ export default function Contact() {
     }
 
     setSubmitting(true);
-    // Simulate lightweight client submission
-    setTimeout(() => {
+    try {
+      await sendContactMessage(form);
       setSubmitting(false);
       setSubmitted(true);
       toast?.success?.('Your message has been sent successfully!');
-    }, 800);
+    } catch (err) {
+      setSubmitting(false);
+      toast?.error?.(err.message || 'Failed to send message. Please try again.');
+    }
   };
 
   const toggleFaq = (index) => {

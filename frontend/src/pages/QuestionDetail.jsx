@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, FileText } from 'lucide-react';
-import { getQuestion } from '../api/questions';
-import { upsertProgress, updateNotes } from '../api/progress';
-import { toggleBookmark as apiToggleBookmark } from '../api/bookmarks';
+import { ArrowLeft, ExternalLink, FileText, LogIn } from 'lucide-react';
+import { useQuestion } from '../hooks/useQuestion';
 import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/ui/AuthModal';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import TopicChip from '../components/ui/TopicChip';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -16,64 +15,26 @@ import './QuestionDetail.css';
 export default function QuestionDetail() {
   const { slug } = useParams();
   const { user } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  const [question, setQuestion] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [notes, setNotes] = useState('');
-  const [notesSaving, setNotesSaving] = useState(false);
-  const [notesSaved, setNotesSaved] = useState(false);
+  // ── TanStack Query hook ──────────────────────────────────────────────────
+  const {
+    question,
+    loading,
+    error,
+    notes,         setNotes,
+    notesSaving,
+    notesSaved,
+    handleNotesSave,
+    handleStatusChange,
+    handleBookmark,
+  } = useQuestion(slug);
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await getQuestion(slug);
-        setQuestion(data.question || data);
-        setNotes(data.question?.notes || data.notes || '');
-        document.title = `${data.question?.title || data.title} — DSA Prep`;
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    if (question?.title) {
+      document.title = `${question.title} — DSA Prep`;
     }
-    load();
-  }, [slug]);
-
-  const handleStatusChange = async (newStatus) => {
-    if (!user || !question) return;
-    setQuestion(prev => ({ ...prev, status: newStatus }));
-    try {
-      await upsertProgress({ questionId: question.id, status: newStatus });
-    } catch (err) {
-      console.error('Status update failed:', err);
-    }
-  };
-
-  const handleBookmark = async () => {
-    if (!user || !question) return;
-    setQuestion(prev => ({ ...prev, bookmarked: !prev.bookmarked }));
-    try {
-      await apiToggleBookmark(question.id);
-    } catch {
-      setQuestion(prev => ({ ...prev, bookmarked: !prev.bookmarked }));
-    }
-  };
-
-  const handleNotesSave = async () => {
-    if (!user || !question) return;
-    setNotesSaving(true);
-    try {
-      await updateNotes(question.id, notes);
-      setNotesSaved(true);
-      setTimeout(() => setNotesSaved(false), 2000);
-    } catch (err) {
-      console.error('Notes save failed:', err);
-    } finally {
-      setNotesSaving(false);
-    }
-  };
+  }, [question?.title]);
 
   if (loading) {
     return (
@@ -158,7 +119,7 @@ export default function QuestionDetail() {
       )}
 
       {/* ── User Section (auth only) ───────────────────────────────────────── */}
-      {user && (
+      {user ? (
         <div className="qd-section qd-user-section">
           <h2>Your Progress</h2>
           <div className="qd-user-controls">
@@ -193,7 +154,7 @@ export default function QuestionDetail() {
               className="input qd-notes-input"
               placeholder="Add your solution notes, approach, complexity analysis..."
               value={notes}
-              onChange={(e) => { setNotes(e.target.value); setNotesSaved(false); }}
+              onChange={(e) => { setNotes(e.target.value); }}
               rows={5}
             />
             <div className="qd-notes-footer">
@@ -207,7 +168,25 @@ export default function QuestionDetail() {
             </div>
           </div>
         </div>
+      ) : (
+        // Unauthenticated CTA — prompts login
+        <div className="qd-section qd-guest-section">
+          <button
+            className="btn btn-primary qd-login-cta"
+            onClick={() => setAuthModalOpen(true)}
+          >
+            <LogIn size={16} />
+            Sign in to track your progress
+          </button>
+        </div>
       )}
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode="login"
+        onSuccess={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 }
