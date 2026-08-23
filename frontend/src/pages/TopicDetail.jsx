@@ -52,7 +52,7 @@ export default function TopicDetail() {
           limit: 50,
         });
         setProblems(data.problems || data.questions || []);
-        setPagination(data.pagination || {});
+        setPagination(data.pagination || { page: 1, totalPages: 1, total: data.total || 0 });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -86,9 +86,15 @@ export default function TopicDetail() {
 
   const handleStatusChange = async (problemId, newStatus) => {
     if (!user) return;
+    // Save previous state so we can roll back on error
+    const prevProblems = problems;
     setProblems(prev => prev.map(p => p.id === problemId ? { ...p, status: newStatus } : p));
-    try { await upsertProgress({ questionId: problemId, status: newStatus }); }
-    catch { /* revert if failed */ }
+    try {
+      await upsertProgress({ questionId: problemId, status: newStatus });
+    } catch {
+      // API call failed — revert optimistic update so checkbox doesn't stay falsely checked
+      setProblems(prevProblems);
+    }
   };
 
   const handleBookmark = async (problemId) => {
