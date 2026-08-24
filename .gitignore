@@ -70,3 +70,5 @@ Desktop.ini
 .windsurf/
 .gemini/
 skills-lock.json
+database_upgrade_plan.md
+backend/scripts/clean-empty-companies.js
