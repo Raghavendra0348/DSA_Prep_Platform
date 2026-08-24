@@ -1,12 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    PREMIUM DSA INTERVIEW WORKSPACE & ANALYTICS DASHBOARD
    Aesthetics: LeetCode / Linear / Raycast inspired dark mode with subtle glass
+   Fully Responsive (Desktop, Laptop, Tablet, Mobile down to 320px)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .dash-ui {
   padding: 32px 24px 80px;
   max-width: 1240px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* ── 1. Hero Header ───────────────────────────────────────────────────────── */
@@ -21,13 +25,28 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   margin-bottom: 20px;
-  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-ui-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .dash-ui-hero-left {
   display: flex;
   align-items: center;
   gap: 18px;
+  min-width: 0;
+  flex: 1;
 }
 
 .dash-ui-avatar {
@@ -59,11 +78,16 @@
   box-shadow: 0 0 8px rgba(63, 185, 80, 0.8);
 }
 
+.dash-ui-hero-text {
+  min-width: 0;
+  flex: 1;
+}
+
 .dash-ui-hero-badges {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
 }
 
@@ -76,22 +100,9 @@
   color: #58a6ff;
   background: rgba(88, 166, 255, 0.1);
   border: 1px solid rgba(88, 166, 255, 0.2);
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 99px;
   letter-spacing: 0.02em;
-}
-
-.dash-ui-badge-tier {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffa116;
-  background: rgba(255, 161, 22, 0.1);
-  border: 1px solid rgba(255, 161, 22, 0.2);
-  padding: 2px 8px;
-  border-radius: 99px;
 }
 
 .dash-ui-title {
@@ -101,34 +112,39 @@
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  word-break: break-word;
 }
 
 .dash-ui-desc {
   font-size: 13.5px;
   color: #8b949e;
-  margin: 4px 0 0 0;
+  margin: 6px 0 0 0;
   max-width: 580px;
+  line-height: 1.5;
 }
 
 .dash-ui-hero-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .dash-ui-btn-refresh {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 9px 15px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 11px;
   font-size: 13px;
   font-weight: 600;
   color: #c9d1d9;
-  background: rgba(22, 27, 34, 0.7);
+  background: rgba(22, 27, 34, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .dash-ui-btn-refresh:hover:not(:disabled) {
@@ -148,9 +164,10 @@
 .dash-ui-btn-explore {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 9px 18px;
-  border-radius: 10px;
+  padding: 10px 18px;
+  border-radius: 11px;
   font-size: 13.5px;
   font-weight: 700;
   color: #ffffff;
@@ -159,6 +176,7 @@
   box-shadow: 0 4px 14px rgba(31, 111, 235, 0.35);
   text-decoration: none;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .dash-ui-btn-explore:hover {
@@ -189,6 +207,7 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .dash-ui-stat-box:hover {
@@ -228,6 +247,8 @@
 .dash-ui-stat-meta {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .dash-ui-stat-val {
@@ -243,6 +264,9 @@
   color: #8b949e;
   font-weight: 500;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dash-ui-stat-tag {
@@ -251,6 +275,8 @@
   padding: 3px 8px;
   border-radius: 6px;
   margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tag-solved {
@@ -269,6 +295,7 @@
   color: #6e7681;
   margin-left: auto;
   transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
 }
 
 .dash-ui-stat-box:hover .dash-ui-stat-arrow {
@@ -289,6 +316,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 /* ── Panels Common Styles ─────────────────────────────────────────────────── */
@@ -299,6 +327,7 @@
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(12px);
+  min-width: 0;
 }
 
 .dash-ui-panel-head {
@@ -306,6 +335,8 @@
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .dash-ui-section-tag {
@@ -337,6 +368,7 @@
   border: 1px solid rgba(255, 161, 22, 0.2);
   padding: 3px 10px;
   border-radius: 99px;
+  white-space: nowrap;
 }
 
 .dash-ui-link-action {
@@ -348,6 +380,7 @@
   color: #58a6ff;
   text-decoration: none;
   transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
 .dash-ui-link-action:hover {
@@ -415,12 +448,14 @@
   flex-direction: column;
   gap: 16px;
   min-width: 0;
+  width: 100%;
 }
 
 .dash-ui-diff-bar-item {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .dash-ui-diff-bar-head {
@@ -428,6 +463,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 12.5px;
+  gap: 8px;
 }
 
 .dash-ui-diff-pill {
@@ -436,6 +472,7 @@
   gap: 6px;
   font-weight: 700;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .pill-easy   { color: #00b8a3; }
@@ -446,6 +483,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .dot-easy   { background: #00b8a3; box-shadow: 0 0 6px rgba(0, 184, 163, 0.6); }
@@ -455,6 +493,7 @@
 .dash-ui-diff-score {
   font-size: 12px;
   color: #8b949e;
+  white-space: nowrap;
 }
 
 .dash-ui-diff-score strong {
@@ -490,6 +529,7 @@
   gap: 5px;
   font-size: 12px;
   color: #8b949e;
+  white-space: nowrap;
 }
 
 .dash-ui-activity-list {
@@ -505,7 +545,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background 0.15s ease, transform 0.15s ease;
   border-radius: 10px;
-  gap: 16px;
+  gap: 14px;
 }
 
 .dash-ui-activity-row:last-child {
@@ -536,6 +576,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
 }
 
 .dash-ui-act-title {
@@ -556,6 +597,7 @@
 .dash-ui-act-date {
   font-size: 11px;
   color: #8b949e;
+  margin-top: 1px;
 }
 
 .dash-ui-act-right {
@@ -578,6 +620,7 @@
   border: 1px solid rgba(88, 166, 255, 0.2);
   text-decoration: none;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .dash-ui-act-solve:hover {
@@ -586,7 +629,7 @@
   color: #ffffff;
 }
 
-/* ── Right Sidebar: Target Companies ──────────────────────────────────────── */
+/* ── Right Sidebar: Target Companies & Topics ─────────────────────────────── */
 .dash-ui-company-list,
 .dash-ui-topic-list {
   display: flex;
@@ -598,12 +641,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 8px;
+  padding: 10px 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   text-decoration: none;
   color: inherit;
   transition: all 0.15s ease;
   border-radius: 8px;
+  gap: 10px;
 }
 
 .dash-ui-company-item:last-child,
@@ -623,6 +667,7 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
+  flex: 1;
 }
 
 .dash-ui-comp-rank {
@@ -630,6 +675,7 @@
   font-weight: 700;
   color: #6e7681;
   width: 14px;
+  flex-shrink: 0;
 }
 
 .dash-ui-comp-name,
@@ -653,6 +699,7 @@
 .dash-ui-topic-count {
   font-size: 11.5px;
   color: #8b949e;
+  white-space: nowrap;
 }
 
 .dash-ui-comp-count strong,
@@ -683,75 +730,6 @@
   flex-shrink: 0;
 }
 
-/* ── Quick Launchpad Panel ────────────────────────────────────────────────── */
-.dash-ui-launchpad-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dash-ui-launch-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 13px;
-  border-radius: 12px;
-  background: rgba(13, 17, 23, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s ease;
-}
-
-.dash-ui-launch-item:hover {
-  background: rgba(22, 27, 34, 0.95);
-  border-color: rgba(88, 166, 255, 0.35);
-  transform: translateX(3px);
-}
-
-.dash-ui-launch-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.item-maang .dash-ui-launch-icon { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
-.item-dp .dash-ui-launch-icon    { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
-.item-bookmarks .dash-ui-launch-icon { background: rgba(227, 179, 65, 0.12); color: #e3b341; }
-
-.dash-ui-launch-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.dash-ui-launch-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #f0f6fc;
-}
-
-.dash-ui-launch-sub {
-  font-size: 11px;
-  color: #8b949e;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dash-ui-launch-arrow {
-  color: #6e7681;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.dash-ui-launch-item:hover .dash-ui-launch-arrow {
-  color: #58a6ff;
-  transform: translateX(2px);
-}
-
 /* ── Empty States ─────────────────────────────────────────────────────────── */
 .dash-ui-empty-box,
 .dash-ui-empty-side {
@@ -779,56 +757,269 @@
   color: #484f58;
 }
 
-/* ── Responsive Breakpoints ───────────────────────────────────────────────── */
+/* ── Skeletons ────────────────────────────────────────────────────────────── */
+.dash-ui-skeleton-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-ui-skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS (Granular, Fluid, & Tested)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1040px — Tablet Landscape / Small Desktop ───────────────────────────── */
 @media (max-width: 1040px) {
-  .dash-ui-grid {
+  .dash-ui-grid,
+  .dash-ui-skeleton-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dash-ui-col-side {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
 
-@media (max-width: 768px) {
-  .dash-ui {
-    padding: 20px 14px 60px;
-  }
+/* ── 860px — Tablet Portrait ──────────────────────────────────────────────── */
+@media (max-width: 860px) {
   .dash-ui-hero {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 20px 16px;
+    align-items: stretch;
+    padding: 22px 20px;
+    gap: 18px;
   }
+
+  .dash-ui-hero-left {
+    width: 100%;
+  }
+
   .dash-ui-hero-actions {
     width: 100%;
+    display: flex;
     justify-content: flex-start;
-    flex-wrap: wrap;
   }
+
+  .dash-ui-btn-refresh {
+    flex-shrink: 0;
+  }
+
+  .dash-ui-btn-explore {
+    flex: 1;
+  }
+}
+
+/* ── 768px — Phablets & Mobile Landscape ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-ui {
+    padding: 20px 16px 60px;
+  }
+
+  .dash-ui-col-side {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dash-ui-panel {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
   .dash-ui-stats-bar {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 12px;
   }
+
+  .dash-ui-stat-box {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .dash-ui-stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dash-ui-stat-val {
+    font-size: 20px;
+  }
+
   .dash-ui-radar-body {
     flex-direction: column;
     align-items: center;
     gap: 24px;
   }
-  .dash-ui-diff-tracks {
+
+  .dash-ui-donut-container {
     width: 100%;
   }
 }
 
-/* ── 480px — phones ──────────────────────────────────────────────────────── */
-@media (max-width: 480px) {
-  .dash-ui { padding: 16px 12px 48px; }
-  .dash-ui-hero { padding: 16px 14px; gap: 10px; }
-  .dash-ui-hero h1 { font-size: 20px; }
-  .dash-ui-hero p  { font-size: 13px; }
-  .dash-ui-hero-actions { gap: 8px; }
-  .dash-ui-hero-actions .btn { flex: 1; justify-content: center; }
-  .dash-ui-stats-bar { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+/* ── 640px — Large Mobile ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dash-ui-stats-bar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .dash-ui-stat-box {
+    padding: 14px 16px;
+  }
+
+  .dash-ui-activity-row {
+    padding: 12px 8px;
+    gap: 10px;
+  }
+
+  .dash-ui-act-solve span {
+    display: none;
+  }
+
+  .dash-ui-act-solve {
+    padding: 5px 8px;
+  }
 }
 
-/* ── 360px — smallest phones ─────────────────────────────────────────────── */
+/* ── 480px — Standard Mobile Phones ───────────────────────────────────────── */
+@media (max-width: 480px) {
+  .dash-ui {
+    padding: 16px 12px 48px;
+  }
+
+  .dash-ui-hero {
+    padding: 18px 14px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+
+  .dash-ui-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    border-radius: 14px;
+  }
+
+  .dash-ui-title {
+    font-size: 21px;
+  }
+
+  .dash-ui-desc {
+    font-size: 12.5px;
+  }
+
+  .dash-ui-hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .dash-ui-btn-refresh,
+  .dash-ui-btn-explore {
+    width: 100%;
+    padding: 9px 14px;
+    font-size: 13px;
+    justify-content: center;
+  }
+
+  .dash-ui-panel {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  .dash-ui-panel-head {
+    margin-bottom: 16px;
+  }
+
+  .dash-ui-panel-head h2 {
+    font-size: 15.5px;
+  }
+
+  .dash-ui-diff-bar-head {
+    font-size: 11.5px;
+  }
+
+  .dash-ui-diff-score {
+    font-size: 11px;
+  }
+
+  /* Split activity row into clear 2-line structure on small mobile */
+  .dash-ui-activity-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .dash-ui-act-left {
+    width: 100%;
+  }
+
+  .dash-ui-act-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 27px; /* Align with title */
+  }
+
+  .dash-ui-act-solve span {
+    display: inline;
+  }
+
+  .dash-ui-act-solve {
+    padding: 3px 9px;
+  }
+
+  .dash-ui-comp-name,
+  .dash-ui-topic-name {
+    max-width: 150px;
+  }
+}
+
+/* ── 360px — Smallest Phones (e.g. Galaxy S8 / iPhone SE) ─────────────────── */
 @media (max-width: 360px) {
-  .dash-ui-hero h1 { font-size: 18px; }
-  .dash-ui-stats-bar { grid-template-columns: 1fr; }
-  .dash-ui-hero-actions { flex-direction: column; }
-  .dash-ui-hero-actions .btn { width: 100%; }
+  .dash-ui {
+    padding: 12px 8px 40px;
+  }
+
+  .dash-ui-hero {
+    padding: 14px 10px;
+  }
+
+  .dash-ui-hero-left {
+    gap: 12px;
+  }
+
+  .dash-ui-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .dash-ui-title {
+    font-size: 19px;
+  }
+
+  .dash-ui-stat-box {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .dash-ui-stat-val {
+    font-size: 18px;
+  }
+
+  .dash-ui-stat-lbl {
+    font-size: 11px;
+  }
+
+  .dash-ui-comp-name,
+  .dash-ui-topic-name {
+    max-width: 120px;
+  }
 }

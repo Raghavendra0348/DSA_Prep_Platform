@@ -20,7 +20,7 @@ function GithubIcon({ size = 20 }) {
 const FAQ_ITEMS = [
   {
     question: 'Is DSA Prep completely free to use?',
-    answer: 'Yes, 100% free! All 471+ target companies, 3,257+ LeetCode questions, frequency breakdowns, and topic collections are freely available without any subscription or paywall.',
+    answer: 'Yes, 100% free! All 429+ target companies, 3,392+ LeetCode questions, frequency breakdowns, and topic collections are freely available without any subscription or paywall.',
   },
   {
     question: 'How often is the company interview question data updated?',

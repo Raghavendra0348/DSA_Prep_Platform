@@ -97,7 +97,7 @@ export default function Landing() {
           </h1>
 
           <p className="hero-subtitle">
-            Practice real LeetCode questions asked at <strong>471+ top companies</strong>.
+            Practice real LeetCode questions asked at <strong>429+ top companies</strong>.
             Organized by recency, difficulty, and tier classification to fast-track your prep.
           </p>
 
@@ -168,7 +168,7 @@ export default function Landing() {
             <>
               <StatCard
                
-                value={stats?.totalCompanies || 471}
+                value={stats?.totalCompanies || 429}
                 label="Target Companies"
                 subtext="Product & Service Leaders"
                 badge="FAANG & Tech"
@@ -178,7 +178,7 @@ export default function Landing() {
               />
               <StatCard
                 
-                value={stats?.totalQuestions || 3257}
+                value={stats?.totalQuestions || 3392}
                 label="Interview Questions"
                 subtext="Tag & Frequency Ranked"
                 badge="Real LeetCode"
@@ -188,7 +188,7 @@ export default function Landing() {
               />
               <StatCard
                 
-                value={stats?.totalTopics || 74}
+                value={stats?.totalTopics || 173}
                 label="DSA Topics"
                 subtext="Arrays to Graph & DP"
                 badge="Roadmap Ready"
@@ -273,7 +273,7 @@ export default function Landing() {
 
           <div className="featured-bottom-cta">
             <Link to="/companies" className="btn-outline-lg">
-              <span>View All 471+ Companies</span>
+              <span>View All 429+ Companies</span>
               <ArrowRight size={16} />
             </Link>
           </div>

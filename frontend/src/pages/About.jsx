@@ -25,7 +25,7 @@ export default function About() {
             Built by Engineers, <span className="about-highlight">for Engineers</span>
           </h1>
           <p className="about-subtitle">
-            DSA Prep is a comprehensive, free interview preparation platform organizing <strong>3,257+ real LeetCode questions</strong> across <strong>471+ top technology employers</strong>. We help engineers focus on high-yield, company-specific patterns instead of solving random problems.
+            DSA Prep is a comprehensive, free interview preparation platform organizing <strong>3,392+ real LeetCode questions</strong> across <strong>429+ top technology employers</strong>. We help engineers focus on high-yield, company-specific patterns instead of solving random problems.
           </p>
           <div className="about-hero-actions">
             <Link to="/companies" className="btn-about-primary">
@@ -48,7 +48,7 @@ export default function About() {
               <div className="about-stat-icon-wrap icon-cyan">
                 <Building2 size={22} />
               </div>
-              <div className="about-stat-val">471+</div>
+              <div className="about-stat-val">429+</div>
               <div className="about-stat-label">Target Companies</div>
               <div className="about-stat-sub">From FAANG to high-growth startups</div>
             </div>
@@ -57,7 +57,7 @@ export default function About() {
               <div className="about-stat-icon-wrap icon-purple">
                 <BookOpen size={22} />
               </div>
-              <div className="about-stat-val">3,257+</div>
+              <div className="about-stat-val">3,392+</div>
               <div className="about-stat-label">Interview Questions</div>
               <div className="about-stat-sub">Sorted by recency & frequency</div>
             </div>
@@ -66,7 +66,7 @@ export default function About() {
               <div className="about-stat-icon-wrap icon-emerald">
                 <Tags size={22} />
               </div>
-              <div className="about-stat-val">74+</div>
+              <div className="about-stat-val">173+</div>
               <div className="about-stat-label">DSA Core Topics</div>
               <div className="about-stat-sub">Arrays, DP, Graphs & beyond</div>
             </div>
@@ -144,7 +144,7 @@ export default function About() {
           <div className="about-section-header">
             <span className="about-section-tag">CLASSIFICATION SYSTEM</span>
             <h2>Our Employer Tier Framework</h2>
-            <p>We classify 471+ companies into 4 strategic tiers to streamline your preparation roadmap.</p>
+            <p>We classify 429+ companies into 4 strategic tiers to streamline your preparation roadmap.</p>
           </div>
 
           <div className="about-tiers-grid">

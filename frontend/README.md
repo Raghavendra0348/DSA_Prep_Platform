@@ -50,7 +50,7 @@ src/
 
 ## 🌟 Key Features
 
-* **4-Tier Company Explorer**: Filter 471+ tech companies by type (Product vs Service) and Tiers (FAANG+, Product Unicorns, MNCs, Other Tech).
+* **4-Tier Company Explorer**: Filter 429+ tech companies by type (Product vs Service) and Tiers (FAANG+, Product Unicorns, MNCs, Other Tech).
 * **10-Phase DSA Learning Roadmap**: Topics organized into a structured 10-phase sequence with specific learning rules for interview prep.
 * **Topic & Company Question Detail Views**: High-density problem tables featuring interactive status badges, difficulty pills, and direct LeetCode SVG links.
 * **Real-time Optimistic State Updates**: Problem status and bookmark toggles update immediately on UI with background server sync.

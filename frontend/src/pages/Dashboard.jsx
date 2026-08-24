@@ -232,7 +232,7 @@ export default function Dashboard() {
           </button>
           <Link to="/companies" className="dash-ui-btn-explore">
             <Building2 size={15} />
-            <span>Explore 471+ Companies</span>
+            <span>Explore 429+ Companies</span>
             <ArrowUpRight size={15} />
           </Link>
         </div>
@@ -272,7 +272,7 @@ export default function Dashboard() {
             <span className="dash-ui-stat-val text-code">{animTotal.toLocaleString()}</span>
             <span className="dash-ui-stat-lbl">Question Catalog</span>
           </div>
-          <span className="dash-ui-stat-tag tag-total">471+ Companies</span>
+          <span className="dash-ui-stat-tag tag-total">429+ Companies</span>
         </Link>
       </div>
 

@@ -127,7 +127,7 @@ export default function Footer() {
               <li><Link to="/company/flipkart">Flipkart</Link></li>
               <li>
                 <Link to="/companies" className="footer-link-highlight">
-                  Browse All 471+ Companies →
+                  Browse All 429+ Companies →
                 </Link>
               </li>
             </ul>
