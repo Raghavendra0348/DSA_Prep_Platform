@@ -42,9 +42,9 @@ docs/
 
 | Layer | Status |
 |---|---|
-| ✅ Database (PostgreSQL + Prisma) | Complete |
-| ✅ Backend API (Express, 17 endpoints) | Complete |
-| ✅ Auth (JWT + bcrypt) | Complete |
-| ✅ Data Import (471 companies, 3,257 questions) | Complete |
-| 🔜 Frontend (React + Vite) | In Progress |
-| 🔜 Deployment (Railway + Aiven + Vercel) | Pending |
+| ✅ Database (PostgreSQL + Prisma 7) | Complete |
+| ✅ Backend API (Express 5, 20+ endpoints) | Complete |
+| ✅ Auth (JWT + Refresh Tokens + bcrypt) | Complete |
+| ✅ Data Import (429+ companies, 3,200+ questions) | Complete |
+| ✅ Frontend (React 19 + Vite 5 + TanStack Query) | Complete |
+| ✅ Deployment (Render + Vercel) | Complete |
