@@ -9,6 +9,16 @@ node_modules/
 !.env.production
 *.local
 
+# ── Credentials & Secret Keys ───────────────────────────────────────────────
+*client_secret*.json
+client_secret*.json
+credentials*.json
+service-account*.json
+*.pem
+*.key
+*.cert
+*.crt
+
 # ── Build & Distribution Outputs ─────────────────────────────────────────────
 dist/
 **/dist/
@@ -64,11 +74,22 @@ Desktop.ini
 *.sublime-project
 .cursor/
 
+# ── Temporary / Scratch Files & Notes ────────────────────────────────────────
+tasks
+tasks.*
+**/tasks
+**/tasks.*
+21st/
+**/21st/
+implementation_plan.md
+**/implementation_plan.md
+database_upgrade_plan.md
+
 # ── AI Tools & Agent Metadata ────────────────────────────────────────────────
 .agents/
 .claude/
 .windsurf/
 .gemini/
 skills-lock.json
-database_upgrade_plan.md
 backend/scripts/clean-empty-companies.js
+
