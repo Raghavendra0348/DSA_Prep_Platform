@@ -6,31 +6,16 @@
 .topic-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   background: rgba(22, 27, 34, 0.85);
   color: #c9d1d9;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all var(--transition);
   white-space: nowrap;
   text-decoration: none;
-}
-
-.topic-chip-icon {
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.topic-chip-text {
-  font-size: 12px;
-  line-height: 1.2;
 }
 
 .topic-chip:hover {
@@ -52,4 +37,5 @@
 .topic-chip--static:hover {
   transform: none;
 }
+
 
