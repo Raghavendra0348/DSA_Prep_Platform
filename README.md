@@ -483,11 +483,14 @@ Detailed documentation lives in the [`docs/`](docs/) directory:
 
 | Document | Description |
 | :--- | :--- |
-| [Product Requirements](docs/product/PRD.md) | What the platform does and why |
-| [Backend Architecture](docs/backend/architecture.md) | System design, DB schema, file structure |
-| [API Reference](docs/backend/api-reference.md) | Complete endpoint docs with request/response examples |
-| [Local Setup Guide](docs/backend/setup.md) | Step-by-step dev environment setup |
-| [Postman Collection](docs/testing/postman.md) | How to test APIs with the included Postman collection |
+| [**Documentation Hub**](docs/README.md) | Central portal & complete documentation index |
+| [**Frontend Architecture**](docs/frontend/architecture.md) | React 19 SPA architecture, design system & directory layout |
+| [**TanStack Query Strategy**](docs/frontend/tanstack-query.md) | Cache policies, optimistic updates & data fetching rules |
+| [**Backend Architecture**](docs/backend/architecture.md) | Express 5 system design, Prisma 7 models & DB schema |
+| [**API Reference**](docs/backend/api-reference.md) | Complete REST API reference with request & response examples |
+| [**Product Requirements (PRD)**](docs/product/PRD.md) | Product vision, 4-tier company classification & roadmap |
+| [**Local Setup Guide**](docs/backend/setup.md) | Step-by-step local development & PostgreSQL setup |
+| [**Postman Collection**](docs/testing/postman.md) | API validation & testing workflows |
 
 ---
 

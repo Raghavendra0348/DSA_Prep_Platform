@@ -1,50 +1,109 @@
-# 📚 DSA Prep Platform — Documentation
+# 📚 DSA Prep Platform — Documentation Hub
 
-> **One place for everything** — product decisions, architecture, API reference, dev setup, and what's next.
+Welcome to the centralized documentation portal for **DSA Prep Platform**. Here you will find architectural overviews, API references, product specifications, frontend guides, setup instructions, and deployment workflows.
 
 ---
 
-## 📁 Docs Structure
+## 🧭 Documentation Map
 
-```
+```text
 docs/
-├── README.md                    ← You are here (index)
+├── README.md                      ← Master documentation portal (You are here)
 │
-├── product/
-│   └── PRD.md                   ← Product Requirements Document (what & why)
+├── 🎨 frontend/                   ← Frontend architecture, state management & UI guides
+│   ├── architecture.md            ← React 19 + Vite 5 SPA structure, tokens & patterns
+│   ├── tanstack-query.md          ← TanStack Query caching strategy, query keys & mutations
+│   ├── app-routing.md             ← App.jsx routes, code-splitting & lazy loading
+│   ├── prd.md                     ← Frontend Product Requirements Document
+│   └── upgrade-guide.md           ← UI/UX & performance upgrade changelog
 │
-├── backend/
-│   ├── architecture.md          ← System design, DB schema, file structure
-│   ├── api-reference.md         ← Complete API docs with request/response examples
-│   ├── setup.md                 ← Local dev setup guide (DB + server)
-│   └── pending.md               ← What's left to build (prioritized)
+├── ⚙️ backend/                    ← Backend system design, API contracts & database
+│   ├── architecture.md            ← Express 5 + Prisma 7 architecture & DB schema
+│   ├── api-reference.md           ← Complete REST API endpoint reference with JSON payloads
+│   ├── setup.md                   ← Local backend & PostgreSQL setup guide
+│   ├── pending.md                 ← Prioritized backend backlog & roadmap
+│   ├── fixes-high-priority.md     ← High-priority bug fixes & resolutions
+│   └── fixes-medium-low-priority.md ← Security & robustness hardening tasks
 │
-└── testing/
-    └── postman.md               ← How to use the Postman collection
+├── 📦 product/                    ← High-level requirements, roadmap & classifications
+│   ├── PRD.md                     ← Core Product Requirements Document (what & why)
+│   ├── codebase-overview.md       ← Full-stack codebase walkthrough & component mapping
+│   └── features-plan.md           ← Feature breakdown, phase breakdown & future plans
+│
+├── 🧪 testing/                    ← QA, API validation & automated testing
+│   └── postman.md                 ← Postman collection setup & API testing guide
+│
+├── 💾 data/                       ← Company classification & curation datasets
+│   ├── product_based.txt          ← Product-based company classifications
+│   └── service based.txt          ← Service-based company classifications
+│
+└── 🗄️ archive/                    ← Historical implementation plans & changelogs
+    ├── frontend-bugs-fixed.md     ← Resolved frontend issues log
+    ├── frontend-bugs-and-issues.md← Historical bug triage
+    ├── backend-implementation-plan.md ← Initial backend implementation roadmap
+    ├── frontend-implementation-plan.md ← Initial frontend implementation roadmap
+    ├── database-upgrade-plan.md   ← Database migration & optimization log
+    └── backend-reference-legacy.md← Legacy backend specifications
 ```
 
 ---
 
-## 🚀 Quick Links
+## ⚡ Quick Navigation
 
-| What | Doc |
-|---|---|
-| What is this project? | [product/PRD.md](./product/PRD.md) |
-| How is the backend structured? | [backend/architecture.md](./backend/architecture.md) |
-| All API endpoints + examples | [backend/api-reference.md](./backend/api-reference.md) |
-| Set up local dev environment | [backend/setup.md](./backend/setup.md) |
-| What's pending / TODO | [backend/pending.md](./backend/pending.md) |
-| How to test APIs in Postman | [testing/postman.md](./testing/postman.md) |
+### 1. 🏗 Architecture & System Design
+
+- [**Frontend Architecture**](./frontend/architecture.md) — Directory layout, components, context, design system.
+- [**TanStack Query Strategy**](./frontend/tanstack-query.md) — Stale-time rules, cache keys, optimistic mutations.
+- [**Route Management**](./frontend/app-routing.md) — Dynamic imports, suspense fallbacks, protected routes.
+- [**Backend Architecture**](./backend/architecture.md) — Express middleware, Prisma models, PostgreSQL relations.
+
+### 2. 📡 API & Database Reference
+
+- [**REST API Reference**](./backend/api-reference.md) — Authentication, Companies, Topics, Questions, Progress, Bookmarks.
+- [**Local Development Setup**](./backend/setup.md) — PostgreSQL configuration, Prisma migrations, environment setup.
+- [**Postman Testing Guide**](./testing/postman.md) — Environment variables, request collections, test scripts.
+
+### 3. 🎯 Product & Planning
+
+- [**Product Requirements Document (PRD)**](./product/PRD.md) — Target personas, tier classifications, feature specifications.
+- [**Codebase Overview**](./product/codebase-overview.md) — High-level file-by-file walkthrough.
+- [**Features & Milestone Plan**](./product/features-plan.md) — Completed milestones and upcoming roadmap.
 
 ---
 
-## 📊 Project Status (August 2026)
+## 📊 Tech Stack Summary
 
-| Layer | Status |
-|---|---|
-| ✅ Database (PostgreSQL + Prisma 7) | Complete |
-| ✅ Backend API (Express 5, 20+ endpoints) | Complete |
-| ✅ Auth (JWT + Refresh Tokens + bcrypt) | Complete |
-| ✅ Data Import (429+ companies, 3,200+ questions) | Complete |
-| ✅ Frontend (React 19 + Vite 5 + TanStack Query) | Complete |
-| ✅ Deployment (Render + Vercel) | Complete |
+| Layer | Technology | Key Libraries |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, Vite 5, JavaScript (ESNext) | TanStack Query v5, React Router v7, Framer Motion, Lucide React |
+| **Backend** | Node.js 20+, Express 5 | Prisma ORM 7, PostgreSQL 17, JWT, bcryptjs |
+| **Styling** | Vanilla CSS3 (Custom Design System) | Glassmorphism, CSS Variables, Responsive Grid/Flex |
+| **Auth** | Dual Token System | 7-day JWT access token + 30-day DB refresh token + Google OAuth 2.0 |
+| **Hosting** | Vercel (Frontend), Render (Backend/DB) | Supabase/Neon/Render PostgreSQL compatibility |
+
+---
+
+## 🛠️ Local Quickstart
+
+### Prerequisites
+
+- **Node.js**: `v20.0.0+`
+- **PostgreSQL**: `15+` (Local or cloud connection string)
+
+### 1. Backend Setup
+
+```bash
+cd backend
+npm install
+cp .env.example .env     # Configure DATABASE_URL and JWT_SECRET
+npx prisma migrate dev
+npm run dev              # Runs Express API on http://localhost:5000
+```
+
+### 2. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev              # Runs Vite dev server on http://localhost:5173
+```
