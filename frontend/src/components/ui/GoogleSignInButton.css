@@ -1,0 +1,105 @@
+/* ── Custom Google Sign-In Button ─────────────────────────────────────────── */
+
+.google-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-radius: 9999px;
+
+  /* Glass-dark surface */
+  background: linear-gradient(
+    135deg,
+    rgba(30, 36, 46, 0.95) 0%,
+    rgba(22, 27, 34, 0.98) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  color: var(--text-primary, #f0f6fc);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+
+  /* Will be overridden by Framer Motion whileHover / whileTap */
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+/* ── Hover ───────────────────────────────────────────────────────────────── */
+.google-btn:not(:disabled):hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(38, 45, 58, 0.98) 0%,
+    rgba(28, 34, 44, 1) 100%
+  );
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ── Disabled / loading state ───────────────────────────────────────────── */
+.google-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ── Shimmer (sweep on hover) ───────────────────────────────────────────── */
+.google-btn-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.google-btn:not(:disabled):hover .google-btn-shimmer {
+  transform: translateX(100%);
+}
+
+/* ── Google G logo container ────────────────────────────────────────────── */
+.google-btn-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px;
+  transition: background 0.2s ease;
+}
+
+.google-btn:not(:disabled):hover .google-btn-icon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Label (also hosts Spinner in loading state) ────────────────────────── */
+.google-btn-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1;
+  white-space: nowrap;
+}

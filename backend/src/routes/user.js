@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where:  { id: req.user.id },
-      select: { id: true, name: true, email: true, avatar: true, createdAt: true },
+      select: { id: true, name: true, email: true, avatar: true, createdAt: true, authProvider: true },
     });
     if (!user) return res.status(404).json({ success: false, error: 'User not found' });
     res.json({ success: true, user });
@@ -47,7 +47,7 @@ router.put('/', async (req, res, next) => {
     const user = await prisma.user.update({
       where:  { id: req.user.id },
       data,
-      select: { id: true, name: true, email: true, avatar: true, createdAt: true },
+      select: { id: true, name: true, email: true, avatar: true, createdAt: true, authProvider: true },
     });
 
     res.json({ success: true, user });
@@ -65,6 +65,15 @@ router.put('/password', async (req, res, next) => {
 
     // Fetch user with password (not normally selected)
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+
+    // Google-only users cannot change password (they don't have one)
+    if (!user.password) {
+      return res.status(400).json({
+        success: false,
+        error: 'This account uses Google Sign-In and has no password to change.',
+        code: 'NO_PASSWORD',
+      });
+    }
 
     // Verify current password before allowing change
     const isMatch = await bcrypt.compare(currentPassword, user.password);

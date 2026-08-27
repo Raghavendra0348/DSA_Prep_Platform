@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './context/AuthContext';
@@ -10,6 +10,8 @@ import ErrorBoundary from './components/shared/ErrorBoundary';
 import ScrollToTop from './components/shared/ScrollToTop';
 import Spinner from './components/ui/Spinner';
 import CommandPalette from './components/ui/CommandPalette';
+import { useKeyboard } from './hooks/useKeyboard';
+
 // ── Lazy-loaded pages (code-splitting) ───────────────────────────────────────
 const Landing        = lazy(() => import('./pages/Landing'));
 const Companies      = lazy(() => import('./pages/Companies'));
@@ -41,6 +43,10 @@ function PageLoader() {
 function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
 
+  // Ctrl+K / Cmd+K — global shortcut to open Command Palette
+  const openPalette = useCallback(() => setPaletteOpen(true), []);
+  useKeyboard('k', openPalette, { ctrlOrMeta: true });
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -54,7 +60,7 @@ function App() {
               <ErrorBoundary>
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
-                    {/* Public */}
+                    {/* PubliThe first one is a dynamic import.c */}
                     <Route path="/" element={<Landing />} />
                     <Route path="/companies" element={<Companies />} />
                     <Route path="/company/:slug" element={<CompanyDetail />} />

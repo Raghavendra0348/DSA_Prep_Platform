@@ -33,6 +33,7 @@ const authLimiter = rateLimit({
   message:         { success: false, error: 'Too many attempts. Please try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders:   false,
+  skip:            () => process.env.NODE_ENV === 'test',
 });
 
 // General API limiter: max 100 requests per minute per IP.
@@ -42,6 +43,7 @@ const apiLimiter = rateLimit({
   message:         { success: false, error: 'Too many requests. Please slow down.' },
   standardHeaders: true,
   legacyHeaders:   false,
+  skip:            () => process.env.NODE_ENV === 'test',
 });
 
 // ── Public Routes ─────────────────────────────────────────────────────────

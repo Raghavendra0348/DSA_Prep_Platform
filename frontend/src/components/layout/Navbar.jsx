@@ -4,10 +4,11 @@ import { useAuth } from '../../hooks/useAuth';
 import {
   Code2, Menu, X, LayoutDashboard, Bookmark, User, LogOut,
   Building2, BookOpen, Search, ChevronDown, Sparkles, Command,
-  ArrowRight
+  ArrowRight, CheckCircle2
 } from 'lucide-react';
 import { useSearch } from '../../hooks/useSearch';
 import LeetCodeIcon from '../ui/LeetCodeIcon';
+import Modal from '../ui/Modal';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -16,6 +17,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const searchRef   = useRef(null);
@@ -100,10 +102,17 @@ export default function Navbar() {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
+  // Show confirm modal instead of logging out immediately
+  const handleLogout = () => {
     setDropdownOpen(false);
     setMenuOpen(false);
+    setLogoutModalOpen(true);
+  };
+
+  // Actually perform logout after user confirms
+  const confirmLogout = async () => {
+    setLogoutModalOpen(false);
+    await logout();
     navigate('/');
   };
 
@@ -113,6 +122,7 @@ export default function Navbar() {
   const showDropdown = searchOpen && searchQuery.trim().length >= 2;
 
   return (
+    <>
     <header className="navbar-header">
       <nav className="navbar">
         <div className="navbar-inner container">
@@ -383,5 +393,63 @@ export default function Navbar() {
       )}
     </nav>
     </header>
+
+    {/* ── Logout Confirmation Modal ─────────────────────────────────────── */}
+    <Modal
+      isOpen={logoutModalOpen}
+      onClose={() => setLogoutModalOpen(false)}
+      title=""
+      size="sm"
+    >
+      <div className="logout-dialog">
+        <div className="logout-dialog-header">
+          <div className="logout-icon-glow">
+            <LogOut size={20} />
+          </div>
+          <div className="logout-dialog-titles">
+            <h3 className="logout-dialog-title">Sign out of DSA Prep?</h3>
+            <p className="logout-dialog-subtitle">
+              You will need to sign back in to access your dashboard and bookmarks.
+            </p>
+          </div>
+        </div>
+
+        {user && (
+          <div className="logout-user-preview">
+            <div className="logout-user-avatar">
+              {(user.name || 'U').charAt(0).toUpperCase()}
+            </div>
+            <div className="logout-user-details">
+              <span className="logout-user-name">{user.name || 'Account'}</span>
+              <span className="logout-user-email">{user.email || ''}</span>
+            </div>
+          </div>
+        )}
+
+        <div className="logout-safe-note">
+          <CheckCircle2 size={15} />
+          <span>All your solved questions and progress are saved in the cloud.</span>
+        </div>
+
+        <div className="logout-actions">
+          <button
+            type="button"
+            className="logout-btn-cancel"
+            onClick={() => setLogoutModalOpen(false)}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="logout-btn-confirm"
+            onClick={confirmLogout}
+          >
+            <LogOut size={14} />
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </Modal>
+    </>
   );
 }

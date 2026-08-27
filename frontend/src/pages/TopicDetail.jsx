@@ -8,6 +8,7 @@ import DifficultyBadge from '../components/ui/DifficultyBadge';
 import StatusBadge from '../components/ui/StatusBadge';
 import BookmarkBtn from '../components/ui/BookmarkBtn';
 import LeetCodeIcon from '../components/ui/LeetCodeIcon';
+import ProgressRing from '../components/ui/ProgressRing';
 import Pagination from '../components/shared/Pagination';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
@@ -135,14 +136,23 @@ export default function TopicDetail() {
 
         {/* Stats breakdown */}
         <div className="topic-banner-stats">
+          {/* Progress ring — only shown for logged-in users with solve data */}
+          {user && solvedCount > 0 && (
+            <ProgressRing
+              solved={solvedCount}
+              total={stats?.total ?? problems.length}
+              size={54}
+              strokeWidth={4}
+            />
+          )}
           <div className="stat-chip easy">
-            <span className="dot"></span> Easy <strong>{diffCounts.EASY}</strong>
+            <span className="dot" /> Easy <strong>{diffCounts.EASY}</strong>
           </div>
           <div className="stat-chip medium">
-            <span className="dot"></span> Medium <strong>{diffCounts.MEDIUM}</strong>
+            <span className="dot" /> Medium <strong>{diffCounts.MEDIUM}</strong>
           </div>
           <div className="stat-chip hard">
-            <span className="dot"></span> Hard <strong>{diffCounts.HARD}</strong>
+            <span className="dot" /> Hard <strong>{diffCounts.HARD}</strong>
           </div>
         </div>
       </div>

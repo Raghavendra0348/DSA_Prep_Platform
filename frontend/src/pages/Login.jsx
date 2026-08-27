@@ -2,16 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { login as apiLogin } from '../api/auth';
+import { login as apiLogin, googleLoginWithAccessToken as apiGoogleLogin } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
-import {
-  GoogleIcon,
-  AppleIcon,
-  MicrosoftIcon,
-  GitHubIcon,
-  TwitterIcon,
-} from '../components/ui/SocialIcons';
+import GoogleSignInButton from '../components/ui/GoogleSignInButton';
 import Spinner from '../components/ui/Spinner';
 import './Auth.css';
 
@@ -63,8 +57,23 @@ export default function Login() {
     setError('');
   };
 
-  const handleSocialLogin = (provider) => {
-    toast.info(`${provider} sign-in integration coming soon! Please use email & password.`);
+  // Google OAuth Handler (receives access_token from implicit flow)
+  const handleGoogleCredential = async (accessToken) => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await apiGoogleLogin(accessToken);
+      login(data);
+      toast.success(`Welcome back, ${data.user?.name || 'User'}!`);
+      const from = location.state?.from || '/dashboard';
+      navigate(from, { replace: true });
+    } catch (err) {
+      const msg = err.message || 'Google sign-in failed. Please try again.';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -93,6 +102,8 @@ export default function Login() {
       let msg = 'Login failed. Please try again.';
       if (err.code === 'INVALID_CREDENTIALS') {
         msg = 'Invalid email or password';
+      } else if (err.code === 'GOOGLE_ONLY_ACCOUNT') {
+        msg = 'This account uses Google Sign-In. Please use the Google button above.';
       } else if (err.code === 'VALIDATION_ERROR') {
         msg = 'Please enter a valid email';
       } else if (err.message) {
@@ -104,14 +115,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
-  const socialButtons = [
-    { icon: GoogleIcon, label: 'Google' },
-    { icon: AppleIcon, label: 'Apple' },
-    { icon: MicrosoftIcon, label: 'Microsoft' },
-    { icon: GitHubIcon, label: 'GitHub' },
-    { icon: TwitterIcon, label: 'Twitter' },
-  ];
 
   return (
     <div className="auth-page">
@@ -126,22 +129,9 @@ export default function Login() {
           <p>Sign in to your account to continue</p>
         </motion.div>
 
-        {/* ── Social Login Grid ────────────────────────────────────────────── */}
-        <motion.div variants={itemVariants} className="auth-social-grid">
-          {socialButtons.map((btn) => (
-            <motion.button
-              key={btn.label}
-              type="button"
-              whileHover={{ scale: 1.06, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleSocialLogin(btn.label)}
-              className="auth-social-btn"
-              aria-label={`Sign in with ${btn.label}`}
-              title={`Sign in with ${btn.label}`}
-            >
-              <btn.icon size={20} />
-            </motion.button>
-          ))}
+        {/* ── Google Sign-In ──────────────────────────────────────────────── */}
+        <motion.div variants={itemVariants} className="auth-google-wrapper">
+          <GoogleSignInButton onCredential={handleGoogleCredential} text="signin" />
         </motion.div>
 
         {/* ── Divider ──────────────────────────────────────────────────────── */}
@@ -212,7 +202,7 @@ export default function Login() {
                 <Spinner size={16} />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Sign In with Email</span>
                   <ArrowRight size={16} />
                 </>
               )}
@@ -227,8 +217,8 @@ export default function Login() {
 
         <motion.p variants={itemVariants} className="auth-terms">
           By continuing, you agree to our{' '}
-          <a href="#terms">Terms of Service</a> and{' '}
-          <a href="#privacy">Privacy Policy</a>.
+          <a href="/terms">Terms of Service</a> and{' '}
+          <a href="/privacy">Privacy Policy</a>.
         </motion.p>
       </motion.div>
     </div>

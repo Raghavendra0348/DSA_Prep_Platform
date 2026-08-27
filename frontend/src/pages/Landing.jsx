@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search, ArrowRight, BookOpen,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 
 import { useLanding } from '../hooks/useLanding';
+import { useIntersection } from '../hooks/useIntersection';
 import { getClassification, TIER_INFO } from '../data/companyClassification';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import TierBadge from '../components/ui/TierBadge';
@@ -17,8 +18,6 @@ const POPULAR_SEARCHES = ['Google', 'Amazon', 'Meta', 'Flipkart', 'Dynamic Progr
 export default function Landing() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const statsRef = useRef(null);
-  const [countersVisible, setCountersVisible] = useState(false);
 
   // ── TanStack Query — all three queries run in parallel, cached 10 min ──
   const { stats, featured, allCompanies, loading } = useLanding();
@@ -27,16 +26,8 @@ export default function Landing() {
     document.title = 'DSA Prep — Company-Wise LeetCode Questions';
   }, []);
 
-  // Count-up animation trigger on scroll
-  useEffect(() => {
-    if (!statsRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setCountersVisible(true); },
-      { threshold: 0.2 }
-    );
-    observer.observe(statsRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Count-up animation trigger on scroll — useIntersection fires once when section enters viewport
+  const [statsRef, countersVisible] = useIntersection({ threshold: 0.2 }, true);
 
   const performSearch = (term) => {
     const clean = term?.trim();

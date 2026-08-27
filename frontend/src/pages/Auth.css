@@ -72,37 +72,48 @@
   margin: 0;
 }
 
-/* ── Social Login Buttons Grid ────────────────────────────────────────────── */
-.auth-social-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 9px;
+/* ── Google Sign In Button Wrapper ────────────────────────────────────────── */
+.auth-google-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   margin-bottom: 22px;
 }
 
-.auth-social-btn {
-  aspect-ratio: 1;
+.auth-google-wrapper > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.auth-google-btn-custom {
+  width: 100%;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   background: var(--bg-secondary, #0d1117);
   border: 1px solid var(--border, #30363d);
-  border-radius: 16px;
+  border-radius: 9999px;
   cursor: pointer;
   color: var(--text-primary, #f0f6fc);
+  font-size: 14px;
+  font-weight: 500;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
+  padding: 0 16px;
 }
 
-.auth-social-btn:hover {
-  transform: translateY(-2px) scale(1.06);
+.auth-google-btn-custom:hover {
+  transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.25);
   background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
-.auth-social-btn:active {
-  transform: scale(0.95);
+.auth-google-btn-custom:active {
+  transform: scale(0.98);
 }
 
 /* ── Divider ──────────────────────────────────────────────────────────────── */

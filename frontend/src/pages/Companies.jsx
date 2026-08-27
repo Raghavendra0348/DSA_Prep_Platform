@@ -10,6 +10,7 @@ import { TIER_INFO, TYPE_INFO, getClassification, filterByType, groupByTier } fr
 import { getLogoUrl } from '../data/companyDomains';
 import SearchInput from '../components/shared/SearchInput';
 import CompanyLogo from '../components/ui/CompanyLogo';
+import Dropdown from '../components/ui/Dropdown';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import './Companies.css';
@@ -144,15 +145,14 @@ export default function Companies() {
           />
           <div className="companies-sort">
             <ArrowUpDown size={14} />
-            <select
+            <Dropdown
+              id="companies-sort-dropdown"
+              options={SORT_OPTIONS}
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="filter-select"
-            >
-              {SORT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+              onChange={setSort}
+              placeholder="Sort by..."
+              size="sm"
+            />
           </div>
         </div>
       </div>

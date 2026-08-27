@@ -22,6 +22,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useCountUp } from '../hooks/useCountUp';
 import DifficultyBadge from '../components/ui/DifficultyBadge';
 import CompanyLogo from '../components/ui/CompanyLogo';
+import ProgressBar from '../components/ui/ProgressBar';
 import Skeleton from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import './Dashboard.css';
@@ -316,12 +317,14 @@ export default function Dashboard() {
                       <strong>{easy}</strong> solved <span className="diff-pct">({easyPct}%)</span>
                     </span>
                   </div>
-                  <div className="dash-ui-track">
-                    <div
-                      className="dash-ui-fill fill-easy"
-                      style={{ width: `${solved > 0 ? (easy / solved) * 100 : 0}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={easy}
+                    max={solved || 1}
+                    color="#00b8a3"
+                    showCount={false}
+                    height={5}
+                    animated
+                  />
                 </div>
 
                 {/* Medium Row */}
@@ -334,12 +337,14 @@ export default function Dashboard() {
                       <strong>{medium}</strong> solved <span className="diff-pct">({mediumPct}%)</span>
                     </span>
                   </div>
-                  <div className="dash-ui-track">
-                    <div
-                      className="dash-ui-fill fill-medium"
-                      style={{ width: `${solved > 0 ? (medium / solved) * 100 : 0}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={medium}
+                    max={solved || 1}
+                    color="#ffa116"
+                    showCount={false}
+                    height={5}
+                    animated
+                  />
                 </div>
 
                 {/* Hard Row */}
@@ -352,12 +357,14 @@ export default function Dashboard() {
                       <strong>{hard}</strong> solved <span className="diff-pct">({hardPct}%)</span>
                     </span>
                   </div>
-                  <div className="dash-ui-track">
-                    <div
-                      className="dash-ui-fill fill-hard"
-                      style={{ width: `${solved > 0 ? (hard / solved) * 100 : 0}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={hard}
+                    max={solved || 1}
+                    color="#ef4743"
+                    showCount={false}
+                    height={5}
+                    animated
+                  />
                 </div>
               </div>
             </div>

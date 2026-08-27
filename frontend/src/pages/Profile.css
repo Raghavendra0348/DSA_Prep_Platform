@@ -281,6 +281,94 @@
   padding-inline: 14px;
 }
 
+/* ── Connected accounts card ────────────────────────────────────────────── */
+.profile-connected-card {
+  padding: 30px;
+  margin-bottom: 20px;
+  background: var(--gradient-card);
+}
+
+.profile-connected-card .profile-section-heading {
+  margin-bottom: 20px;
+}
+
+.profile-connected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-connected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  background: rgba(13, 17, 23, 0.4);
+  gap: 14px;
+}
+
+.profile-connected-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-connected-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.profile-connected-meta div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.profile-connected-meta strong {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+}
+
+.profile-connected-meta span {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-badge {
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.profile-badge-active {
+  color: #9ee6aa;
+  background: rgba(63, 185, 80, 0.12);
+  border: 1px solid rgba(63, 185, 80, 0.25);
+}
+
+.profile-badge-inactive {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 /* ── Security card ────────────────────────────────────────────────────────── */
 .profile-pw-card {
   padding: 30px;

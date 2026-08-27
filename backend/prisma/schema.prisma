@@ -50,12 +50,14 @@ model CompanyQuestion {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
-  name      String
-  password  String
-  avatar    String?
-  createdAt DateTime   @default(now())
+  id           String     @id @default(uuid())
+  email        String     @unique
+  name         String
+  password     String?                          // null for Google-only users
+  googleId     String?    @unique               // Google 'sub' claim (unique user ID)
+  authProvider String     @default("email")     // "email" | "google" | "both"
+  avatar       String?
+  createdAt    DateTime   @default(now())
   progress      Progress[]
   bookmarks     Bookmark[]
   refreshTokens RefreshToken[]

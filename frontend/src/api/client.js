@@ -2,8 +2,9 @@
 // Every api/*.js file uses this. Handles auth headers + 401 auto-refresh.
 
 import axios from 'axios';
+import { config } from '../lib/config';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const BASE = config.apiUrl;
 
 // ── Create shared Axios instance ─────────────────────────────────────────────
 const axiosClient = axios.create({

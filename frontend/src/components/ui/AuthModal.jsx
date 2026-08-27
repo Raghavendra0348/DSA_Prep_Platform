@@ -2,16 +2,10 @@ import { useState, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { login as apiLogin, register as apiRegister } from '../../api/auth';
+import { login as apiLogin, register as apiRegister, googleLoginWithAccessToken as apiGoogleLogin } from '../../api/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
-import {
-  GoogleIcon,
-  AppleIcon,
-  MicrosoftIcon,
-  GitHubIcon,
-  TwitterIcon,
-} from './SocialIcons';
+import GoogleSignInButton from './GoogleSignInButton';
 import Spinner from './Spinner';
 import '../../pages/Auth.css';
 import './AuthModal.css';
@@ -44,7 +38,7 @@ const itemVariants = {
 };
 
 /**
- * 21st.dev Style Authentication Modal Component with Framer Motion
+ * Modern Authentication Modal Component supporting Google OAuth and Email
  */
 export default function AuthModal({
   isOpen,
@@ -89,8 +83,23 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
     setError('');
   };
 
-  const handleSocialLogin = (provider) => {
-    toast.info(`${provider} sign-in integration coming soon! Please use email.`);
+  // Google OAuth Handler (receives access_token from implicit flow)
+  const handleGoogleCredential = async (accessToken) => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await apiGoogleLogin(accessToken);
+      login(data);
+      toast.success(`Welcome, ${data.user?.name || 'User'}!`);
+      onSuccess?.(data.user);
+      onClose?.();
+    } catch (err) {
+      const msg = err.message || 'Google authentication failed';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -127,6 +136,7 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
     } catch (err) {
       let msg = 'Authentication failed. Please try again.';
       if (err.code === 'INVALID_CREDENTIALS') msg = 'Invalid email or password';
+      else if (err.code === 'GOOGLE_ONLY_ACCOUNT') msg = 'This account uses Google Sign-In. Please use the Google button.';
       else if (err.code === 'EMAIL_EXISTS') msg = 'An account with this email already exists';
       else if (err.message) msg = err.message;
       setError(msg);
@@ -135,14 +145,6 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
       setLoading(false);
     }
   };
-
-  const socialButtons = [
-    { icon: GoogleIcon, label: 'Google' },
-    { icon: AppleIcon, label: 'Apple' },
-    { icon: MicrosoftIcon, label: 'Microsoft' },
-    { icon: GitHubIcon, label: 'GitHub' },
-    { icon: TwitterIcon, label: 'Twitter' },
-  ];
 
   return (
     <div
@@ -182,20 +184,12 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
           </p>
         </motion.div>
 
-        {/* ── Social Login Grid ────────────────────────────────────────────── */}
-        <motion.div variants={itemVariants} className="auth-social-grid">
-          {socialButtons.map((btn) => (
-            <button
-              key={btn.label}
-              type="button"
-              onClick={() => handleSocialLogin(btn.label)}
-              className="auth-social-btn"
-              aria-label={`Sign in with ${btn.label}`}
-              title={`Sign in with ${btn.label}`}
-            >
-              <btn.icon size={19} />
-            </button>
-          ))}
+        {/* ── Google Sign-In Button ──────────────────────────────────── */}
+        <motion.div variants={itemVariants} className="auth-google-wrapper">
+          <GoogleSignInButton
+            onCredential={handleGoogleCredential}
+            text={mode === 'login' ? 'signin' : 'signup'}
+          />
         </motion.div>
 
         {/* ── Divider ──────────────────────────────────────────────────────── */}
@@ -283,7 +277,7 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
                 <Spinner size={16} />
               ) : (
                 <>
-                  <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                  <span>{mode === 'login' ? 'Sign In with Email' : 'Create Account'}</span>
                   <ArrowRight size={16} />
                 </>
               )}
@@ -321,8 +315,8 @@ function AuthModalDialog({ onClose, initialMode, onSuccess }) {
 
         <motion.p variants={itemVariants} className="auth-terms">
           By continuing, you agree to our{' '}
-          <a href="#terms">Terms of Service</a> and{' '}
-          <a href="#privacy">Privacy Policy</a>.
+          <a href="/terms">Terms of Service</a> and{' '}
+          <a href="/privacy">Privacy Policy</a>.
         </motion.p>
       </motion.div>
     </div>
