@@ -9,6 +9,7 @@ import ProtectedRoute from './components/shared/ProtectedRoute';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import ScrollToTop from './components/shared/ScrollToTop';
 import Spinner from './components/ui/Spinner';
+import BottomNav from './components/layout/BottomNav';
 import CommandPalette from './components/ui/CommandPalette';
 import { useKeyboard } from './hooks/useKeyboard';
 
@@ -90,6 +91,7 @@ function App() {
               </ErrorBoundary>
             </main>
             <Footer />
+            <BottomNav />
             <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
           </div>
         </ToastProvider>

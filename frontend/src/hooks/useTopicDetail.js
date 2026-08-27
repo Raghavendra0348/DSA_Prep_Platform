@@ -68,20 +68,51 @@ export function useTopicDetail(topic, params = {}) {
   const bookmarkMutation = useMutation({
     mutationFn: ({ questionId }) => apiToggleBookmark(questionId),
     onMutate: async ({ questionId }) => {
-      await qc.cancelQueries({ queryKey });
+      const dashKey = QUERY_KEYS.dashboard();
+      await Promise.all([
+        qc.cancelQueries({ queryKey }),
+        qc.cancelQueries({ queryKey: dashKey }),
+      ]);
+
       const prev = qc.getQueryData(queryKey);
+      const prevDash = qc.getQueryData(dashKey);
+
+      const target = prev?.problems?.find(p => p.id === questionId);
+      const isNowBookmarked = target ? !target.bookmarked : true;
+
       qc.setQueryData(queryKey, old => ({
         ...old,
         problems: old?.problems?.map(p =>
           p.id === questionId ? { ...p, bookmarked: !p.bookmarked } : p
         ) ?? [],
       }));
-      return { prev };
+
+      if (prevDash?.stats) {
+        qc.setQueryData(dashKey, old => {
+          if (!old?.stats) return old;
+          const current = old.stats.totalBookmarks ?? 0;
+          return {
+            ...old,
+            stats: {
+              ...old.stats,
+              totalBookmarks: Math.max(0, current + (isNowBookmarked ? 1 : -1)),
+            },
+          };
+        });
+      }
+
+      return { prev, prevDash };
     },
     onError: (_err, _vars, ctx) => {
       if (ctx?.prev) qc.setQueryData(queryKey, ctx.prev);
+      if (ctx?.prevDash) qc.setQueryData(QUERY_KEYS.dashboard(), ctx.prevDash);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.dashboard() });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.bookmarks({}) });
     },
   });
+
 
   const updateStatus   = useCallback((questionId, status) =>
     statusMutation.mutate({ questionId, status }), [statusMutation]);

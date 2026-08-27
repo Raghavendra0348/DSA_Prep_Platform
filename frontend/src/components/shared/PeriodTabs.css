@@ -1,96 +1,200 @@
-.period-tabs {
+/* ── Period Cards Container ────────────────────────────────────────────────── */
+.period-cards-container {
   display: flex;
-  gap: 4px;
-  padding: 4px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  position: relative;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
 }
 
-.period-tabs::-webkit-scrollbar {
+.period-cards-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ── Horizontally Scrollable Cards Row ─────────────────────────────────────── */
+.period-cards-scroll {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  padding-bottom: 2px;
+}
+
+.period-cards-scroll::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Sliding active indicator ─────────────────────────────────────────────── */
-.period-tabs-indicator {
-  position: absolute;
-  bottom: 4px;
-  height: calc(100% - 8px);
-  background: var(--bg-card);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
-  pointer-events: none;
+/* ── Individual Period Card Button ────────────────────────────────────────── */
+.period-card {
+  flex: 1 0 130px;
+  min-width: 125px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(22, 27, 34, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 60px;
 }
 
-.period-tab {
-  display: flex;
+.period-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.period-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* ── Active Period Card (Highlighted Glow) ─────────────────────────────────── */
+.period-card.active {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(30, 58, 138, 0.18) 100%);
+  border: 1.5px solid #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 12px rgba(59, 130, 246, 0.15);
+}
+
+.period-card-header {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  color: #8b949e;
+  transition: color 0.15s ease;
+}
+
+.period-card.active .period-card-header {
+  color: #60a5fa;
+}
+
+.period-card-icon {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.period-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f0f6fc;
+  letter-spacing: -0.01em;
   white-space: nowrap;
-  transition: color var(--transition);
-  position: relative;
-  z-index: 1;
-  min-height: 36px;
 }
 
-.period-tab:hover {
-  color: var(--text-primary);
+.period-card.active .period-card-title {
+  color: #ffffff;
 }
 
-.period-tab.active {
-  color: var(--text-primary);
-}
-
-.period-tab-count {
+.period-card-sub {
   font-size: 11px;
-  padding: 1px 6px;
+  font-weight: 500;
+  color: #8b949e;
+  margin-top: 3px;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.period-card.active .period-card-sub {
+  color: #93c5fd;
+}
+
+.period-card-count {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
   border-radius: 999px;
-  background: var(--bg-hover);
-  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  color: #8b949e;
 }
 
-.period-tab.active .period-tab-count {
-  background: rgba(88, 166, 255, 0.15);
-  color: var(--accent);
+.period-card.active .period-card-count {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
 }
 
-@media (max-width: 640px) {
-  .period-tabs {
-    padding: 3px;
-    gap: 2px;
-  }
-  .period-tab {
-    padding: 7px 11px;
-    font-size: 12.5px;
-    gap: 4px;
-  }
+/* ── Filter Button (Funnel) ───────────────────────────────────────────────── */
+.period-filter-wrapper {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
 }
 
+.period-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  border-radius: 12px;
+  background: rgba(22, 27, 34, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #c9d1d9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.period-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.period-filter-btn.active {
+  border-color: #3b82f6;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
+}
+
+.filter-active-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6;
+}
+
+/* ── Mobile Responsive ────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .period-tab {
-    padding: 6px 9px;
-    font-size: 12px;
-    min-height: 32px;
+  .period-cards-wrapper {
+    gap: 6px;
   }
-  .period-tab-count { font-size: 10px; padding: 1px 5px; }
+
+  .period-card {
+    flex: 1 0 115px;
+    min-width: 110px;
+    padding: 8px 10px;
+    min-height: 56px;
+  }
+
+  .period-card-title {
+    font-size: 13px;
+  }
+
+  .period-card-sub {
+    font-size: 10px;
+  }
+
+  .period-filter-btn {
+    width: 46px;
+  }
 }
 
-@media (max-width: 360px) {
-  .period-tab { padding: 5px 8px; font-size: 11.5px; }
-  /* Hide count badges on the tiniest screens to save horizontal space */
-  .period-tab-count { display: none; }
-}
+

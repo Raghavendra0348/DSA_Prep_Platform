@@ -33,8 +33,15 @@ export function useBookmarks(page = 1) {
   const removeMutation = useMutation({
     mutationFn: (questionId) => apiToggleBookmark(questionId),
     onMutate: async (questionId) => {
-      await qc.cancelQueries({ queryKey });
+      const dashKey = QUERY_KEYS.dashboard();
+      await Promise.all([
+        qc.cancelQueries({ queryKey }),
+        qc.cancelQueries({ queryKey: dashKey }),
+      ]);
+
       const prev = qc.getQueryData(queryKey);
+      const prevDash = qc.getQueryData(dashKey);
+
       qc.setQueryData(queryKey, old => ({
         ...old,
         bookmarks: old?.bookmarks?.filter(bm => {
@@ -42,16 +49,32 @@ export function useBookmarks(page = 1) {
           return id !== questionId;
         }) ?? [],
       }));
-      return { prev };
+
+      if (prevDash?.stats) {
+        qc.setQueryData(dashKey, old => {
+          if (!old?.stats) return old;
+          return {
+            ...old,
+            stats: {
+              ...old.stats,
+              totalBookmarks: Math.max(0, (old.stats.totalBookmarks ?? 1) - 1),
+            },
+          };
+        });
+      }
+
+      return { prev, prevDash };
     },
     onError: (_err, _vars, ctx) => {
       if (ctx?.prev) qc.setQueryData(queryKey, ctx.prev);
+      if (ctx?.prevDash) qc.setQueryData(QUERY_KEYS.dashboard(), ctx.prevDash);
     },
     onSettled: () => {
-      // Re-sync in case the server state differs
       qc.invalidateQueries({ queryKey: QUERY_KEYS.bookmarks({}) });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.dashboard() });
     },
   });
+
 
   const rawBookmarks = data?.bookmarks ?? [];
 

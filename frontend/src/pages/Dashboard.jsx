@@ -222,15 +222,6 @@ export default function Dashboard() {
         </div>
 
         <div className="dash-ui-hero-actions">
-          <button
-            className={`dash-ui-btn-refresh ${isRefetching ? 'spinning' : ''}`}
-            onClick={() => refresh()}
-            title="Sync stats"
-            disabled={isRefetching}
-          >
-            <RefreshCw size={14} />
-            <span>{isRefetching ? 'Syncing...' : 'Sync'}</span>
-          </button>
           <Link to="/companies" className="dash-ui-btn-explore">
             <Building2 size={15} />
             <span>Explore 429+ Companies</span>

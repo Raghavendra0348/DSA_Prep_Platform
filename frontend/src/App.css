@@ -11,6 +11,12 @@
   flex: 1;
 }
 
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 64px;
+  }
+}
+
 /* ── Page Loader (Suspense fallback) ──────────────────────────────────────── */
 .page-loader {
   display: flex;

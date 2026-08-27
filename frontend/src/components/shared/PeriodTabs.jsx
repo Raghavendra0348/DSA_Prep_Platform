@@ -1,79 +1,84 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useEffect } from 'react';
+import { Calendar, Filter } from 'lucide-react';
 import './PeriodTabs.css';
 
 const PERIODS = [
-  { key: '30days',  label: '30 Days' },
-  { key: '3months', label: '3 Months' },
-  { key: '6months', label: '6 Months' },
-  { key: '6plus',   label: '6+ Months' },
-  { key: 'all',     label: 'All Time' },
+  { key: '30days',  label: '30 Days',   subtitle: 'Recent Activity' },
+  { key: '3months', label: '3 Months',  subtitle: 'Longer Period' },
+  { key: '6months', label: '6 Months',  subtitle: 'Past Half Year' },
+  { key: '6plus',   label: '6+ Months', subtitle: 'Historical' },
+  { key: 'all',     label: 'All Time',  subtitle: 'Complete Set' },
 ];
 
-export default function PeriodTabs({ active = 'all', onChange, stats = {} }) {
-  const containerRef = useRef(null);
-  const tabRefs = useRef({});
-  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+export default function PeriodTabs({
+  active = '30days',
+  onChange,
+  stats = {},
+  onToggleFilterDrawer,
+  hasActiveFilters = false,
+}) {
+  const scrollRef = useRef(null);
+  const activeTabRef = useRef(null);
 
-  const updateIndicator = useCallback(() => {
-    const activeEl = tabRefs.current[active];
-    const container = containerRef.current;
-    if (activeEl && container) {
-      const containerRect = container.getBoundingClientRect();
-      const tabRect = activeEl.getBoundingClientRect();
-      setIndicator({
-        left: tabRect.left - containerRect.left + container.scrollLeft,
-        width: tabRect.width,
+  // Auto-scroll active card into view smoothly on mobile
+  useEffect(() => {
+    if (activeTabRef.current && scrollRef.current) {
+      activeTabRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
       });
     }
   }, [active]);
 
-  useEffect(() => {
-    updateIndicator();
-    const activeEl = tabRefs.current[active];
-    if (activeEl && typeof activeEl.scrollIntoView === 'function') {
-      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-    }
-  }, [active, updateIndicator]);
-
-  // Recalculate on window resize or scroll
-  useEffect(() => {
-    const container = containerRef.current;
-    window.addEventListener('resize', updateIndicator);
-    if (container) {
-      container.addEventListener('scroll', updateIndicator);
-    }
-    return () => {
-      window.removeEventListener('resize', updateIndicator);
-      if (container) {
-        container.removeEventListener('scroll', updateIndicator);
-      }
-    };
-  }, [updateIndicator]);
-
   return (
-    <div className="period-tabs" role="tablist" aria-label="Time period filter" ref={containerRef}>
-      {/* Sliding indicator */}
-      <div
-        className="period-tabs-indicator"
-        style={{ left: indicator.left, width: indicator.width }}
-      />
+    <div className="period-cards-container">
+      <div className="period-cards-wrapper">
+        {/* Horizontally scrollable row of period cards */}
+        <div className="period-cards-scroll" ref={scrollRef} role="tablist" aria-label="Time period filters">
+          {PERIODS.map(({ key, label, subtitle }) => {
+            const isActive = active === key;
+            return (
+              <button
+                key={key}
+                ref={isActive ? activeTabRef : null}
+                type="button"
+                className={`period-card ${isActive ? 'active' : ''}`}
+                onClick={() => onChange(key)}
+                aria-selected={isActive}
+                role="tab"
+              >
+                <div className="period-card-header">
+                  <Calendar size={15} className="period-card-icon" />
+                  <span className="period-card-title">{label}</span>
+                </div>
+                <span className="period-card-sub">{subtitle}</span>
+                {stats[key]?.total != null && (
+                  <span className="period-card-count">{stats[key].total}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
-      {PERIODS.map(({ key, label }) => (
-        <button
-          key={key}
-          ref={(el) => { tabRefs.current[key] = el; }}
-          className={`period-tab ${active === key ? 'active' : ''}`}
-          onClick={() => onChange(key)}
-          role="tab"
-          aria-selected={active === key}
-          aria-label={`${label}${stats[key]?.total != null ? ` — ${stats[key].total} problems` : ''}`}
-        >
-          {label}
-          {stats[key] != null && (
-            <span className="period-tab-count">{stats[key].total}</span>
-          )}
-        </button>
-      ))}
+        {/* Quick Filter toggle button */}
+        {onToggleFilterDrawer && (
+          <div className="period-filter-wrapper">
+            <button
+              type="button"
+              className={`period-filter-btn ${hasActiveFilters ? 'active' : ''}`}
+              onClick={onToggleFilterDrawer}
+              title="Filter by difficulty & sorting"
+              aria-label="Toggle difficulty and sorting filters"
+            >
+              <Filter size={18} />
+              {hasActiveFilters && <span className="filter-active-dot" />}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+
