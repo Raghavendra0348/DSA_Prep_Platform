@@ -19,6 +19,7 @@ docs/
 │
 ├── ⚙️ backend/                    ← Backend system design, API contracts & database
 │   ├── architecture.md            ← Express 5 + Prisma 7 architecture & DB schema
+│   ├── EMAIL_OTP_AUTHENTICATION_GUIDE.md ← Complete Email OTP Verification & Security Guide
 │   ├── api-reference.md           ← Complete REST API endpoint reference with JSON payloads
 │   ├── setup.md                   ← Local backend & PostgreSQL setup guide
 │   ├── pending.md                 ← Prioritized backend backlog & roadmap
@@ -52,6 +53,7 @@ docs/
 
 ### 1. 🏗 Architecture & System Design
 
+- [**Email OTP & Security Architecture**](./backend/EMAIL_OTP_AUTHENTICATION_GUIDE.md) — CSPRNG, SHA-256 hashing, brute-force protection & Nodemailer transport.
 - [**Frontend Architecture**](./frontend/architecture.md) — Directory layout, components, context, design system.
 - [**TanStack Query Strategy**](./frontend/tanstack-query.md) — Stale-time rules, cache keys, optimistic mutations.
 - [**Route Management**](./frontend/app-routing.md) — Dynamic imports, suspense fallbacks, protected routes.

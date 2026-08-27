@@ -104,3 +104,18 @@ model RefreshToken {
 
   @@index([userId])
 }
+
+// Stores 6-digit OTP verification codes for email signup.
+// Auto-expires after 10 minutes.
+model VerificationCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String   // Hashed or encrypted OTP string
+  attempts  Int      @default(0) // Brute-force protection: max 5 attempts
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+

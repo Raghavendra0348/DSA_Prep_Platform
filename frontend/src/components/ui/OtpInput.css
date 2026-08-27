@@ -1,0 +1,57 @@
+/* ── OTP Segmented Input Styling ──────────────────────────────────────────── */
+.otp-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0;
+  width: 100%;
+}
+
+.otp-digit-box {
+  width: 48px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0f6fc;
+  text-align: center;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.otp-digit-box:focus {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2),
+              0 4px 12px rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+.otp-digit-box.has-value {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.04);
+  color: #38bdf8;
+}
+
+.otp-digit-box:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 420px) {
+  .otp-input-container {
+    gap: 6px;
+  }
+  .otp-digit-box {
+    width: 40px;
+    height: 48px;
+    font-size: 19px;
+    border-radius: 10px;
+  }
+}

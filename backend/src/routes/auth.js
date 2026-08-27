@@ -28,15 +28,51 @@ async function getGoogleUserInfo(accessToken) {
   });
 }
 
-// ── Zod schemas ────────────────────────────────────────────────────────────
+const crypto        = require('crypto');
+const { sendVerificationOtp } = require('../lib/mailer');
+
+// ── Disposable Email Domains Blocklist ─────────────────────────────────────
+const DISPOSABLE_DOMAINS = new Set([
+  'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
+  'throwawaymail.com', 'temp-mail.org', 'sharklasers.com', 'yopmail.com',
+  'dispostable.com', 'getairmail.com', 'fakeinbox.com', 'trashmail.com'
+]);
+
+function isDisposableEmail(email) {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return domain ? DISPOSABLE_DOMAINS.has(domain) : false;
+}
+
+// ── Cryptographic OTP Hash Helper (Protects codes at rest in PostgreSQL) ───
+function hashOtp(code) {
+  return crypto.createHash('sha256').update(code.trim()).digest('hex');
+}
+
+// ── Sanitize Text (Prevent XSS and strip control characters) ───────────────
+function sanitizeText(str) {
+  return str.replace(/<[^>]*>?/gm, '').trim();
+}
+
+// ── Zod schemas with strict sanitization ───────────────────────────────────
 const registerSchema = z.object({
-  email:    z.string().email({ message: 'Invalid email format' }),
-  name:     z.string().trim().min(1, { message: 'Name cannot be empty' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  email:    z.string().email({ message: 'Invalid email format' }).max(254),
+  name:     z.string().trim().min(1, { message: 'Name cannot be empty' }).max(60),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' }).max(128),
+});
+
+const sendOtpSchema = z.object({
+  email: z.string().email({ message: 'Invalid email format' }).max(254),
+});
+
+const verifyAndRegisterSchema = z.object({
+  email:    z.string().email({ message: 'Invalid email format' }).max(254),
+  name:     z.string().trim().min(1, { message: 'Name cannot be empty' }).max(60),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' }).max(128),
+  code:     z.string().trim().regex(/^\d{6}$/, { message: 'Verification code must be 6 digits' }),
 });
 
 const loginSchema = z.object({
-  email:    z.string().email({ message: 'Invalid email format' }),
+  email:    z.string().email({ message: 'Invalid email format' }).max(254),
   password: z.string().min(1, { message: 'Password is required' }),
 });
 
@@ -50,28 +86,271 @@ function signRefreshToken(payload) {
   return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET + '_refresh', { expiresIn: '30d' });
 }
 
-// ── POST /api/auth/register ────────────────────────────────────────────────
-router.post('/register', async (req, res, next) => {
+// ── POST /api/auth/send-otp ────────────────────────────────────────────────
+// Dispatches a 6-digit OTP code to the requested email for signup verification
+router.post('/send-otp', async (req, res, next) => {
   try {
-    // Zod parse throws ZodError (caught by errorHandler) on invalid input
-    const { email, name, password } = registerSchema.parse(req.body);
+    const { email } = sendOtpSchema.parse(req.body);
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check disposable email
+    if (isDisposableEmail(normalizedEmail)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Disposable email addresses are not allowed. Please use a permanent email.',
+        code: 'DISPOSABLE_EMAIL',
+      });
+    }
 
     // Check if email already registered
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
-    if (existing) return res.status(409).json({ success: false, error: 'Email already registered', code: 'EMAIL_EXISTS' });
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        error: 'An account with this email already exists. Please log in.',
+        code: 'EMAIL_EXISTS',
+      });
+    }
 
-    // Hash password (bcrypt adds salt automatically)
+    // Rate-limit check: Cooldown of 40 seconds between requests
+    const recent = await prisma.verificationCode.findFirst({
+      where: {
+        email: normalizedEmail,
+        createdAt: { gte: new Date(Date.now() - 40 * 1000) },
+      },
+    });
+    if (recent) {
+      return res.status(429).json({
+        success: false,
+        error: 'Please wait a moment before requesting another code.',
+        code: 'TOO_MANY_REQUESTS',
+      });
+    }
+
+    // Clean up older verification codes for this email
+    await prisma.verificationCode.deleteMany({
+      where: { email: normalizedEmail },
+    });
+
+    // CSPRNG: Cryptographically secure 6-digit numeric OTP
+    const rawOtp = crypto.randomInt(100000, 1000000).toString();
+    const codeHash = hashOtp(rawOtp);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    // Save hashed OTP to DB
+    await prisma.verificationCode.create({
+      data: {
+        email: normalizedEmail,
+        code: codeHash,
+        attempts: 0,
+        expiresAt,
+      },
+    });
+
+    // Send plaintext OTP via email
+    await sendVerificationOtp(normalizedEmail, rawOtp);
+
+    res.json({
+      success: true,
+      message: 'Verification code sent to your email address.',
+    });
+  } catch (e) { next(e); }
+});
+
+// ── POST /api/auth/resend-otp ──────────────────────────────────────────────
+router.post('/resend-otp', async (req, res, next) => {
+  try {
+    const { email } = sendOtpSchema.parse(req.body);
+    const normalizedEmail = email.toLowerCase().trim();
+
+    if (isDisposableEmail(normalizedEmail)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Disposable email addresses are not allowed.',
+        code: 'DISPOSABLE_EMAIL',
+      });
+    }
+
+    // Check if already registered
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        error: 'An account with this email already exists.',
+        code: 'EMAIL_EXISTS',
+      });
+    }
+
+    // Cooldown check (40s)
+    const recent = await prisma.verificationCode.findFirst({
+      where: {
+        email: normalizedEmail,
+        createdAt: { gte: new Date(Date.now() - 40 * 1000) },
+      },
+    });
+    if (recent) {
+      return res.status(429).json({
+        success: false,
+        error: 'Please wait before requesting a new code.',
+        code: 'TOO_MANY_REQUESTS',
+      });
+    }
+
+    await prisma.verificationCode.deleteMany({
+      where: { email: normalizedEmail },
+    });
+
+    const rawOtp = crypto.randomInt(100000, 1000000).toString();
+    const codeHash = hashOtp(rawOtp);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await prisma.verificationCode.create({
+      data: {
+        email: normalizedEmail,
+        code: codeHash,
+        attempts: 0,
+        expiresAt,
+      },
+    });
+
+    await sendVerificationOtp(normalizedEmail, rawOtp);
+
+    res.json({
+      success: true,
+      message: 'A fresh verification code has been sent.',
+    });
+  } catch (e) { next(e); }
+});
+
+// ── POST /api/auth/verify-and-register ─────────────────────────────────────
+// Verifies the 6-digit OTP code and creates the user account with brute-force lockout
+router.post('/verify-and-register', async (req, res, next) => {
+  try {
+    const { email, name, password, code } = verifyAndRegisterSchema.parse(req.body);
+    const normalizedEmail = email.toLowerCase().trim();
+    const sanitizedName = sanitizeText(name);
+
+    // Double check email uniqueness
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        error: 'An account with this email already exists.',
+        code: 'EMAIL_EXISTS',
+      });
+    }
+
+    // Find valid unexpired OTP record
+    const verificationRecord = await prisma.verificationCode.findFirst({
+      where: {
+        email: normalizedEmail,
+        expiresAt: { gte: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!verificationRecord) {
+      return res.status(400).json({
+        success: false,
+        error: 'Verification code has expired or was not requested. Please request a new code.',
+        code: 'INVALID_OTP',
+      });
+    }
+
+    // Brute-force protection: Max 5 attempts per OTP
+    if (verificationRecord.attempts >= 5) {
+      await prisma.verificationCode.deleteMany({ where: { email: normalizedEmail } });
+      return res.status(429).json({
+        success: false,
+        error: 'Too many incorrect attempts. This code has been invalidated. Please request a new code.',
+        code: 'TOO_MANY_ATTEMPTS',
+      });
+    }
+
+    // Verify hash match
+    const providedHash = hashOtp(code);
+    if (providedHash !== verificationRecord.code) {
+      const nextAttempts = verificationRecord.attempts + 1;
+      const remaining = 5 - nextAttempts;
+
+      if (remaining <= 0) {
+        await prisma.verificationCode.deleteMany({ where: { email: normalizedEmail } });
+        return res.status(400).json({
+          success: false,
+          error: 'Too many incorrect attempts. Code invalidated. Please request a new code.',
+          code: 'TOO_MANY_ATTEMPTS',
+        });
+      }
+
+      await prisma.verificationCode.update({
+        where: { id: verificationRecord.id },
+        data: { attempts: { increment: 1 } },
+      });
+
+      return res.status(400).json({
+        success: false,
+        error: `Invalid verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
+        code: 'INVALID_OTP',
+        remainingAttempts: remaining,
+      });
+    }
+
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // Create user — store email in lowercase for consistency
+    // Atomic transaction: Create user, delete OTPs, create refresh token
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: normalizedEmail,
+          name: sanitizedName,
+          password: hashed,
+          authProvider: 'email',
+        },
+      });
+
+      await tx.verificationCode.deleteMany({
+        where: { email: normalizedEmail },
+      });
+
+      const accessToken  = signAccessToken({ id: user.id, email: user.email });
+      const refreshToken = signRefreshToken({ id: user.id, email: user.email });
+
+      await tx.refreshToken.create({
+        data: { token: refreshToken, userId: user.id },
+      });
+
+      return { user, accessToken, refreshToken };
+    });
+
+    res.status(201).json({
+      success: true,
+      token: result.accessToken,
+      refreshToken: result.refreshToken,
+      user: { id: result.user.id, name: result.user.name, email: result.user.email },
+    });
+  } catch (e) { next(e); }
+});
+
+
+// ── POST /api/auth/register (Direct Fallback) ──────────────────────────────
+router.post('/register', async (req, res, next) => {
+  try {
+    const { email, name, password } = registerSchema.parse(req.body);
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) return res.status(409).json({ success: false, error: 'Email already registered', code: 'EMAIL_EXISTS' });
+
+    const hashed = await bcrypt.hash(password, 10);
+
     const user = await prisma.user.create({
-      data: { email: email.toLowerCase(), name: name.trim(), password: hashed, authProvider: 'email' },
+      data: { email: normalizedEmail, name: name.trim(), password: hashed, authProvider: 'email' },
     });
 
     const accessToken  = signAccessToken({ id: user.id, email: user.email });
     const refreshToken = signRefreshToken({ id: user.id, email: user.email });
 
-    // Store refresh token in DB
     await prisma.refreshToken.create({
       data: { token: refreshToken, userId: user.id },
     });
@@ -84,6 +363,7 @@ router.post('/register', async (req, res, next) => {
     });
   } catch (e) { next(e); }
 });
+
 
 // ── POST /api/auth/login ───────────────────────────────────────────────────
 router.post('/login', async (req, res, next) => {
