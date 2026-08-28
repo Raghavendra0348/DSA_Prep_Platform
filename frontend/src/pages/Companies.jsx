@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo,useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Building2, ArrowUpDown, ChevronDown, ChevronRight,
@@ -38,7 +38,8 @@ const TIER_ICONS = {
 
 export default function Companies() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sort, setSort] = useState('az');
+  const [sort, setSort] = useState('questions');
+  
   const [collapsedTiers, setCollapsedTiers] = useState(new Set());
   const [expandedOther, setExpandedOther] = useState(false);
 
@@ -46,10 +47,12 @@ export default function Companies() {
   const activeType = searchParams.get('type') || 'all';
 
   // TanStack Query — fetch once, cached for 5 min, navigate-back is instant
-  const { companies, loading, error } = useCompanies();
+  const { companies, totalCount, loading, error } = useCompanies();
 
   // page title
-  useMemo(() => { document.title = 'Companies — DSA Prep'; }, []);
+  useEffect(() => {
+  document.title = 'Companies — DSA Prep';
+}, []);
 
   // ── URL handlers ────────────────────────────────────────────────────────
   const handleSearch = (q) => {
@@ -113,7 +116,7 @@ export default function Companies() {
       <div className="companies-header">
         <h1>Companies</h1>
         <p className="companies-subtitle">
-          Browse {companies.length} companies organized by tier
+          Browse {totalCount} companies organized by tier
         </p>
       </div>
 

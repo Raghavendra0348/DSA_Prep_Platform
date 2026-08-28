@@ -93,3 +93,7 @@ database_upgrade_plan.md
 skills-lock.json
 backend/scripts/clean-empty-companies.js
 
+
+COUNT_FLOW_EXPLANATION.md
+frontend/improvements
+
