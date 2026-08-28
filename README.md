@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/images/dsa_logo.jpg" alt="DSA Prep Platform Logo" width="100" style="border-radius: 50%;" />
+
 # 🚀 DSA Prep Platform
 
 **Company-Wise LeetCode Interview Preparation — Built for Engineers, by Engineers**
