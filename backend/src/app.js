@@ -9,10 +9,30 @@ const app = express();
 
 // ── Security Middleware ────────────────────────────────────────────────────
 app.use(helmet());
+
+// Dynamic CORS configuration allowing localhost and LAN development access
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  : ['http://localhost:5173', 'http://localhost:5174', 'https://dsa-preparation-platform.vercel.app'];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
-    : 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (Postman, curl, mobile apps)
+    if (!origin) return callback(null, true);
+
+    // Allow configured production/staging origins
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      return callback(null, true);
+    }
+
+    // In development mode, allow localhost and any local network IP (10.x, 192.168.x, 172.x)
+    const isLAN = /^https?:\/\/(localhost|127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin);
+    if (isLAN) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json());

@@ -1,26 +1,29 @@
 /**
  * Runtime environment config with strict validation.
- * Crashes early (at startup) if required variables are missing,
- * rather than failing silently at API call time.
- *
- * Add new variables here as the app grows.
+ * Dynamically resolves API URL for mobile devices on the same local network.
  */
 
-const required = ['VITE_API_URL'];
+function resolveApiUrl() {
+  const envUrl = import.meta.env.VITE_API_URL;
 
-const missing = required.filter(key => !import.meta.env[key]);
+  // In browser runtime (development on mobile / LAN):
+  if (typeof window !== 'undefined') {
+    const { hostname, protocol } = window.location;
+    // If accessing via local network IP (e.g., 10.x.x.x, 192.168.x.x) or non-localhost
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // If VITE_API_URL was set to localhost, redirect it to the PC's LAN IP on port 5000
+      if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
+        return `${protocol}//${hostname}:5000`;
+      }
+    }
+  }
 
-if (missing.length > 0) {
-  throw new Error(
-    `[config] Missing required environment variables:\n` +
-    missing.map(k => `  - ${k}`).join('\n') +
-    `\n\nCreate a .env file in the frontend/ directory with these values.`
-  );
+  return envUrl || 'http://localhost:5000';
 }
 
 export const config = {
   /** Base URL for all API requests */
-  apiUrl: import.meta.env.VITE_API_URL,
+  apiUrl: resolveApiUrl(),
 
   /** True when running in development mode */
   isDev: import.meta.env.DEV,
@@ -31,3 +34,4 @@ export const config = {
   /** App version from package.json (optional — set VITE_APP_VERSION in CI) */
   version: import.meta.env.VITE_APP_VERSION ?? '0.0.0',
 };
+

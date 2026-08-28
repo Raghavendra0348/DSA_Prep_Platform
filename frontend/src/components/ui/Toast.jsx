@@ -13,12 +13,12 @@ export function ToastProvider({ children }) {
     setToasts(prev =>
       prev.map(t => t.id === id ? { ...t, exiting: true } : t)
     );
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 380);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 300);
   }, []);
 
-  const showToast = useCallback((message, type = 'info', duration = 3500) => {
+  const showToast = useCallback((message, type = 'info', duration = 2250) => {
     const id = ++nextToastId;
-    setToasts(prev => [...prev, { id, message, type, exiting: false }]);
+    setToasts(prev => [...prev, { id, message, type, duration, exiting: false }]);
     if (duration > 0) {
       setTimeout(() => dismiss(id), duration);
     }
@@ -31,7 +31,7 @@ export function ToastProvider({ children }) {
       (message, type, duration) => showToast(message, type, duration),
       {
         success: (msg, dur) => showToast(msg, 'success', dur),
-        error:   (msg, dur) => showToast(msg, 'error', dur ?? 5000),
+        error:   (msg, dur) => showToast(msg, 'error', dur ?? 3000),
         warning: (msg, dur) => showToast(msg, 'warning', dur),
         info:    (msg, dur) => showToast(msg, 'info', dur),
       }
@@ -56,6 +56,13 @@ const ICONS = {
   info:    Info,
 };
 
+const TITLES = {
+  success: 'Success',
+  error:   'Error',
+  warning: 'Warning',
+  info:    'Note',
+};
+
 // ── Container ─────────────────────────────────────────────────────────────────
 function ToastContainer({ toasts, dismiss }) {
   if (!toasts.length) return null;
@@ -69,19 +76,28 @@ function ToastContainer({ toasts, dismiss }) {
 }
 
 // ── Single Toast ──────────────────────────────────────────────────────────────
-function ToastItem({ toast: { message, type, exiting }, onDismiss }) {
+function ToastItem({ toast: { message, type, duration, exiting }, onDismiss }) {
   const Icon = ICONS[type] || Info;
+  const title = TITLES[type] || 'Notice';
 
   return (
     <div
       className={`toast toast-${type} ${exiting ? 'toast-exit' : ''}`}
       role={type === 'error' ? 'alert' : 'status'}
+      style={{ '--toast-duration': `${duration || 3500}ms` }}
     >
-      <Icon size={17} className="toast-icon" aria-hidden="true" />
-      <span className="toast-message">{message}</span>
+      <div className="toast-icon-wrap">
+        <Icon size={18} className="toast-icon" aria-hidden="true" />
+      </div>
+      <div className="toast-body">
+        <span className="toast-title">{title}</span>
+        <span className="toast-message">{message}</span>
+      </div>
       <button className="toast-close" onClick={onDismiss} aria-label="Dismiss notification">
-        <X size={14} />
+        <X size={15} />
       </button>
+      <div className="toast-progress" aria-hidden="true" />
     </div>
   );
 }
+
