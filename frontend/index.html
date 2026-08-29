@@ -1,69 +1,242 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Character Set & Viewport -->
+    <!-- =========================================================
+         BASIC DOCUMENT SETUP
+    ========================================================== -->
     <meta charset="UTF-8" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
-    <!-- Primary SEO Meta Tags -->
-    <title>DSA Prep — Company-Wise LeetCode & Coding Interview Questions</title>
-    <meta name="title" content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions" />
-    <meta name="description" content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track problem-solving progress with real-time stats and curated roadmaps." />
-    <meta name="keywords" content="DSA, Data Structures and Algorithms, LeetCode Company Questions, Coding Interview Preparation, FAANG Interview Questions, Software Engineer Interview, LeetCode Patterns, Technical Interview Practice, Google Interview Questions, Amazon Coding Questions, Meta LeetCode, Microsoft Interview DSA" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
+    />
+
+    <!-- =========================================================
+         PRIMARY SEO
+    ========================================================== -->
+    <title>
+      DSA Prep — Company-Wise LeetCode & Coding Interview Questions
+    </title>
+
+    <meta
+      name="title"
+      content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions"
+    />
+
+    <meta
+      name="description"
+      content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track your progress with real-time stats and curated roadmaps."
+    />
+
+    <meta
+      name="keywords"
+      content="DSA, Data Structures and Algorithms, LeetCode Company Questions, Coding Interview Preparation, FAANG Interview Questions, Software Engineer Interview, LeetCode Patterns, Technical Interview Practice, Google Interview Questions, Amazon Coding Questions, Meta LeetCode, Microsoft Interview DSA"
+    />
+
     <meta name="author" content="DSA Prep" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <meta
+      name="googlebot"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
     <meta name="language" content="English" />
+
     <meta name="rating" content="General" />
+
     <meta name="distribution" content="Global" />
-    <meta name="revisit-after" content="7 days" />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://dsa-preparation-platform.vercel.app/" />
+    <!-- =========================================================
+         CANONICAL URL
+    ========================================================== -->
+    <link
+      rel="canonical"
+      href="https://dsa-preparation-platform.vercel.app/"
+    />
 
-    <!-- Open Graph / Facebook / Discord / LinkedIn -->
+    <!-- =========================================================
+         OPEN GRAPH
+         Used by WhatsApp, Facebook, Discord, LinkedIn, etc.
+    ========================================================== -->
+
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dsa-preparation-platform.vercel.app/" />
+
+    <meta
+      property="og:url"
+      content="https://dsa-preparation-platform.vercel.app/"
+    />
+
     <meta property="og:site_name" content="DSA Prep" />
-    <meta property="og:title" content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions" />
-    <meta property="og:description" content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track problem-solving progress with real-time stats and curated roadmaps." />
-    <meta property="og:image" content="/dsa_logo.jpg" />
+
+    <meta
+      property="og:title"
+      content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions"
+    />
+
+    <meta
+      property="og:description"
+      content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track your progress with real-time stats and curated roadmaps."
+    />
+
+    <!-- IMPORTANT: Use an absolute URL -->
+    <meta
+      property="og:image"
+      content="https://dsa-preparation-platform.vercel.app/dsa_logo.jpg"
+    />
+
+    <meta property="og:image:width" content="1200" />
+
+    <meta property="og:image:height" content="630" />
+
+    <meta
+      property="og:image:alt"
+      content="DSA Prep — Company-Wise Coding Interview Preparation"
+    />
+
     <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter / X -->
+    <!-- =========================================================
+         TWITTER / X
+    ========================================================== -->
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://dsa-preparation-platform.vercel.app/" />
-    <meta name="twitter:title" content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions" />
-    <meta name="twitter:description" content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track problem-solving progress with real-time stats and curated roadmaps." />
-    <meta name="twitter:image" content="/dsa_logo.jpg" />
 
-    <!-- Mobile & PWA Optimization -->
+    <meta
+      name="twitter:url"
+      content="https://dsa-preparation-platform.vercel.app/"
+    />
+
+    <meta
+      name="twitter:title"
+      content="DSA Prep — Company-Wise LeetCode & Coding Interview Questions"
+    />
+
+    <meta
+      name="twitter:description"
+      content="Master tech interviews with 429+ company-specific LeetCode DSA questions. Filter by topic, difficulty, and recency. Track your progress with real-time stats and curated roadmaps."
+    />
+
+    <meta
+      name="twitter:image"
+      content="https://dsa-preparation-platform.vercel.app/dsa_logo.jpg"
+    />
+
+    <meta
+      name="twitter:image:alt"
+      content="DSA Prep — Company-Wise Coding Interview Preparation"
+    />
+
+    <!-- =========================================================
+         MOBILE / PWA
+    ========================================================== -->
+
     <meta name="theme-color" content="#0d1117" />
+
     <meta name="color-scheme" content="dark" />
+
     <meta name="application-name" content="DSA Prep" />
-    <meta name="apple-mobile-web-app-title" content="DSA Prep" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="format-detection" content="telephone=no" />
 
-    <!-- Favicons & App Icons -->
-    <link rel="icon" type="image/jpeg" href="/dsa_logo.jpg" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/dsa_logo.jpg" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="DSA Prep"
+    />
 
-    <!-- Preconnect & DNS-Prefetch for External Resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    <link rel="dns-prefetch" href="https://accounts.google.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta
+      name="apple-mobile-web-app-capable"
+      content="yes"
+    />
 
-    <!-- External Scripts -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
 
-    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <meta
+      name="mobile-web-app-capable"
+      content="yes"
+    />
+
+    <meta
+      name="format-detection"
+      content="telephone=no"
+    />
+
+    <!-- =========================================================
+         FAVICON / APP ICON
+    ========================================================== -->
+
+    <link
+      rel="icon"
+      type="image/jpeg"
+      href="/dsa_logo.jpg"
+    />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/dsa_logo.jpg"
+    />
+
+    <!-- =========================================================
+         PERFORMANCE
+    ========================================================== -->
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
+    <link
+      rel="dns-prefetch"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="dns-prefetch"
+      href="https://fonts.gstatic.com"
+    />
+
+    <link
+      rel="dns-prefetch"
+      href="https://accounts.google.com"
+    />
+
+    <!-- =========================================================
+         GOOGLE FONT
+    ========================================================== -->
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- =========================================================
+         GOOGLE IDENTITY SERVICES
+    ========================================================== -->
+
+    <script
+      src="https://accounts.google.com/gsi/client"
+      async
+      defer
+    ></script>
+
+    <!-- =========================================================
+         STRUCTURED DATA / JSON-LD
+    ========================================================== -->
+
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -74,16 +247,15 @@
             "url": "https://dsa-preparation-platform.vercel.app/",
             "name": "DSA Prep",
             "description": "Company-wise LeetCode questions and DSA interview preparation platform.",
-            "potentialAction": [
-              {
-                "@type": "SearchAction",
-                "target": {
-                  "@type": "EntryPoint",
-                  "urlTemplate": "https://dsa-preparation-platform.vercel.app/search?q={search_term_string}"
-                },
-                "query-input": "required name=search_term_string"
-              }
-            ]
+            "inLanguage": "en",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://dsa-preparation-platform.vercel.app/search?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
           },
           {
             "@type": "WebApplication",
@@ -92,8 +264,9 @@
             "url": "https://dsa-preparation-platform.vercel.app/",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "All",
-            "browserRequirements": "Requires JavaScript. Requires HTML5.",
+            "browserRequirements": "Requires JavaScript and HTML5.",
             "description": "Prepare for software engineering coding interviews with company-tagged DSA questions, roadmaps, and progress tracking.",
+            "image": "https://dsa-preparation-platform.vercel.app/dsa_logo.jpg",
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -104,8 +277,17 @@
       }
     </script>
   </head>
+
+  <!-- =========================================================
+       BODY
+  ========================================================== -->
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <script
+      type="module"
+      src="/src/main.jsx"
+    ></script>
   </body>
 </html>
