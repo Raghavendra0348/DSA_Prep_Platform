@@ -12,6 +12,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
 import './BottomNav.css';
 
@@ -48,6 +49,7 @@ const PRIMARY_NAV = [
 
 export default function BottomNav() {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname;
@@ -101,6 +103,7 @@ export default function BottomNav() {
   const confirmLogout = async () => {
     setLogoutModalOpen(false);
     await logout();
+    toast.success('Logged out successfully');
     navigate('/');
   };
 

@@ -7,12 +7,14 @@ import {
   ArrowRight, CheckCircle2
 } from 'lucide-react';
 import { useSearch } from '../../hooks/useSearch';
+import { useToast } from '../../hooks/useToast';
 import LeetCodeIcon from '../ui/LeetCodeIcon';
 import Modal from '../ui/Modal';
 import './Navbar.css';
 
-export default function Navbar() {
+export default function Navbar({ onOpenPalette }) {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -113,6 +115,7 @@ export default function Navbar() {
   const confirmLogout = async () => {
     setLogoutModalOpen(false);
     await logout();
+    toast.success('Logged out successfully');
     navigate('/');
   };
 
@@ -174,9 +177,14 @@ export default function Navbar() {
                     <X size={13} />
                   </button>
                 ) : (
-                  <span className="search-btn-shortcut">
+                  <button
+                    type="button"
+                    className="search-btn-shortcut"
+                    onClick={(e) => { e.preventDefault(); onOpenPalette?.(); }}
+                    aria-label="Open command palette (Ctrl+K)"
+                  >
                     <Command size={10} />K
-                  </span>
+                  </button>
                 )}
               </form>
 

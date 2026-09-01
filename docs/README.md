@@ -12,6 +12,7 @@ docs/
 │
 ├── 🎨 frontend/                   ← Frontend architecture, state management & UI guides
 │   ├── architecture.md            ← React 19 + Vite 5 SPA structure, tokens & patterns
+│   ├── navbar.md                  ← Navbar search, authentication, responsive drawer & logout flow
 │   ├── tanstack-query.md          ← TanStack Query caching strategy, query keys & mutations
 │   ├── app-routing.md             ← App.jsx routes, code-splitting & lazy loading
 │   ├── prd.md                     ← Frontend Product Requirements Document
@@ -55,6 +56,7 @@ docs/
 
 - [**Email OTP & Security Architecture**](./backend/EMAIL_OTP_AUTHENTICATION_GUIDE.md) — CSPRNG, SHA-256 hashing, brute-force protection & Nodemailer transport.
 - [**Frontend Architecture**](./frontend/architecture.md) — Directory layout, components, context, design system.
+- [**Navbar Component Guide**](./frontend/navbar.md) — Quick search, authentication controls, mobile drawer, and logout flow.
 - [**TanStack Query Strategy**](./frontend/tanstack-query.md) — Stale-time rules, cache keys, optimistic mutations.
 - [**Route Management**](./frontend/app-routing.md) — Dynamic imports, suspense fallbacks, protected routes.
 - [**Backend Architecture**](./backend/architecture.md) — Express middleware, Prisma models, PostgreSQL relations.
