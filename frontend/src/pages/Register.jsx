@@ -15,6 +15,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import GoogleSignInButton from '../components/ui/GoogleSignInButton';
 import OtpInput from '../components/ui/OtpInput';
+import CoolBlobEffect from '../components/ui/CoolBlobEffect';
 import Spinner from '../components/ui/Spinner';
 import './Auth.css';
 
@@ -229,6 +230,7 @@ export default function Register() {
         animate="show"
         key={step}
       >
+        <CoolBlobEffect />
         <AnimatePresence mode="wait">
           {step === 1 ? (
             <motion.div

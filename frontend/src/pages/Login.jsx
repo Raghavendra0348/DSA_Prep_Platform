@@ -6,6 +6,7 @@ import { login as apiLogin, googleLoginWithAccessToken as apiGoogleLogin } from 
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import GoogleSignInButton from '../components/ui/GoogleSignInButton';
+import CoolBlobEffect from '../components/ui/CoolBlobEffect';
 import Spinner from '../components/ui/Spinner';
 import './Auth.css';
 
@@ -124,6 +125,7 @@ export default function Login() {
         initial="hidden"
         animate="show"
       >
+        <CoolBlobEffect />
         <motion.div variants={itemVariants} className="auth-header">
           <h1>Welcome back</h1>
           <p>Sign in to your account to continue</p>

@@ -1,0 +1,378 @@
+/* ── Bubble Gum Elastic Stretchy Blob (Black Theme) ──────────────────────── */
+
+.blob-section {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.blob-meta {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: gum-ambient-wobble 20s ease-in-out infinite alternate;
+  transform-origin: center center;
+}
+
+/* ── Central Bubble Gum Core ──────────────────────────────────────────────── */
+/* Elastic core: stretches toward departing pieces, recoils on snap, squashes on impact */
+.blob-core {
+  position: absolute;
+  width: 155px;
+  height: 155px;
+  background: #000000;
+  border-radius: 44% 56% 62% 38% / 46% 48% 52% 54%;
+  animation: gum-core-stretch 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  will-change: transform, border-radius;
+  transform-origin: center center;
+}
+
+/* ── Stretchy Bubble Gum Satellite Pieces ─────────────────────────────────── */
+.blob-piece {
+  position: absolute;
+  background: #000000;
+  will-change: transform, border-radius, opacity;
+  transform-origin: center center;
+}
+
+/* Piece 1: Elastic Gum Pull & Snap (Top-Left) */
+.blob-piece-1 {
+  width: 68px;
+  height: 68px;
+  animation: gum-piece-1 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* Piece 2: Elastic Gum Pull & Snap (Bottom-Right) */
+.blob-piece-2 {
+  width: 74px;
+  height: 74px;
+  animation: gum-piece-2 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* Piece 3: Elastic Gum Pull & Snap (Top-Right) */
+.blob-piece-3 {
+  width: 60px;
+  height: 60px;
+  animation: gum-piece-3 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* Piece 4: Elastic Gum Pull & Snap (Bottom-Left) */
+.blob-piece-4 {
+  width: 64px;
+  height: 64px;
+  animation: gum-piece-4 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* Piece 5: Elastic Gum Pull & Snap (Top-Center) */
+.blob-piece-5 {
+  width: 52px;
+  height: 52px;
+  animation: gum-piece-5 10s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* ── Bubble Gum Elastic Choreography ─────────────────────────────────────── */
+
+/* Central Core Stretch, Snap Recoil & Impact Squashes */
+@keyframes gum-core-stretch {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1, 1) rotate(0deg);
+    border-radius: 44% 56% 62% 38% / 46% 48% 52% 54%;
+  }
+  /* 16%: Gum Piece 1 pulls out -> Core stretches towards top-left */
+  16% {
+    transform: translate3d(-18px, -14px, 0) scale(1.22, 0.82) rotate(-20deg);
+    border-radius: 80% 20% 40% 60% / 70% 30% 70% 30%;
+  }
+  /* 22%: Snap recoil! Core bounces back like rubber */
+  22% {
+    transform: translate3d(8px, 6px, 0) scale(0.88, 1.15) rotate(10deg);
+    border-radius: 35% 65% 60% 40% / 45% 55% 45% 55%;
+  }
+  /* 30%: Gum Piece 2 pulls out -> Core stretches towards bottom-right */
+  30% {
+    transform: translate3d(22px, 18px, 0) scale(1.28, 0.78) rotate(35deg);
+    border-radius: 25% 75% 75% 25% / 30% 70% 30% 70%;
+  }
+  /* 36%: Snap recoil! */
+  36% {
+    transform: translate3d(-10px, -8px, 0) scale(0.85, 1.18) rotate(-15deg);
+    border-radius: 60% 40% 45% 55% / 50% 50% 50% 50%;
+  }
+  /* 44%: Piece 3 pulls -> Core stretches towards top-right */
+  44% {
+    transform: translate3d(18px, -18px, 0) scale(1.2, 0.8) rotate(45deg);
+    border-radius: 30% 70% 30% 70% / 75% 25% 75% 25%;
+  }
+  /* 50%: Snap recoil! */
+  50% {
+    transform: translate3d(-8px, 8px, 0) scale(0.82, 1.16) rotate(10deg);
+  }
+  /* 60%: Pieces 4 & 5 detach -> Core jiggles and floats as small gum droplet */
+  64% {
+    transform: translate3d(-15px, 20px, 0) scale(0.55, 0.68) rotate(75deg);
+    border-radius: 65% 35% 55% 45% / 40% 60% 40% 60%;
+  }
+  74% {
+    transform: translate3d(12px, -14px, 0) scale(0.62, 0.52) rotate(120deg);
+    border-radius: 40% 60% 35% 65% / 55% 45% 65% 35%;
+  }
+  /* 80%: Impact 1! Piece slams back -> Core squashes wide and absorbs */
+  82% {
+    transform: translate3d(-8px, 6px, 0) scale(0.72, 1.25) rotate(160deg);
+    border-radius: 20% 80% 80% 20% / 70% 30% 70% 30%;
+  }
+  /* 88%: Subsequent pieces slam in -> Big elastic gum jiggle */
+  89% {
+    transform: translate3d(6px, -4px, 0) scale(1.24, 0.82) rotate(200deg);
+    border-radius: 65% 35% 40% 60% / 35% 65% 60% 40%;
+  }
+  94% {
+    transform: translate3d(-3px, 2px, 0) scale(0.92, 1.08) rotate(240deg);
+    border-radius: 40% 60% 65% 35% / 55% 45% 45% 55%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1, 1) rotate(360deg);
+    border-radius: 44% 56% 62% 38% / 46% 48% 52% 54%;
+  }
+}
+
+/* Piece 1: Stretches out like taffy, snaps free, wobbles, pulls back & squashes in */
+@keyframes gum-piece-1 {
+  0%, 12% {
+    transform: translate3d(0, 0, 0) scale(0, 0) rotate(-35deg);
+    opacity: 0;
+  }
+  /* 15%: Extreme stretchy elongation (like pulled gum) */
+  15% {
+    transform: translate3d(-35px, -25px, 0) scale(1.85, 0.38) rotate(-35deg) skewX(-15deg);
+    opacity: 1;
+    border-radius: 85% 15% 85% 15% / 25% 75% 25% 75%;
+  }
+  /* 20%: SNAP! Recoils into squished droplet */
+  20% {
+    transform: translate3d(-85px, -70px, 0) scale(0.65, 1.45) rotate(-25deg);
+    opacity: 1;
+    border-radius: 35% 65% 35% 65% / 65% 35% 65% 35%;
+  }
+  /* 25%: Jiggle rebound */
+  25% {
+    transform: translate3d(-105px, -85px, 0) scale(1.22, 0.82) rotate(-10deg);
+    border-radius: 60% 40% 60% 40% / 40% 60% 40% 60%;
+  }
+  /* 40% - 68%: Floats around with liquid jelly wobble */
+  48% {
+    transform: translate3d(-128px, -62px, 0) scale(0.92, 1.12) rotate(35deg);
+    border-radius: 42% 58% 68% 32% / 58% 42% 62% 38%;
+  }
+  68% {
+    transform: translate3d(-95px, -80px, 0) scale(1.15, 0.88) rotate(70deg);
+    border-radius: 65% 35% 45% 55% / 45% 65% 35% 55%;
+  }
+  /* 78%: Stretches towards center like a rubber band pulling in */
+  80% {
+    transform: translate3d(-45px, -35px, 0) scale(1.75, 0.42) rotate(145deg) skewX(12deg);
+    opacity: 1;
+    border-radius: 15% 85% 15% 85% / 75% 25% 75% 25%;
+  }
+  /* 85%: Slams into core & squashes flat */
+  86% {
+    transform: translate3d(-10px, -5px, 0) scale(0.35, 1.6) rotate(160deg);
+    opacity: 0.8;
+  }
+  90%, 100% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Piece 2: Stretches Bottom-Right, snaps, wobbles, pulls back & squashes */
+@keyframes gum-piece-2 {
+  0%, 24% {
+    transform: translate3d(0, 0, 0) scale(0, 0) rotate(45deg);
+    opacity: 0;
+  }
+  /* 28%: Extreme stretchy gum elongation */
+  28% {
+    transform: translate3d(40px, 32px, 0) scale(1.9, 0.35) rotate(40deg) skewX(18deg);
+    opacity: 1;
+    border-radius: 15% 85% 15% 85% / 75% 25% 75% 25%;
+  }
+  /* 33%: SNAP! Rubber recoil */
+  34% {
+    transform: translate3d(95px, 75px, 0) scale(0.6, 1.5) rotate(50deg);
+    opacity: 1;
+    border-radius: 65% 35% 65% 35% / 35% 65% 35% 65%;
+  }
+  /* 40%: Jiggle rebound */
+  40% {
+    transform: translate3d(120px, 92px, 0) scale(1.25, 0.8) rotate(20deg);
+    border-radius: 40% 60% 40% 60% / 60% 40% 60% 40%;
+  }
+  /* 55% - 72%: Floating gum jelly */
+  58% {
+    transform: translate3d(138px, 65px, 0) scale(0.88, 1.16) rotate(-30deg);
+    border-radius: 58% 42% 35% 65% / 42% 58% 65% 35%;
+  }
+  72% {
+    transform: translate3d(102px, 82px, 0) scale(1.18, 0.86) rotate(-65deg);
+    border-radius: 35% 65% 60% 40% / 60% 40% 55% 45%;
+  }
+  /* 82%: Stretches towards center */
+  83% {
+    transform: translate3d(48px, 36px, 0) scale(1.8, 0.4) rotate(-135deg) skewX(-15deg);
+    opacity: 1;
+    border-radius: 85% 15% 85% 15% / 25% 75% 25% 75%;
+  }
+  /* 88%: Slams into core & melts in */
+  89% {
+    transform: translate3d(12px, 8px, 0) scale(0.3, 1.65) rotate(-150deg);
+    opacity: 0.75;
+  }
+  93%, 100% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Piece 3: Stretches Top-Right, snaps, wobbles, pulls back */
+@keyframes gum-piece-3 {
+  0%, 38% {
+    transform: translate3d(0, 0, 0) scale(0, 0) rotate(-45deg);
+    opacity: 0;
+  }
+  42% {
+    transform: translate3d(35px, -32px, 0) scale(1.82, 0.38) rotate(-45deg) skewX(-15deg);
+    opacity: 1;
+    border-radius: 80% 20% 80% 20% / 20% 80% 20% 80%;
+  }
+  47% {
+    transform: translate3d(92px, -82px, 0) scale(0.62, 1.48) rotate(-35deg);
+    opacity: 1;
+    border-radius: 35% 65% 35% 65% / 65% 35% 65% 35%;
+  }
+  54% {
+    transform: translate3d(112px, -98px, 0) scale(1.2, 0.85) rotate(-10deg);
+  }
+  68% {
+    transform: translate3d(124px, -72px, 0) scale(0.9, 1.15) rotate(40deg);
+    border-radius: 45% 55% 65% 35% / 55% 45% 35% 65%;
+  }
+  82% {
+    transform: translate3d(40px, -35px, 0) scale(1.7, 0.42) rotate(135deg);
+    opacity: 1;
+  }
+  88% {
+    transform: translate3d(10px, -8px, 0) scale(0.35, 1.55);
+    opacity: 0.7;
+  }
+  92%, 100% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Piece 4: Stretches Bottom-Left, snaps, wobbles, pulls back */
+@keyframes gum-piece-4 {
+  0%, 48% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+  53% {
+    transform: translate3d(-32px, 35px, 0) scale(1.85, 0.36) rotate(50deg) skewX(16deg);
+    opacity: 1;
+    border-radius: 20% 80% 20% 80% / 80% 20% 80% 20%;
+  }
+  58% {
+    transform: translate3d(-92px, 86px, 0) scale(0.65, 1.45) rotate(40deg);
+    opacity: 1;
+    border-radius: 65% 35% 65% 35% / 35% 65% 35% 65%;
+  }
+  66% {
+    transform: translate3d(-112px, 102px, 0) scale(1.22, 0.82) rotate(15deg);
+  }
+  76% {
+    transform: translate3d(-122px, 72px, 0) scale(0.92, 1.12) rotate(-30deg);
+    border-radius: 62% 38% 42% 58% / 38% 62% 58% 42%;
+  }
+  85% {
+    transform: translate3d(-42px, 36px, 0) scale(1.75, 0.4) rotate(-130deg);
+    opacity: 1;
+  }
+  90% {
+    transform: translate3d(-12px, 10px, 0) scale(0.35, 1.55);
+    opacity: 0.65;
+  }
+  94%, 100% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Piece 5: Stretches Top-Center, snaps, wobbles, pulls back */
+@keyframes gum-piece-5 {
+  0%, 58% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+  62% {
+    transform: translate3d(12px, -38px, 0) scale(0.38, 1.88) rotate(10deg);
+    opacity: 1;
+    border-radius: 80% 80% 20% 20% / 90% 90% 10% 10%;
+  }
+  67% {
+    transform: translate3d(22px, -105px, 0) scale(1.42, 0.65) rotate(-15deg);
+    opacity: 1;
+    border-radius: 35% 35% 65% 65% / 35% 35% 65% 65%;
+  }
+  74% {
+    transform: translate3d(18px, -125px, 0) scale(0.85, 1.22) rotate(20deg);
+  }
+  82% {
+    transform: translate3d(-12px, -112px, 0) scale(1.15, 0.88) rotate(60deg);
+  }
+  88% {
+    transform: translate3d(6px, -45px, 0) scale(0.4, 1.75) rotate(180deg);
+    opacity: 1;
+  }
+  92% {
+    transform: translate3d(2px, -10px, 0) scale(1.5, 0.35);
+    opacity: 0.6;
+  }
+  95%, 100% {
+    transform: translate3d(0, 0, 0) scale(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Ambient liquid sway */
+@keyframes gum-ambient-wobble {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(360deg) scale(0.96);
+  }
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .blob-meta,
+  .blob-core,
+  .blob-piece {
+    animation: none !important;
+  }
+}
