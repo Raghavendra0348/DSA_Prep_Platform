@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
@@ -16,6 +16,9 @@ import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
 import './BottomNav.css';
 
+// ── Navigation Items ─────────────────────────────────────────────────────────
+// 5 items total: 4 primary + 1 profile button (handled separately)
+// Whichever is active floats UP with a glowing blue bubble.
 const PRIMARY_NAV = [
   {
     key: 'home',
@@ -47,6 +50,9 @@ const PRIMARY_NAV = [
   },
 ];
 
+// Total slot count including the profile button at index 4
+const TOTAL_ITEMS = PRIMARY_NAV.length + 1; // 5
+
 export default function BottomNav() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -59,12 +65,12 @@ export default function BottomNav() {
   const menuRef = useRef(null);
   const profileButtonRef = useRef(null);
 
-  // Close menu on route change
+  // Close profile menu on route change
   useEffect(() => {
     setProfileMenuOpen(false);
   }, [location.pathname]);
 
-  // Close menu on outside click
+  // Close profile menu on outside click / tap
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -86,12 +92,29 @@ export default function BottomNav() {
     };
   }, [profileMenuOpen]);
 
+  // ── Derive which index (0-4) is active for the sliding border ────────────
+  const isProfileActive =
+    path.startsWith('/profile') ||
+    path.startsWith('/login') ||
+    path.startsWith('/register') ||
+    path.startsWith('/bookmarks') ||
+    profileMenuOpen;
+
+  const activeIndex = useMemo(() => {
+    for (let i = 0; i < PRIMARY_NAV.length; i++) {
+      if (PRIMARY_NAV[i].match(path)) return i;
+    }
+    if (isProfileActive) return TOTAL_ITEMS - 1;
+    return 0;
+  }, [path, isProfileActive]);
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleProfileClick = (e) => {
     e.preventDefault();
     if (!user) {
       navigate('/login');
     } else {
-      setProfileMenuOpen(prev => !prev);
+      setProfileMenuOpen((prev) => !prev);
     }
   };
 
@@ -107,18 +130,11 @@ export default function BottomNav() {
     navigate('/');
   };
 
-  const isProfileActive =
-    path.startsWith('/profile') ||
-    path.startsWith('/login') ||
-    path.startsWith('/register') ||
-    path.startsWith('/bookmarks') ||
-    profileMenuOpen;
-
   const userInitial = (user?.name || user?.email || 'U').charAt(0).toUpperCase();
 
   return (
     <div className="bottom-nav-root">
-      {/* ── Background Backdrop for dismiss ────────────────────────────── */}
+      {/* ── Backdrop for profile menu dismiss ─────────────────────────────── */}
       {profileMenuOpen && (
         <div
           className="bottom-nav-backdrop"
@@ -127,10 +143,9 @@ export default function BottomNav() {
         />
       )}
 
-      {/* ── Profile Popover Menu (Matching Image Design) ───────────────── */}
+      {/* ── Profile Popover Menu ───────────────────────────────────────────── */}
       {profileMenuOpen && user && (
         <div className="bottom-profile-menu" ref={menuRef} role="menu" aria-label="Profile menu">
-          {/* User Header */}
           <div className="profile-menu-header">
             <div className="profile-menu-avatar">
               <span>{userInitial}</span>
@@ -143,7 +158,6 @@ export default function BottomNav() {
 
           <div className="profile-menu-divider" />
 
-          {/* Links */}
           <div className="profile-menu-links">
             <NavLink
               to="/dashboard"
@@ -178,7 +192,6 @@ export default function BottomNav() {
 
           <div className="profile-menu-divider" />
 
-          {/* Log Out Button */}
           <button
             type="button"
             className="profile-menu-item profile-menu-logout"
@@ -191,13 +204,22 @@ export default function BottomNav() {
         </div>
       )}
 
-      {/* ── Main Dock Bar ──────────────────────────────────────────────── */}
+      {/* ── Main Dock Bar ──────────────────────────────────────────────────── */}
       <nav className="bottom-nav-container" aria-label="Mobile Navigation">
-        <div className="bottom-nav-dock">
-          {/* Primary Nav Items */}
+        {/*
+          --active-index drives the .menu__border translateX.
+          --item-count ensures correct width per slot.
+        */}
+        <div
+          className="bottom-nav-dock"
+          style={{ '--active-index': activeIndex, '--item-count': TOTAL_ITEMS }}
+        >
+          {/* Sliding indicator pill at the bottom */}
+          <div className="menu__border" aria-hidden="true" />
+
+          {/* ── Primary Nav Items (Home, Companies, Search, Topics) ──────── */}
           {PRIMARY_NAV.map(({ key, label, to, icon: Icon, match }) => {
             const isActive = match(path);
-
             return (
               <NavLink
                 key={key}
@@ -207,20 +229,20 @@ export default function BottomNav() {
                 aria-current={isActive ? 'page' : undefined}
                 onClick={() => setProfileMenuOpen(false)}
               >
+                {/* Icon wrap becomes the floating bubble when active */}
                 <div className="bottom-nav-icon-wrap">
                   <Icon
-                    size={21}
+                    size={20}
                     strokeWidth={isActive ? 2.2 : 1.8}
                     className="bottom-nav-icon"
                   />
-                  {isActive && <span className="bottom-nav-active-glow" aria-hidden="true" />}
                 </div>
                 <span className="bottom-nav-label">{label}</span>
               </NavLink>
             );
           })}
 
-          {/* Profile Item (Triggers Popover) */}
+          {/* ── Profile Item (index 4) — triggers popover ────────────────── */}
           <button
             ref={profileButtonRef}
             type="button"
@@ -232,18 +254,17 @@ export default function BottomNav() {
           >
             <div className="bottom-nav-icon-wrap">
               <User
-                size={21}
+                size={20}
                 strokeWidth={isProfileActive ? 2.2 : 1.8}
                 className="bottom-nav-icon"
               />
-              {isProfileActive && <span className="bottom-nav-active-glow" aria-hidden="true" />}
             </div>
             <span className="bottom-nav-label">Profile</span>
           </button>
         </div>
       </nav>
 
-      {/* ── Logout Confirmation Modal ─────────────────────────────────────── */}
+      {/* ── Logout Confirmation Modal ──────────────────────────────────────── */}
       <Modal
         isOpen={logoutModalOpen}
         onClose={() => setLogoutModalOpen(false)}
@@ -265,9 +286,7 @@ export default function BottomNav() {
 
           {user && (
             <div className="logout-user-preview">
-              <div className="logout-user-avatar">
-                {userInitial}
-              </div>
+              <div className="logout-user-avatar">{userInitial}</div>
               <div className="logout-user-details">
                 <span className="logout-user-name">{user.name || 'Account'}</span>
                 <span className="logout-user-email">{user.email || ''}</span>
@@ -302,6 +321,3 @@ export default function BottomNav() {
     </div>
   );
 }
-
-
-
