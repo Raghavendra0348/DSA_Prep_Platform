@@ -19,7 +19,7 @@ export default function Dropdown({ options = [], value, onChange, placeholder = 
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
-  useClickOutside(ref, useCallback(() => setOpen(false), []));
+  useClickOutside(ref, useCallback(() => setOpen(false), []), open);
 
   const selected = options.find(o => o.value === value);
 

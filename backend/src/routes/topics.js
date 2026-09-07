@@ -15,12 +15,32 @@ function optionalAuth(req) {
 
 router.get('/', async (req, res, next) => {
   try {
-    const questions = await prisma.question.findMany({ select: { topics: true } });
+    const questions = await prisma.question.findMany({ select: { topics: true, difficulty: true } });
     const map = {};
-    questions.forEach(q => q.topics.forEach(t => map[t] = (map[t]||0)+1));
+    questions.forEach(q => {
+      const diff = (q.difficulty || '').toUpperCase();
+      q.topics.forEach(t => {
+        if (!map[t]) {
+          map[t] = { count: 0, easy: 0, medium: 0, hard: 0 };
+        }
+        map[t].count++;
+        if (diff === 'EASY') map[t].easy++;
+        else if (diff === 'MEDIUM') map[t].medium++;
+        else if (diff === 'HARD') map[t].hard++;
+      });
+    });
+
     const topics = Object.entries(map)
-      .sort((a,b) => b[1]-a[1])
-      .map(([name, count]) => ({ name, slug: name.toLowerCase().replace(/\s+/g,'-'), problemCount: count }));
+      .sort((a, b) => b[1].count - a[1].count)
+      .map(([name, data]) => ({
+        name,
+        slug: name.toLowerCase().replace(/\s+/g, '-'),
+        problemCount: data.count,
+        easyCount: data.easy,
+        mediumCount: data.medium,
+        hardCount: data.hard,
+      }));
+
     res.json({ success: true, total: topics.length, topics });
   } catch (e) { next(e); }
 });

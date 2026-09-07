@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useSearch } from '../../hooks/useSearch';
 import { useToast } from '../../hooks/useToast';
+import { useClickOutside } from '../../hooks/useClickOutside';
 import LeetCodeIcon from '../ui/LeetCodeIcon';
 import Modal from '../ui/Modal';
 import './Navbar.css';
@@ -34,18 +35,8 @@ export default function Navbar({ onOpenPalette }) {
   } = useSearch('', 'all');
 
   // Close dropdown on click outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useClickOutside(dropdownRef, () => setDropdownOpen(false), dropdownOpen);
+  useClickOutside(searchRef, () => setSearchOpen(false), searchOpen);
 
   // Keyboard shortcut Cmd+K focuses the search bar
   useEffect(() => {
@@ -376,7 +367,7 @@ export default function Navbar({ onOpenPalette }) {
 
               {user ? (
                 <div className="mobile-nav-group">
-                  <p className="mobile-group-title">Account ({user.name})</p>
+                  <p className="mobile-group-title">Account </p>
                   <NavLink to="/bookmarks" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>
                     <Bookmark size={18} /><span>Bookmarks</span>
                   </NavLink>
@@ -384,7 +375,7 @@ export default function Navbar({ onOpenPalette }) {
                     <User size={18} /><span>Profile</span>
                   </NavLink>
                   <button className="mobile-nav-link mobile-logout" onClick={handleLogout}>
-                    <LogOut size={18} /><span>Log Out</span>
+                    <LogOut size={18} /><span>Sign Out</span>
                   </button>
                 </div>
               ) : (
@@ -434,10 +425,7 @@ export default function Navbar({ onOpenPalette }) {
           </div>
         )}
 
-        <div className="logout-safe-note">
-          <CheckCircle2 size={15} />
-          <span>All your solved questions and progress are saved in the cloud.</span>
-        </div>
+       
 
         <div className="logout-actions">
           <button

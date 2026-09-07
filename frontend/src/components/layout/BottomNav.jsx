@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
+import { useClickOutside } from '../../hooks/useClickOutside';
 import Modal from '../ui/Modal';
 import './BottomNav.css';
 
@@ -71,26 +72,7 @@ export default function BottomNav() {
   }, [location.pathname]);
 
   // Close profile menu on outside click / tap
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        profileButtonRef.current &&
-        !profileButtonRef.current.contains(event.target)
-      ) {
-        setProfileMenuOpen(false);
-      }
-    }
-    if (profileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [profileMenuOpen]);
+  useClickOutside([menuRef, profileButtonRef], () => setProfileMenuOpen(false), profileMenuOpen);
 
   // ── Derive which index (0-4) is active for the sliding border ────────────
   const isProfileActive =
