@@ -1,7 +1,9 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import './Toast.css';
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { ToastContext } from '../../context/ToastContext';
+import { toastVariant } from '../../lib/animations';
 
 let nextToastId = 0;
 const MAX_TOASTS = 5;
@@ -11,10 +13,7 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
   const dismiss = useCallback((id) => {
-    setToasts(prev =>
-      prev.map(t => t.id === id ? { ...t, exiting: true } : t)
-    );
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 350);
+    setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
   const showToast = useCallback((message, type = 'info', options = {}) => {
@@ -73,27 +72,27 @@ const ICONS = {
 
 // ── Container ──────────────────────────────────────────────────────────────────
 function ToastContainer({ toasts, dismiss }) {
-  if (!toasts.length) return null;
   return (
     <div className="toast-container" role="region" aria-label="Notifications" aria-live="polite">
-      {toasts.map((t, i) => (
-        <ToastItem
-          key={t.id}
-          toast={t}
-          index={i}
-          total={toasts.length}
-          onDismiss={() => dismiss(t.id)}
-        />
-      ))}
+      <AnimatePresence initial={false}>
+        {toasts.map((t, i) => (
+          <ToastItem
+            key={t.id}
+            toast={t}
+            index={i}
+            total={toasts.length}
+            onDismiss={() => dismiss(t.id)}
+          />
+        ))}
+      </AnimatePresence>
     </div>
   );
 }
 
 // ── Single Toast ───────────────────────────────────────────────────────────────
-function ToastItem({ toast: { message, type, duration, action, exiting }, onDismiss, index, total }) {
+function ToastItem({ toast: { message, type, duration, action }, onDismiss, index, total }) {
   const Icon = ICONS[type] || Info;
   const [paused, setPaused] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
   const startRef   = useRef(Date.now());
   const pausedAtRef = useRef(null);
 
@@ -121,9 +120,14 @@ function ToastItem({ toast: { message, type, duration, action, exiting }, onDism
   const depthY = depth * 4;
 
   return (
-    <div
-      className={`toast toast-${type} ${exiting ? 'toast-exit' : ''} ${paused ? 'toast-paused' : ''}`}
+    <motion.div
+      className={`toast toast-${type} ${paused ? 'toast-paused' : ''}`}
       role={type === 'error' ? 'alert' : 'status'}
+      layout
+      variants={toastVariant}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       style={{
         '--toast-duration': `${duration || 3500}ms`,
         '--depth-scale':   depthScale,
@@ -162,6 +166,6 @@ function ToastItem({ toast: { message, type, duration, action, exiting }, onDism
       {duration > 0 && (
         <div className={`toast-progress ${paused ? 'toast-progress-paused' : ''}`} aria-hidden="true" />
       )}
-    </div>
+    </motion.div>
   );
 }

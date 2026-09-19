@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Search, Building2, BookOpen, Code2,
   LayoutDashboard, Bookmark, User, X,
 } from 'lucide-react';
 import { search as apiSearch } from '../../api/search';
 import { useDebounce } from '../../hooks/useDebounce';
+import { modalBackdrop, slideDown, staggerContainerFast, listItem } from '../../lib/animations';
 import './CommandPalette.css';
 
 /**
@@ -82,65 +84,90 @@ export default function CommandPalette({ isOpen, onClose }) {
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return createPortal(
-    <div className="cp-root" role="presentation" onKeyDown={handleKeyDown}>
-      {/* Backdrop */}
-      <div className="cp-backdrop" onClick={onClose} aria-hidden="true" />
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <motion.div
+          className="cp-root"
+          role="presentation"
+          onKeyDown={handleKeyDown}
+          variants={modalBackdrop}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          {/* Backdrop */}
+          <div className="cp-backdrop" onClick={onClose} aria-hidden="true" />
 
-      {/* Panel */}
-      <div className="cp-panel" role="dialog" aria-label="Command palette" aria-modal="true">
-        {/* Search input */}
-        <div className="cp-input-wrap">
-          <Search size={17} className="cp-search-icon" aria-hidden="true" />
-          <input
-            ref={inputRef}
-            type="text"
-            className="cp-input"
-            placeholder="Search companies, topics, questions..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            autoComplete="off"
-            spellCheck={false}
-            aria-autocomplete="list"
-          />
-          {query && (
-            <button className="cp-clear" onClick={() => setQuery('')} aria-label="Clear search">
-              <X size={14} />
-            </button>
-          )}
-          <kbd className="cp-esc-hint">ESC</kbd>
-        </div>
+          {/* Panel */}
+          <motion.div
+            className="cp-panel"
+            role="dialog"
+            aria-label="Command palette"
+            aria-modal="true"
+            variants={slideDown}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Search input */}
+            <div className="cp-input-wrap">
+              <Search size={17} className="cp-search-icon" aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="text"
+                className="cp-input"
+                placeholder="Search companies, topics, questions..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                autoComplete="off"
+                spellCheck={false}
+                aria-autocomplete="list"
+              />
+              {query && (
+                <button className="cp-clear" onClick={() => setQuery('')} aria-label="Clear search">
+                  <X size={14} />
+                </button>
+              )}
+              <kbd className="cp-esc-hint">ESC</kbd>
+            </div>
 
-        {/* Divider */}
-        <div className="cp-divider" />
+            {/* Divider */}
+            <div className="cp-divider" />
 
-        {/* Results */}
-        <div className="cp-results" role="listbox">
-          {!query.trim() && <QuickActions onSelect={handleSelect} />}
-          {query.trim().length >= 2 && loading && <div className="cp-loading">Searching...</div>}
-          {query.trim().length >= 2 && !loading && flatItems.length === 0 && (
-            <div className="cp-empty">No results for "{query}"</div>
-          )}
-          {flatItems.length > 0 && (
-            <ResultGroups
-              results={activeResults}
-              selectedIdx={selectedIdx}
-              onSelect={handleSelect}
-              onHover={setSelectedIdx}
-            />
-          )}
-        </div>
+            {/* Results */}
+            <motion.div
+              className="cp-results"
+              role="listbox"
+              variants={staggerContainerFast}
+              initial="hidden"
+              animate="visible"
+            >
+              {!query.trim() && <QuickActions onSelect={handleSelect} />}
+              {query.trim().length >= 2 && loading && <div className="cp-loading">Searching...</div>}
+              {query.trim().length >= 2 && !loading && flatItems.length === 0 && (
+                <div className="cp-empty">No results for "{query}"</div>
+              )}
+              {flatItems.length > 0 && (
+                <ResultGroups
+                  results={activeResults}
+                  selectedIdx={selectedIdx}
+                  onSelect={handleSelect}
+                  onHover={setSelectedIdx}
+                />
+              )}
+            </motion.div>
 
-        {/* Footer hint */}
-        <div className="cp-footer">
-          <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
-          <span><kbd>↵</kbd> Open</span>
-          <span><kbd>ESC</kbd> Close</span>
-        </div>
-      </div>
-    </div>,
+            {/* Footer hint */}
+            <div className="cp-footer">
+              <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+              <span><kbd>↵</kbd> Open</span>
+              <span><kbd>ESC</kbd> Close</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 }

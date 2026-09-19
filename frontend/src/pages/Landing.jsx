@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Search, ArrowRight, BookOpen,
   Sparkles,
@@ -11,6 +12,7 @@ import { getClassification, TIER_INFO } from '../data/companyClassification';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import TierBadge from '../components/ui/TierBadge';
 import Skeleton from '../components/ui/Skeleton';
+import { staggerContainer, cardItem, fadeUp } from '../lib/animations';
 import './Landing.css';
 
 const POPULAR_SEARCHES = ['Google', 'Amazon', 'Meta', 'Flipkart', 'Dynamic Programming', 'Array', 'TCS'];
@@ -76,24 +78,29 @@ export default function Landing() {
         <div className="hero-bg-glow hero-bg-glow-1" />
         <div className="hero-bg-glow hero-bg-glow-2" />
 
-        <div className="hero-content container">
+        <motion.div
+          className="hero-content container"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Announcement Badge */}
-          <div className="hero-announcement">
+          <motion.div className="hero-announcement" variants={fadeUp}>
             <span className="announcement-pill">NEW 2026 EDITION</span>
-            <span className="announcement-text">Curated Company-Wise Questions & Tier Lists</span>
-          </div>
+            <span className="announcement-text">Curated Company-Wise Questions &amp; Tier Lists</span>
+          </motion.div>
 
-          <h1 className="hero-title">
+          <motion.h1 className="hero-title" variants={fadeUp}>
             Ace Your Next <span className="hero-highlight">Tech Interview</span>
-          </h1>
+          </motion.h1>
 
-          <p className="hero-subtitle">
+          <motion.p className="hero-subtitle" variants={fadeUp}>
             Practice real LeetCode questions asked at <strong>429+ top companies</strong>.
             Organized by recency, difficulty, and tier classification to fast-track your prep.
-          </p>
+          </motion.p>
 
           {/* Hero Search Box */}
-          <form className="hero-search" onSubmit={handleSearch}>
+          <motion.form className="hero-search" onSubmit={handleSearch} variants={fadeUp}>
             <Search size={20} className="hero-search-icon" />
             <input
               type="text"
@@ -106,10 +113,10 @@ export default function Landing() {
               <span>Search</span>
               <ArrowRight size={16} />
             </button>
-          </form>
+          </motion.form>
 
           {/* Popular Tag Quick Links */}
-          <div className="hero-popular-tags">
+          <motion.div className="hero-popular-tags" variants={fadeUp}>
             <span className="popular-label">Popular:</span>
             {POPULAR_SEARCHES.map(tag => (
               <button
@@ -120,10 +127,10 @@ export default function Landing() {
                 {tag}
               </button>
             ))}
-          </div>
+          </motion.div>
 
           {/* Hero CTAs */}
-          <div className="hero-actions">
+          <motion.div className="hero-actions" variants={fadeUp}>
             <Link to="/companies" className="btn-hero-primary">
               <span>Browse All Companies</span>
               <ArrowRight size={18} />
@@ -132,8 +139,8 @@ export default function Landing() {
               <BookOpen size={18} />
               <span>Explore Topics</span>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── 2. Live Platform Metrics Bar ───────────────────────────────────── */}
@@ -202,18 +209,29 @@ export default function Landing() {
       </section>
 
       {/* ── 3. Why Prepare With Us (Features Section) ─────────────────────── */}
-     
 
       {/* ── 4. Featured Companies Section ──────────────────────────────────── */}
       <section className="featured-section">
         <div className="container">
-          <div className="section-header">
+          <motion.div
+            className="section-header"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             <span className="section-badge">DIRECTORY HIGHLIGHTS</span>
             <h2 className="section-title">Top Target Companies</h2>
             <p className="section-subtitle">Start preparing questions for top tech employers</p>
-          </div>
+          </motion.div>
 
-          <div className="featured-grid">
+          <motion.div
+            className="featured-grid"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+          >
             {loading
               ? Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} className="card featured-card-skeleton">
@@ -226,41 +244,42 @@ export default function Landing() {
                   const compTierInfo = TIER_INFO[compTier];
 
                   return (
-                    <Link
-                      key={company.slug}
-                      to={`/company/${company.slug}`}
-                      className="card featured-card"
-                      style={{ '--card-tier-color': compTierInfo.color }}
-                    >
-                      <div className="featured-card-top">
-                        <CompanyLogo slug={company.slug} name={company.name} size={42} />
-                        <TierBadge tier={compTier} size="sm" />
-                      </div>
-
-                      <div className="featured-card-body">
-                        <h3 className="featured-card-name">{company.name}</h3>
-                        <span className="featured-card-count">
-                          {company.questionCount || company._count?.questions || 0} questions
-                        </span>
-                      </div>
-
-                      {(company.topTopics || []).length > 0 && (
-                        <div className="featured-card-topics">
-                          {company.topTopics.slice(0, 3).map(topic => (
-                            <span key={topic} className="chip">{topic}</span>
-                          ))}
+                    <motion.div key={company.slug} variants={cardItem}>
+                      <Link
+                        to={`/company/${company.slug}`}
+                        className="card featured-card"
+                        style={{ '--card-tier-color': compTierInfo.color }}
+                      >
+                        <div className="featured-card-top">
+                          <CompanyLogo slug={company.slug} name={company.name} size={42} />
+                          <TierBadge tier={compTier} size="sm" />
                         </div>
-                      )}
 
-                      <span className="featured-card-cta">
-                        <span>Practice Questions</span>
-                        <ArrowRight size={14} />
-                      </span>
-                    </Link>
+                        <div className="featured-card-body">
+                          <h3 className="featured-card-name">{company.name}</h3>
+                          <span className="featured-card-count">
+                            {company.questionCount || company._count?.questions || 0} questions
+                          </span>
+                        </div>
+
+                        {(company.topTopics || []).length > 0 && (
+                          <div className="featured-card-topics">
+                            {company.topTopics.slice(0, 3).map(topic => (
+                              <span key={topic} className="chip">{topic}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        <span className="featured-card-cta">
+                          <span>Practice Questions</span>
+                          <ArrowRight size={14} />
+                        </span>
+                      </Link>
+                    </motion.div>
                   );
                 })
             }
-          </div>
+          </motion.div>
 
           <div className="featured-bottom-cta">
             <Link to="/companies" className="btn-outline-lg">

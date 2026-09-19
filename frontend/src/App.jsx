@@ -1,5 +1,7 @@
 import { lazy, Suspense, useState, useCallback } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { pageTransition } from './lib/animations';
 import './App.css';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './components/ui/Toast';
@@ -41,6 +43,57 @@ function PageLoader() {
   );
 }
 
+// ── Animated routes — keyed by pathname for AnimatePresence ─────────────────
+function AnimatedRoutes({ paletteOpen, setPaletteOpen }) {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.main
+        key={location.pathname}
+        className="main-content"
+        id="main-content"
+        variants={pageTransition}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <Routes location={location}>
+              {/* Public */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/companies" element={<Companies />} />
+              <Route path="/company/:slug" element={<CompanyDetail />} />
+              <Route path="/questions/:slug" element={<QuestionDetail />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/topics" element={<Topics />} />
+              <Route path="/topics/:topic" element={<TopicDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/privacy-policy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/terms-of-service" element={<Terms />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/support" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+
+              {/* Protected */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
+              <Route path="/profile"   element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+
+              {/* 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </motion.main>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
 
@@ -57,39 +110,7 @@ function App() {
           <a className="skip-to-main" href="#main-content">Skip to main content</a>
           <div className="app-layout">
             <Navbar onOpenPalette={() => setPaletteOpen(true)} />
-            <main className="main-content" id="main-content">
-              <ErrorBoundary>
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    {/* PubliThe first one is a dynamic import.c */}
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/companies" element={<Companies />} />
-                    <Route path="/company/:slug" element={<CompanyDetail />} />
-                    <Route path="/questions/:slug" element={<QuestionDetail />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/topics" element={<Topics />} />
-                    <Route path="/topics/:topic" element={<TopicDetail />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/privacy-policy" element={<Privacy />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/terms-of-service" element={<Terms />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/support" element={<Contact />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-
-                    {/* Protected */}
-                    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                    <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
-                    <Route path="/profile"   element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </ErrorBoundary>
-            </main>
+            <AnimatedRoutes paletteOpen={paletteOpen} setPaletteOpen={setPaletteOpen} />
             <Footer />
             <BottomNav />
             <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />

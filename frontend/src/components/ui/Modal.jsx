@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { modalBackdrop, modalPanel } from '../../lib/animations';
 import './Modal.css';
 
 /**
@@ -61,39 +63,53 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', h
     }
   }, [onClose]);
 
-  if (!isOpen) return null;
-
   return createPortal(
-    <div className="modal-root" role="presentation" onKeyDown={handleKeyDown}>
-      {/* Backdrop */}
-      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <motion.div
+          className="modal-root"
+          role="presentation"
+          onKeyDown={handleKeyDown}
+          variants={modalBackdrop}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          {/* Backdrop */}
+          <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
 
-      {/* Panel */}
-      <div
-        ref={panelRef}
-        className={`modal-panel modal-panel-${size}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? titleId : undefined}
-      >
-        {/* Header */}
-        {(title || !hideClose) && (
-          <div className="modal-header">
-            {title && <h2 id={titleId} className="modal-title">{title}</h2>}
-            {!hideClose && (
-              <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-                <X size={18} />
-              </button>
+          {/* Panel */}
+          <motion.div
+            ref={panelRef}
+            className={`modal-panel modal-panel-${size}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
+            variants={modalPanel}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Header */}
+            {(title || !hideClose) && (
+              <div className="modal-header">
+                {title && <h2 id={titleId} className="modal-title">{title}</h2>}
+                {!hideClose && (
+                  <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {/* Body */}
-        <div className="modal-body">
-          {children}
-        </div>
-      </div>
-    </div>,
+            {/* Body */}
+            <div className="modal-body">
+              {children}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 }

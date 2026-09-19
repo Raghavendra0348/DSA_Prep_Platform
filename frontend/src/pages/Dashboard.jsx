@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { staggerContainer, slideInLeft, fadeUp, listItem } from '../lib/animations';
 import {
   CheckCircle2,
   Star,
@@ -192,14 +193,14 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div
-      className="dash-ui container"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-    >
-      {/* ── 1. User Header & Status Banner ─────────────────────────────────── */}
-      <div className="dash-ui-hero">
+    <div className="dash-ui container">
+      {/* ── 1. User Header & Status Banner ────────────────────────────────── */}
+      <motion.div
+        className="dash-ui-hero"
+        variants={slideInLeft}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="dash-ui-hero-left">
           <div className="dash-ui-avatar">
             <span>{(user?.name || 'U').charAt(0).toUpperCase()}</span>
@@ -228,10 +229,15 @@ export default function Dashboard() {
             <ArrowUpRight size={15} />
           </Link>
         </div>
-      </div>
+      </motion.div>
 
-      {/* ── 2. Top Stats Bar ───────────────────────────────────────────────── */}
-      <div className="dash-ui-stats-bar">
+      {/* ── 2. Top Stats Bar ─────────────────────────────────────────────────── */}
+      <motion.div
+        className="dash-ui-stats-bar"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="dash-ui-stat-box stat-box-solved">
           <div className="dash-ui-stat-icon">
             <CheckCircle2 size={22} />
@@ -266,10 +272,15 @@ export default function Dashboard() {
           </div>
           <span className="dash-ui-stat-tag tag-total">429+ Companies</span>
         </Link>
-      </div>
+      </motion.div>
 
       {/* ── 3. Workspace Layout (Asymmetric 2 Columns) ─────────────────────── */}
-      <div className="dash-ui-grid">
+      <motion.div
+        className="dash-ui-grid"
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Left Column (Primary Analytics & Activity) */}
         <div className="dash-ui-col-main">
           {/* Progress Mastery Panel */}
