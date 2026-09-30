@@ -1,34 +1,54 @@
 const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// ── Configure Nodemailer Transporter ─────────────────────────────────────────
+// ── Resend Client (Recommended HTTP API for Production) ──────────────────────
+let resendClient = null;
+let cachedResendKey = null;
+
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    resendClient = null;
+    cachedResendKey = null;
+    return null;
+  }
+  if (resendClient && cachedResendKey === apiKey) return resendClient;
+  resendClient = new Resend(apiKey);
+  cachedResendKey = apiKey;
+  return resendClient;
+}
+
+// ── Configure Nodemailer Transporter (Fallback) ──────────────────────────────
 let transporter = null;
 
 function getTransporter() {
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!user || !pass) {
+    transporter = null;
+    return null;
+  }
   if (transporter) return transporter;
 
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
 
-  if (user && pass) {
-    if (host.includes('gmail')) {
-      transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user, pass },
-      });
-    } else {
-      transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure,
-        auth: { user, pass },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    }
+  if (host.includes('gmail')) {
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+    });
+  } else {
+    transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: { user, pass },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
   }
 
   return transporter;
@@ -201,12 +221,10 @@ function buildOtpEmailHtml(otp) {
 
 /**
  * Sends a 6-digit verification OTP to the user's email.
- * Includes console fallback if SMTP is unavailable in local dev.
+ * Uses Resend (HTTPS API, unblocked in production) if RESEND_API_KEY is configured,
+ * otherwise falls back to SMTP if configured, or terminal console in local dev.
  */
 async function sendVerificationOtp(email, otp) {
-  const from = process.env.SMTP_FROM || `"DSA Prep" <${process.env.SMTP_USER || 'noreply@dsaprep.dev'}>`;
-  const mailTransporter = getTransporter();
-
   // Always log to terminal in non-production for instant testing visibility
   if (process.env.NODE_ENV !== 'production') {
     console.log(`\n======================================================`);
@@ -215,30 +233,68 @@ async function sendVerificationOtp(email, otp) {
     console.log(`======================================================\n`);
   }
 
-  if (!mailTransporter) {
-    console.warn(`[mailer] SMTP credentials missing. OTP was printed to console.`);
-    return { success: true, mode: 'console-only' };
-  }
+  const resend = getResendClient();
 
-  try {
-    const info = await mailTransporter.sendMail({
-      from,
-      to: email,
-      subject: `${otp} is your DSA Prep verification code`,
-      text: `Your DSA Prep verification code is: ${otp}. It expires in 10 minutes.`,
-      html: buildOtpEmailHtml(otp),
-    });
+  // 1. Try sending via Resend API (bypasses Render SMTP port blocking)
+  if (resend) {
+    try {
+      const from = process.env.RESEND_FROM || process.env.SMTP_FROM || 'DSA Prep <onboarding@resend.dev>';
+      const { data, error } = await resend.emails.send({
+        from,
+        to: email,
+        subject: `${otp} is your DSA Prep verification code`,
+        text: `Your DSA Prep verification code is: ${otp}. It expires in 10 minutes.`,
+        html: buildOtpEmailHtml(otp),
+      });
 
-    console.log(`[mailer] OTP email delivered to ${email} (MessageId: ${info.messageId})`);
-    return { success: true, messageId: info.messageId };
-  } catch (err) {
-    console.error(`[mailer] Failed to send email to ${email}:`, err.message);
-    // In dev mode, don't crash if network SMTP failed — developer can still use console OTP
-    if (process.env.NODE_ENV !== 'production') {
-      return { success: true, mode: 'dev-fallback-after-error' };
+      if (error) {
+        console.error(`[mailer] Resend API error for ${email}:`, error);
+        throw new Error(error.message || 'Resend failed to deliver email');
+      }
+
+      console.log(`[mailer] OTP email delivered to ${email} via Resend (MessageId: ${data?.id})`);
+      return { success: true, messageId: data?.id, provider: 'resend' };
+    } catch (err) {
+      console.error(`[mailer] Failed to send via Resend to ${email}:`, err.message);
+      if (process.env.NODE_ENV !== 'production') {
+        return { success: true, mode: 'dev-fallback-after-error', provider: 'resend' };
+      }
+      throw new Error('Failed to send verification email. Please check your email address or try again later.');
     }
-    throw new Error('Failed to send verification email. Please check your email address or try again later.');
   }
+
+  // 2. Fallback to Nodemailer SMTP if SMTP_USER and SMTP_PASS are set
+  const mailTransporter = getTransporter();
+  if (mailTransporter) {
+    const from = process.env.SMTP_FROM || `"DSA Prep" <${process.env.SMTP_USER || 'noreply@dsaprep.dev'}>`;
+    try {
+      const info = await mailTransporter.sendMail({
+        from,
+        to: email,
+        subject: `${otp} is your DSA Prep verification code`,
+        text: `Your DSA Prep verification code is: ${otp}. It expires in 10 minutes.`,
+        html: buildOtpEmailHtml(otp),
+      });
+
+      console.log(`[mailer] OTP email delivered to ${email} via SMTP (MessageId: ${info.messageId})`);
+      return { success: true, messageId: info.messageId, provider: 'smtp' };
+    } catch (err) {
+      console.error(`[mailer] Failed to send email via SMTP to ${email}:`, err.message);
+      if (process.env.NODE_ENV !== 'production') {
+        return { success: true, mode: 'dev-fallback-after-error', provider: 'smtp' };
+      }
+      throw new Error('Failed to send verification email. Please check your email address or try again later.');
+    }
+  }
+
+  // 3. Neither Resend nor SMTP credentials configured
+  if (process.env.NODE_ENV === 'production') {
+    console.error(`[mailer] Production Error: Neither RESEND_API_KEY nor SMTP credentials configured.`);
+    throw new Error('Email delivery service is not configured. Please contact support.');
+  }
+
+  console.warn(`[mailer] Email credentials missing (RESEND_API_KEY / SMTP). OTP was printed to console.`);
+  return { success: true, mode: 'console-only' };
 }
 
 module.exports = {

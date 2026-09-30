@@ -1,0 +1,30 @@
+name: Keep Render Backend Awake
+
+on:
+  schedule:
+    # Runs every 12 minutes to prevent Render's 15-minute inactivity spin-down
+    - cron: '*/12 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
+
+jobs:
+  keep-alive:
+    name: Ping Render Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Backend Endpoint
+        run: |
+          echo "Sending keep-alive ping to Render backend..."
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          # Curl health endpoint with a 45s timeout in case of initial wake-up
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "https://dsa-prep-backend.onrender.com/health")
+          
+          echo "[$TIMESTAMP] Ping finished with HTTP status: $HTTP_STATUS"
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Render backend is awake and healthy."
+          else
+            echo "⚠️ Health check returned non-200 code ($HTTP_STATUS). Backend might still be starting or unreachable."
+          fi
