@@ -27,7 +27,7 @@ export default function CompanyDetail() {
   const [companyBookmarked, setCompanyBookmarked] = useState(false);
 
   // Read URL params
-  const period     = searchParams.get('period') || '30days';
+  const period     = searchParams.get('period') || 'all';
   const difficulty = searchParams.get('difficulty') || '';
   const sortBy     = searchParams.get('sortBy') || 'frequency';
   const page       = Number(searchParams.get('page')) || 1;
@@ -39,6 +39,7 @@ export default function CompanyDetail() {
     problems,
     pagination,
     loading,
+    statsLoading,
     error,
     updateStatus,
     toggleBookmark,
@@ -59,7 +60,8 @@ export default function CompanyDetail() {
     }, { replace: true });
   };
 
-  const companyName = typeof companyInfo === 'string' ? companyInfo : (companyInfo?.name || slug);
+  const capitalizeSlug = (s) => s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const companyName = typeof companyInfo === 'string' ? companyInfo : (companyInfo?.name || capitalizeSlug(slug));
   const difficultyArr = difficulty ? difficulty.split(',') : [];
 
   // Metrics for "Problems in this period"
@@ -80,21 +82,7 @@ export default function CompanyDetail() {
           <ArrowLeft size={16} />
           <span>All Companies</span>
         </Link>
-        <button
-          type="button"
-          className={`company-header-bookmark ${companyBookmarked ? 'active' : ''}`}
-          onClick={() => {
-            if (!user) {
-              setAuthModalOpen(true);
-            } else {
-              setCompanyBookmarked(prev => !prev);
-            }
-          }}
-          title={companyBookmarked ? 'Company saved' : 'Save company'}
-          aria-label="Bookmark company"
-        >
-          <Bookmark size={18} fill={companyBookmarked ? 'currentColor' : 'none'} />
-        </button>
+      
       </div>
 
       {/* ── Main Company Header Info ───────────────────────────────────────── */}
@@ -105,23 +93,27 @@ export default function CompanyDetail() {
           </div>
           <div className="company-header-info">
             <h1 className="company-title">{companyName}</h1>
-            {stats?.all && (
-              <span className="company-total-badge">
-                <Link2 size={13} className="company-badge-icon" />
-                <span>{stats.all.total} problems</span>
-              </span>
-            )}
+            <div className="company-badge-topics-row">
+              {statsLoading
+                ? <Skeleton width={100} height={22} style={{ borderRadius: 999 }} />
+                : stats?.all && (
+                  <span className="company-total-badge">
+                    <Link2 size={13} className="company-badge-icon" />
+                    <span>{stats.all.total} problems</span>
+                  </span>
+                )
+              }
+              {stats?.all?.topTopics?.length > 0 && (
+                <div className="company-topics-scroll" aria-label="Company top topics">
+                  <span className="topics-label">Top Topics:</span>
+                  {stats.all.topTopics.map(t => (
+                    <TopicChip key={t} topic={t} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Topic Chips Row */}
-        {stats?.all?.topTopics?.length > 0 && (
-          <div className="company-topics-scroll" aria-label="Company top topics">
-            {stats.all.topTopics.map(t => (
-              <TopicChip key={t} topic={t} />
-            ))}
-          </div>
-        )}
       </div>
 
       {/* ── Period Filter Cards (30 Days / 3 Months / Filter) ──────────────── */}
