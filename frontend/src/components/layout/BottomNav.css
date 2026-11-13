@@ -1,254 +1,18 @@
-/* ══════════════════════════════════════════════════════════════════════════════
-   Animated Tab Bar — Mobile Bottom Navigation (iron.coding style)
-   Active item lifts up above the bar with a glowing circle bubble.
-   The sliding bottom border indicator tracks the active tab.
-   ══════════════════════════════════════════════════════════════════════════════ */
 
-/* ── CSS Variables ─────────────────────────────────────────────────────────── */
-:root {
-  --bgColorMenu: #16161f;
-  --duration: 0.7s;
-  --easing: cubic-bezier(0.16, 1, 0.3, 1);
-  --nav-height: 64px;
-  --accent: #58a6ff;
-  --accent-glow: rgba(88, 166, 255, 0.5);
-  --bubble-bg: linear-gradient(145deg, #3b5bdb 0%, #3b82f6 100%);
-  --bubble-glow: rgba(59, 91, 219, 0.6);
-}
-
-/* ── Hidden on Desktop ─────────────────────────────────────────────────────── */
-.bottom-nav-root {
-  display: none;
-}
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   MOBILE STYLES (≤768px)
-   ══════════════════════════════════════════════════════════════════════════════ */
+.bottom-nav-root { display: none; }
 @media (max-width: 768px) {
-  .bottom-nav-root {
-    display: block;
-  }
-
-  /* ── Outer Container ───────────────────────────────────────────────────────── */
-  .bottom-nav-container {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* Extra top padding so the lifted bubble has room above the dock */
-    padding: 0 16px calc(12px + env(safe-area-inset-bottom, 0px));
-    z-index: 995;
-    pointer-events: none;
-    justify-content: center;
-    align-items: flex-end;
-  }
-
-  /* ── Main Dock ─────────────────────────────────────────────────────────────── */
-  .bottom-nav-dock {
-    display: flex;
-    align-items: flex-end; /* items sit at the bottom so lifted ones go UP */
-    justify-content: space-around;
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    height: var(--nav-height);
-    background: var(--bgColorMenu);
-    border-radius: 36px;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    box-shadow:
-      0 16px 48px -6px rgba(0, 0, 0, 0.75),
-      0 0 0 1px rgba(255, 255, 255, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.10);
-    pointer-events: auto;
-    overflow: visible; /* allow bubble to pop above the bar */
-    --item-count: 5;
-  }
-
-  /* ── Sliding Bottom Border Indicator ──────────────────────────────────────── */
-  /*
-    Sits at the bottom of the dock.
-    Translates horizontally based on --active-index CSS variable (set by JS).
-    Width = dock-width ÷ total items.
-  */
-  .menu__border {
-    position: absolute;
-    bottom: 5px;
-    left: 0;
-    width: calc(100% / var(--item-count));
-    height: 3.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateX(calc(var(--active-index, 0) * 100%));
-    transition: transform var(--duration) var(--easing);
-    pointer-events: none;
-    background: transparent;
-  }
-
-  .menu__border::after {
-    content: '';
-    width: 24px;
-    height: 3.5px;
-    background: var(--accent);
-    border-radius: 999px;
-    box-shadow:
-      0 0 10px var(--accent-glow),
-      0 0 20px var(--accent-glow);
-  }
-
-  /* ── Individual Nav Item ───────────────────────────────────────────────────── */
-  .bottom-nav-item {
-    flex: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    height: 100%;
-    color: rgba(139, 148, 158, 0.75);
-    text-decoration: none;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: color var(--duration) var(--easing);
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    outline: none;
-    padding: 6px 0 8px;
-  }
-
-  /* ── Icon + Bubble Wrapper ─────────────────────────────────────────────────── */
-  .bottom-nav-icon-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    transition:
-      transform var(--duration) var(--easing),
-      background var(--duration) var(--easing),
-      box-shadow var(--duration) var(--easing);
-  }
-
-  .bottom-nav-icon {
-    flex-shrink: 0;
-    transition:
-      color var(--duration) var(--easing),
-      transform var(--duration) var(--easing),
-      filter var(--duration) var(--easing);
-  }
-
-  /* ── Tab Label ─────────────────────────────────────────────────────────────── */
-  .bottom-nav-label {
-    font-size: 10.5px;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.01em;
-    color: rgba(139, 148, 158, 0.75);
-    transition:
-      color var(--duration) var(--easing),
-      font-weight var(--duration) var(--easing),
-      transform var(--duration) var(--easing);
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  /* ── Hover ─────────────────────────────────────────────────────────────────── */
-  .bottom-nav-item:hover {
-    color: rgba(201, 209, 217, 0.9);
-  }
-
-  .bottom-nav-item:hover .bottom-nav-label {
-    color: rgba(201, 209, 217, 0.95);
-  }
-
-  .bottom-nav-item:hover .bottom-nav-icon-wrap {
-    transform: translateY(-3px);
-  }
-
-  /* ── Tap ───────────────────────────────────────────────────────────────────── */
-  .bottom-nav-item:active .bottom-nav-icon-wrap {
-    transform: translateY(-1px) scale(0.92);
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════════
-     ACTIVE STATE — Icon floats UP with glowing bubble behind it
-     ══════════════════════════════════════════════════════════════════════════════ */
-  .bottom-nav-item.active {
-    color: #ffffff;
-  }
-
-  /* The icon-wrap becomes the "bubble" — lifts above the bar */
-  .bottom-nav-item.active .bottom-nav-icon-wrap {
-    transform: translateY(-10px);           /* float above the dock bar */
-    background: var(--bubble-bg);
-    box-shadow:
-      0 6px 20px -3px var(--bubble-glow),
-      0 0 0 4px rgba(59, 91, 219, 0.15),
-      0 0 32px -6px var(--accent-glow);
-  }
-
-  /* Icon itself brightens + scales when active */
-  .bottom-nav-item.active .bottom-nav-icon {
-    color: #ffffff;
-    transform: scale(1.08);
-    filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.3));
-  }
-
-  /* Active Label Highlight */
-  .bottom-nav-item.active .bottom-nav-label {
-    color: var(--accent);
-    font-weight: 600;
-    transform: translateY(-2px);
-  }
-
-  /* Subtle breathing glow on the bubble when active */
-  .bottom-nav-item.active .bottom-nav-icon-wrap {
-    animation: bubblePulse 2.6s ease-in-out infinite alternate;
-  }
-
-  @keyframes bubblePulse {
-    from {
-      box-shadow:
-        0 6px 20px -3px var(--bubble-glow),
-        0 0 0 4px rgba(59, 91, 219, 0.15),
-        0 0 32px -6px var(--accent-glow);
-    }
-    to {
-      box-shadow:
-        0 8px 28px -2px var(--bubble-glow),
-        0 0 0 5px rgba(59, 91, 219, 0.22),
-        0 0 40px -4px var(--accent-glow);
-    }
-  }
-
-  /* Remove old indicator styles (replaced by menu__border) */
-  .bottom-nav-active-glow { display: none; }
-  .bottom-nav-active-dot  { display: none; }
-
-  /* ── Dock Entry Animation ──────────────────────────────────────────────────── */
-  .bottom-nav-dock {
-    animation: dockSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes dockSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(32px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════════
-     BACKDROP — Profile Popover Dismissal
-     ══════════════════════════════════════════════════════════════════════════════ */
+  .bottom-nav-root { display: block; }
+  .bottom-nav-container { position: fixed; inset: auto 0 0; z-index: 995; padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg-primary); border-top: 1px solid var(--border); }
+  .bottom-nav-dock { display: flex; width: 100%; max-width: 600px; height: 64px; margin: 0 auto; align-items: center; justify-content: space-around; }
+  .bottom-nav-item { display: flex; flex: 1; flex-direction: column; justify-content: center; align-items: center; min-width: 0; height: 100%; gap: 4px; color: var(--text-secondary); font-size: 11px; }
+  .bottom-nav-icon-wrap { display: flex; align-items: center; justify-content: center; width: 34px; height: 28px; border-radius: var(--radius-sm); }
+  .bottom-nav-label { font-size: 10px; line-height: 1.2; }
+  .bottom-nav-item.active, .bottom-nav-item:hover { color: var(--accent); }
+  .bottom-nav-item.active .bottom-nav-icon-wrap { background: var(--accent-dim); }
+  .menu__border { display: none; }
+  .bottom-profile-menu { background: var(--bg-secondary); border-color: var(--border); box-shadow: var(--shadow-lg); }
+}
+@media (max-width: 768px) {
   .bottom-nav-backdrop {
     display: block;
     position: fixed;
@@ -259,15 +23,6 @@
     -webkit-backdrop-filter: blur(3px);
     animation: fadeInBackdrop 0.2s ease forwards;
   }
-
-  @keyframes fadeInBackdrop {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════════
-     PROFILE POPOVER MENU
-     ══════════════════════════════════════════════════════════════════════════════ */
   .bottom-profile-menu {
     display: flex;
     flex-direction: column;
@@ -275,15 +30,13 @@
     bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     right: 16px;
     width: 256px;
-    background: rgba(16, 18, 26, 0.97);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    background: var(--bg-secondary);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 20px;
+    border-radius: var(--radius-md);
     box-shadow:
-      0 24px 56px -6px rgba(0, 0, 0, 0.80),
-      0 0 24px -2px rgba(88, 166, 255, 0.10),
-      inset 0 1px 0 rgba(255, 255, 255, 0.10);
+      var(--shadow-lg);
     padding: 14px 10px 10px;
     z-index: 998;
     transform-origin: bottom right;
@@ -308,7 +61,7 @@
     color: #ffffff;
     font-size: 17px;
     font-weight: 700;
-    box-shadow: 0 0 18px var(--bubble-glow);
+    box-shadow: var(--shadow-lg);
     flex-shrink: 0;
   }
 
@@ -321,7 +74,7 @@
   .profile-menu-name {
     font-size: 15px;
     font-weight: 700;
-    color: #f0f6fc;
+    color: var(--text-primary);
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
@@ -330,7 +83,7 @@
 
   .profile-menu-email {
     font-size: 12px;
-    color: #8b949e;
+    color: var(--text-secondary);
     line-height: 1.3;
     white-space: nowrap;
     overflow: hidden;
@@ -354,10 +107,10 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 13.5px;
     font-weight: 500;
-    color: #c9d1d9;
+    color: #c4cdc6;
     text-decoration: none;
     background: transparent;
     border: none;
@@ -371,11 +124,11 @@
   .profile-menu-item:hover,
   .profile-menu-item:focus-visible {
     background: rgba(255, 255, 255, 0.07);
-    color: #f0f6fc;
+    color: var(--text-primary);
   }
 
   .profile-menu-item.active {
-    background: rgba(88, 166, 255, 0.12);
+    background: rgba(var(--accent-rgb), 0.12);
     color: var(--accent);
     font-weight: 600;
   }
@@ -390,7 +143,7 @@
 
   .profile-menu-icon {
     flex-shrink: 0;
-    color: #8b949e;
+    color: var(--text-secondary);
     transition: color 0.18s ease;
   }
 
@@ -411,22 +164,7 @@
   .profile-menu-logout:hover .logout-icon {
     color: #ff7b72;
   }
-
-  @keyframes profilePopupSlideIn {
-    from {
-      opacity: 0;
-      transform: translate3d(8px, 14px, 0) scale(0.92);
-    }
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-  }
 }
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   LOGOUT DIALOG STYLES (shared — BottomNav & Navbar modals)
-   ══════════════════════════════════════════════════════════════════════════════ */
 .logout-dialog {
   display: flex;
   flex-direction: column;
@@ -461,13 +199,13 @@
 .logout-dialog-title {
   font-size: 15px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .logout-dialog-subtitle {
   font-size: 13px;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.45;
 }
@@ -486,7 +224,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b5bdb 0%, #3b82f6 100%);
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -506,7 +244,7 @@
 .logout-user-name {
   font-size: 14px;
   font-weight: 600;
-  color: #f0f6fc;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -514,7 +252,7 @@
 
 .logout-user-email {
   font-size: 12px;
-  color: #8b949e;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -543,7 +281,7 @@
   border-radius: 10px;
   font-size: 13.5px;
   font-weight: 600;
-  color: #c9d1d9;
+  color: #c4cdc6;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.10);
   cursor: pointer;
@@ -552,7 +290,7 @@
 
 .logout-btn-cancel:hover {
   background: rgba(255, 255, 255, 0.10);
-  color: #f0f6fc;
+  color: var(--text-primary);
 }
 
 .logout-btn-confirm {
@@ -564,16 +302,15 @@
   font-size: 13.5px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #f85149 0%, #da3633 100%);
+  background: var(--bg-secondary);
   border: none;
   cursor: pointer;
   transition: all 0.18s ease;
-  box-shadow: 0 4px 14px rgba(248, 81, 73, 0.35);
+  box-shadow: none;
 }
 
 .logout-btn-confirm:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(248, 81, 73, 0.45);
+  box-shadow: none;
 }
 
 .logout-btn-confirm:active {

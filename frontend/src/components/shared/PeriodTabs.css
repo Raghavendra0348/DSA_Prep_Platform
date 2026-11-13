@@ -39,10 +39,10 @@
   align-items: center;
   justify-content: center;
   padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(22, 27, 34, 0.85);
+  border-radius: var(--radius-md);
+  background: rgba(27, 35, 29, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
   cursor: pointer;
   text-align: center;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -52,7 +52,6 @@
 .period-card:hover {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
 }
 
 .period-card:active {
@@ -61,21 +60,21 @@
 
 /* ── Active Period Card (Highlighted Glow) ─────────────────────────────────── */
 .period-card.active {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(30, 58, 138, 0.18) 100%);
-  border: 1.5px solid #3b82f6;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 12px rgba(59, 130, 246, 0.15);
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--accent);
+  box-shadow: none;
 }
 
 .period-card-header {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #8b949e;
+  color: var(--text-secondary);
   transition: color 0.15s ease;
 }
 
 .period-card.active .period-card-header {
-  color: #60a5fa;
+  color: var(--accent);
 }
 
 .period-card-icon {
@@ -86,7 +85,7 @@
 .period-card-title {
   font-size: 14px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
@@ -98,14 +97,14 @@
 .period-card-sub {
   font-size: 11px;
   font-weight: 500;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-top: 3px;
   white-space: nowrap;
   transition: color 0.15s ease;
 }
 
 .period-card.active .period-card-sub {
-  color: #93c5fd;
+  color: var(--accent-hover);
 }
 
 .period-card-count {
@@ -117,12 +116,12 @@
   padding: 1px 5px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 .period-card.active .period-card-count {
-  background: rgba(59, 130, 246, 0.25);
-  color: #93c5fd;
+  background: rgba(var(--accent-rgb), 0.25);
+  color: var(--accent-hover);
 }
 
 /* ── Filter Button (Funnel) ───────────────────────────────────────────────── */
@@ -137,14 +136,14 @@
   align-items: center;
   justify-content: center;
   width: 54px;
-  border-radius: 12px;
-  background: rgba(22, 27, 34, 0.85);
+  border-radius: var(--radius-md);
+  background: rgba(27, 35, 29, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #c9d1d9;
+  color: #c4cdc6;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .period-filter-btn:hover {
@@ -154,10 +153,10 @@
 }
 
 .period-filter-btn.active {
-  border-color: #3b82f6;
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.12);
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+  box-shadow: none;
 }
 
 .filter-active-dot {
@@ -167,8 +166,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 6px #3b82f6;
+  background: var(--accent);
+  box-shadow: none;
 }
 
 /* ── Mobile Responsive ────────────────────────────────────────────────────── */
@@ -198,3 +197,8 @@
 }
 
 
+
+/* Shared charcoal and green design system. */
+
+.period-card { border-radius: var(--radius-sm); background: var(--bg-secondary); border-color: var(--border); }
+.period-card.active { background: var(--accent-dim); border-color: var(--accent); box-shadow: none; }

@@ -1,15 +1,15 @@
 /* ── About Page Styles (Clean / Matte Modern) ─────────────────────────────── */
 .about-page {
   min-height: 100vh;
-  background: var(--bg-primary, #0d1117);
-  color: var(--text-primary, #e6edf3);
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* ── Hero Section ─────────────────────────────────────────────────────────── */
 .about-hero {
   padding: 80px 0 50px;
-  background: #0d1117;
-  border-bottom: 1px solid #21262d;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--bg-hover);
   text-align: center;
 }
 
@@ -29,9 +29,9 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #58a6ff;
-  background: rgba(88, 166, 255, 0.1);
-  border: 1px solid rgba(88, 166, 255, 0.25);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
   padding: 4px 12px;
   border-radius: 999px;
   margin-bottom: 20px;
@@ -40,26 +40,26 @@
 .about-title {
   font-size: 42px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin-bottom: 18px;
 }
 
 .about-highlight {
-  color: #58a6ff;
+  color: var(--accent);
 }
 
 .about-subtitle {
   font-size: 16px;
   line-height: 1.65;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 32px;
   max-width: 720px;
 }
 
 .about-subtitle strong {
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 .about-hero-actions {
@@ -80,14 +80,13 @@
   font-weight: 600;
   color: #ffffff;
   background: #238636;
-  border: 1px solid rgba(240, 246, 252, 0.1);
+  border: 1px solid rgba(236, 238, 233, 0.1);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .btn-about-primary:hover {
   background: #2ea043;
-  transform: translateY(-2px);
 }
 
 .btn-about-secondary {
@@ -98,25 +97,24 @@
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #c9d1d9;
-  background: #161b22;
-  border: 1px solid #30363d;
+  color: #c4cdc6;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .btn-about-secondary:hover {
-  background: #21262d;
-  color: #58a6ff;
-  border-color: #58a6ff;
-  transform: translateY(-2px);
+  background: var(--bg-hover);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* ── Platform Stats Section ───────────────────────────────────────────────── */
 .about-stats-section {
   padding: 40px 0;
-  background: #161b22;
-  border-bottom: 1px solid #21262d;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--bg-hover);
 }
 
 .about-stats-grid {
@@ -130,10 +128,10 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 22px 20px;
-  border-radius: 12px;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  box-shadow: none;
 }
 
 .about-stat-icon-wrap {
@@ -147,15 +145,15 @@
 }
 
 .icon-cyan {
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  color: #38bdf8;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  color: var(--accent);
 }
 
 .icon-purple {
   background: rgba(168, 85, 247, 0.1);
   border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #c084fc;
+  color: var(--accent);
 }
 
 .icon-emerald {
@@ -173,7 +171,7 @@
 .about-stat-val {
   font-size: 28px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: 4px;
@@ -182,20 +180,20 @@
 .about-stat-label {
   font-size: 14px;
   font-weight: 600;
-  color: #e6edf3;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .about-stat-sub {
   font-size: 12px;
-  color: #8b949e;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 /* ── Why Built (Story) Section ────────────────────────────────────────────── */
 .about-story-section {
   padding: 70px 0;
-  border-bottom: 1px solid #21262d;
+  border-bottom: 1px solid var(--bg-hover);
 }
 
 .about-story-grid {
@@ -211,14 +209,14 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #58a6ff;
+  color: var(--accent);
   margin-bottom: 10px;
 }
 
 .about-story-text h2 {
   font-size: 28px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.3;
   margin-bottom: 18px;
@@ -227,25 +225,25 @@
 .about-story-text p {
   font-size: 14.5px;
   line-height: 1.7;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 16px;
 }
 
 .about-story-text strong {
-  color: #f0f6fc;
+  color: var(--text-primary);
 }
 
 .about-story-card {
   padding: 28px;
-  border-radius: 14px;
-  background: #161b22;
-  border: 1px solid #30363d;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
 }
 
 .about-story-card h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin-bottom: 20px;
   letter-spacing: -0.01em;
 }
@@ -273,14 +271,14 @@
 
 .about-principles-list strong {
   font-size: 14px;
-  color: #e6edf3;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 2px;
 }
 
 .about-principles-list p {
   font-size: 12.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
 }
@@ -288,8 +286,8 @@
 /* ── Tiers Section ────────────────────────────────────────────────────────── */
 .about-tiers-section {
   padding: 70px 0;
-  background: #161b22;
-  border-bottom: 1px solid #21262d;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--bg-hover);
 }
 
 .about-section-header {
@@ -301,14 +299,14 @@
 .about-section-header h2 {
   font-size: 28px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   margin-bottom: 10px;
 }
 
 .about-section-header p {
   font-size: 14.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 .about-tiers-grid {
@@ -322,10 +320,10 @@
   display: flex;
   flex-direction: column;
   padding: 22px 20px;
-  border-radius: 12px;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  box-shadow: none;
 }
 
 .tier-badge-top {
@@ -348,14 +346,14 @@
 
 .tier-unicorns .tier-badge-top {
   background: rgba(168, 85, 247, 0.12);
-  color: #c084fc;
+  color: var(--accent);
   border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
 .tier-fintech .tier-badge-top {
-  background: rgba(56, 189, 248, 0.12);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
 }
 
 .tier-service .tier-badge-top {
@@ -368,7 +366,7 @@
 .about-tier-item h3 {
   font-size: 16px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
@@ -376,7 +374,7 @@
 .about-tier-item p {
   font-size: 12.5px;
   line-height: 1.55;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 14px;
   flex: 1;
 }
@@ -384,9 +382,9 @@
 .tier-examples {
   font-size: 11.5px;
   font-weight: 500;
-  color: #7d8590;
+  color: var(--text-muted);
   padding-top: 10px;
-  border-top: 1px solid #21262d;
+  border-top: 1px solid var(--bg-hover);
 }
 
 /* ── CTA Section ──────────────────────────────────────────────────────────── */
@@ -396,9 +394,9 @@
 
 .about-cta-card {
   padding: 44px 32px;
-  border-radius: 16px;
-  background: #161b22;
-  border: 1px solid #30363d;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   text-align: center;
   max-width: 720px;
   margin: 0 auto;
@@ -407,14 +405,14 @@
 .about-cta-card h2 {
   font-size: 26px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   margin-bottom: 10px;
 }
 
 .about-cta-card p {
   font-size: 14.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -464,4 +462,12 @@
 @media (max-width: 360px) {
   .about-hero h1 { font-size: 22px; }
   .about-section { padding: 32px 12px; }
+}
+
+.about-title {
+  font-size: clamp(28px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+  color: var(--text-primary);
 }

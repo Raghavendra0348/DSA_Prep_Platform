@@ -22,19 +22,19 @@
 .progress-bar-count {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-primary, #e6edf3);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .progress-bar-max {
-  color: var(--text-muted, #7d8590);
+  color: var(--text-muted);
   font-weight: 400;
 }
 
 /* ── Track ────────────────────────────────────────────────────────────────── */
 .progress-bar-track {
   width: 100%;
-  background: var(--bg-hover, #21262d);
+  background: var(--bg-hover);
   border-radius: var(--radius-full, 9999px);
   overflow: hidden;
 }

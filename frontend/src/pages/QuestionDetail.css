@@ -28,7 +28,7 @@
   text-decoration: none; color: inherit;
   transition: border-color var(--transition), transform var(--transition);
 }
-.qd-company-item:hover { border-color: var(--accent); transform: translateY(-1px); }
+.qd-company-item:hover { border-color: var(--accent); }
 
 .qd-company-name { font-weight: 600; font-size: 14px; }
 .qd-company-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
@@ -100,4 +100,3 @@
   .qd-header h1 { font-size: 18px; }
   .qd-meta-chip { font-size: 11px; padding: 3px 8px; }
 }
-

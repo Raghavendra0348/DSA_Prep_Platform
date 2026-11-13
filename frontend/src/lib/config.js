@@ -22,6 +22,9 @@ function resolveApiUrl() {
 }
 
 export const config = {
+  /** Google authentication is optional in local and preview environments. */
+  googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim() || '',
+
   /** Base URL for all API requests */
   apiUrl: resolveApiUrl(),
 

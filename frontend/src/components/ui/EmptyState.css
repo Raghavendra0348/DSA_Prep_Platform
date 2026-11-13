@@ -15,20 +15,20 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(88, 166, 255, 0.06);
-  border: 1px solid rgba(88, 166, 255, 0.12);
+  background: rgba(var(--accent-rgb), 0.06);
+  border: 1px solid rgba(var(--accent-rgb), 0.12);
   margin-bottom: 4px;
   animation: float 3.5s ease-in-out infinite;
 }
 
 .empty-state-icon {
-  color: var(--text-muted, #7d8590);
+  color: var(--text-muted);
   opacity: 0.7;
 }
 
 .empty-state-message {
   font-size: 14px;
-  color: var(--text-secondary, #8b949e);
+  color: var(--text-secondary);
   max-width: 320px;
   line-height: 1.55;
 }

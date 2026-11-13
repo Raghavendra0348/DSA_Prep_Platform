@@ -10,20 +10,15 @@
   justify-content: center;
   gap: 10px;
   padding: 0 20px;
-  border-radius: 9999px;
+  border-radius: var(--radius-sm);
 
   /* Glass-dark surface */
-  background: linear-gradient(
-    135deg,
-    rgba(30, 36, 46, 0.95) 0%,
-    rgba(22, 27, 34, 0.98) 100%
-  );
+  background: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    none;
 
-  color: var(--text-primary, #f0f6fc);
+  color: var(--text-primary);
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -40,15 +35,9 @@
 /* ── Hover ───────────────────────────────────────────────────────────────── */
 .google-btn:not(:disabled):hover {
   border-color: rgba(255, 255, 255, 0.22);
-  background: linear-gradient(
-    135deg,
-    rgba(38, 45, 58, 0.98) 0%,
-    rgba(28, 34, 44, 1) 100%
-  );
+  background: var(--bg-hover);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    none;
 }
 
 /* ── Disabled / loading state ───────────────────────────────────────────── */
@@ -103,3 +92,5 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+.google-btn-shimmer { display: none; }

@@ -1,0 +1,4 @@
+@tailwind components;
+@tailwind utilities;
+
+.liquid-metal-hero *, .liquid-metal-hero *::before, .liquid-metal-hero *::after { border-style: solid; border-width: 0; }

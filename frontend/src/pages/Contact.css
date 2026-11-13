@@ -1,16 +1,16 @@
 /* ── Contact Page Styles (Clean / Matte Modern) ───────────────────────────── */
 .contact-page {
   min-height: 100vh;
-  background: var(--bg-primary, #0d1117);
-  color: var(--text-primary, #e6edf3);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   padding-bottom: 80px;
 }
 
 /* ── Hero ─────────────────────────────────────────────────────────────────── */
 .contact-hero {
   padding: 70px 0 40px;
-  background: #0d1117;
-  border-bottom: 1px solid #21262d;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--bg-hover);
   text-align: center;
 }
 
@@ -30,9 +30,9 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #58a6ff;
-  background: rgba(88, 166, 255, 0.1);
-  border: 1px solid rgba(88, 166, 255, 0.25);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
   padding: 4px 12px;
   border-radius: 999px;
   margin-bottom: 18px;
@@ -41,7 +41,7 @@
 .contact-title {
   font-size: 38px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.03em;
   margin-bottom: 14px;
   line-height: 1.2;
@@ -50,7 +50,7 @@
 .contact-subtitle {
   font-size: 15.5px;
   line-height: 1.6;
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 /* ── Main Layout ──────────────────────────────────────────────────────────── */
@@ -65,23 +65,23 @@
 /* ── Contact Form Card ────────────────────────────────────────────────────── */
 .contact-form-card {
   padding: 36px 32px;
-  border-radius: 14px;
-  background: #161b22;
-  border: 1px solid #30363d;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  box-shadow: none;
 }
 
 .contact-form-card h2 {
   font-size: 22px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
   margin-bottom: 6px;
 }
 
 .form-subtitle {
   font-size: 13.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -106,7 +106,7 @@
 .form-group label {
   font-size: 12.5px;
   font-weight: 600;
-  color: #c9d1d9;
+  color: #c4cdc6;
 }
 
 .req {
@@ -118,9 +118,9 @@
 .textarea-field {
   padding: 10px 14px;
   border-radius: 8px;
-  background: #0d1117;
-  border: 1px solid #30363d;
-  color: #f0f6fc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   font-size: 13.5px;
   font-family: inherit;
   outline: none;
@@ -131,13 +131,13 @@
 .input-field:focus,
 .select-field:focus,
 .textarea-field:focus {
-  border-color: #58a6ff;
-  background: #12161f;
+  border-color: var(--accent);
+  background: var(--bg-primary);
 }
 
 .input-field::placeholder,
 .textarea-field::placeholder {
-  color: #6e7681;
+  color: var(--text-muted);
 }
 
 .textarea-field {
@@ -160,7 +160,7 @@
   font-weight: 600;
   color: #ffffff;
   background: #238636;
-  border: 1px solid rgba(240, 246, 252, 0.1);
+  border: 1px solid rgba(236, 238, 233, 0.1);
   cursor: pointer;
   transition: all 0.2s ease;
   align-self: flex-start;
@@ -169,7 +169,6 @@
 
 .btn-submit-contact:hover:not(:disabled) {
   background: #2ea043;
-  transform: translateY(-1px);
 }
 
 .btn-submit-contact:disabled {
@@ -202,20 +201,20 @@
 .contact-success-box h3 {
   font-size: 20px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .contact-success-box p {
   font-size: 14px;
   line-height: 1.6;
-  color: #8b949e;
+  color: var(--text-secondary);
   max-width: 480px;
   margin-bottom: 24px;
 }
 
 .contact-success-box strong {
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 .btn-send-another {
@@ -223,9 +222,9 @@
   align-items: center;
   padding: 8px 18px;
   border-radius: 8px;
-  background: #21262d;
-  border: 1px solid #30363d;
-  color: #c9d1d9;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  color: #c4cdc6;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -233,7 +232,7 @@
 }
 
 .btn-send-another:hover {
-  background: #30363d;
+  background: var(--border);
   color: #ffffff;
 }
 
@@ -249,10 +248,10 @@
   align-items: flex-start;
   gap: 16px;
   padding: 22px 20px;
-  border-radius: 12px;
-  background: #161b22;
-  border: 1px solid #30363d;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  box-shadow: none;
 }
 
 .channel-icon-wrap {
@@ -266,34 +265,34 @@
 }
 
 .icon-mail {
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  color: #38bdf8;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  color: var(--accent);
 }
 
 .icon-github {
-  background: rgba(240, 246, 252, 0.08);
-  border: 1px solid rgba(240, 246, 252, 0.15);
-  color: #f0f6fc;
+  background: rgba(236, 238, 233, 0.08);
+  border: 1px solid rgba(236, 238, 233, 0.15);
+  color: var(--text-primary);
 }
 
 .icon-discord {
   background: rgba(168, 85, 247, 0.1);
   border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #c084fc;
+  color: var(--accent);
 }
 
 .channel-body h4 {
   font-size: 15px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .channel-body p {
   font-size: 12.5px;
   line-height: 1.5;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-bottom: 10px;
 }
 
@@ -303,13 +302,13 @@
   gap: 4px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #58a6ff;
+  color: var(--accent);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
 .channel-link:hover {
-  color: #79c0ff;
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 
@@ -317,7 +316,7 @@
 .contact-faq-section {
   padding: 80px 0 20px;
   margin-top: 40px;
-  border-top: 1px solid #21262d;
+  border-top: 1px solid var(--bg-hover);
 }
 
 .faq-header {
@@ -332,21 +331,21 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #58a6ff;
+  color: var(--accent);
   margin-bottom: 8px;
 }
 
 .faq-header h2 {
   font-size: 28px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
 
 .faq-header p {
   font-size: 14.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 .faq-list {
@@ -359,14 +358,14 @@
 
 .faq-item {
   border-radius: 10px;
-  background: #161b22;
-  border: 1px solid #30363d;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: border-color 0.15s ease;
 }
 
 .faq-item.faq-open {
-  border-color: #58a6ff;
+  border-color: var(--accent);
 }
 
 .faq-question-btn {
@@ -380,13 +379,13 @@
   text-align: left;
   font-size: 14.5px;
   font-weight: 600;
-  color: #f0f6fc;
+  color: var(--text-primary);
   cursor: pointer;
   gap: 14px;
 }
 
 .faq-question-btn:hover {
-  color: #58a6ff;
+  color: var(--accent);
 }
 
 .faq-answer {
@@ -396,7 +395,7 @@
 .faq-answer p {
   font-size: 13.5px;
   line-height: 1.6;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -415,4 +414,17 @@
 
 @media (max-width: 360px) {
   .contact-hero h1 { font-size: 22px; }
+}
+
+/* Shared charcoal and green design system. */
+
+.contact-title { font-size: clamp(28px, 4vw, 34px); font-weight: 600; }
+.btn-submit-contact { background: var(--accent); color: var(--on-accent); border-radius: var(--radius-sm); }
+.btn-submit-contact:hover:not(:disabled) { background: var(--accent-hover); color: var(--on-accent); }
+.contact-title {
+  font-size: clamp(28px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+  color: var(--text-primary);
 }

@@ -18,17 +18,7 @@
   font-size: clamp(80px, 15vw, 140px);
   font-weight: 800;
   line-height: 1;
-  background: linear-gradient(135deg, var(--accent), #a371f7, var(--medium));
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
+  color: var(--text-primary);
 }
 
 .not-found h1 {

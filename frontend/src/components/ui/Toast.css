@@ -19,14 +19,13 @@
   align-items: center;
   gap: 10px;
   padding: 12px 14px 12px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: rgba(16, 20, 28, 0.96);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.25);
+    none;
   pointer-events: all;
   overflow: hidden;
   animation: toastIn 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) both;
@@ -77,7 +76,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  border-radius: 12px 0 0 12px;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
   opacity: 0.85;
 }
 
@@ -108,7 +107,7 @@
 .toast-message {
   font-size: 13px;
   font-weight: 500;
-  color: #e6edf3;
+  color: var(--text-primary);
   line-height: 1.45;
   word-break: break-word;
   letter-spacing: -0.01em;
@@ -122,7 +121,7 @@
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.08);
-  color: #c9d1d9;
+  color: #c4cdc6;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
@@ -146,7 +145,7 @@
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  color: #6e7681;
+  color: var(--text-muted);
   transition: color 0.15s ease, background 0.15s ease;
   cursor: pointer;
   border: none;
@@ -155,7 +154,7 @@
 }
 
 .toast-close:hover {
-  color: #e6edf3;
+  color: var(--text-primary);
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -181,10 +180,8 @@
 
 /* ── Hover: lift effect ───────────────────────────────────────────────────── */
 .toast:hover {
-  transform: scale(1) translateY(-1px) !important;
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.6),
-    0 4px 12px rgba(0, 0, 0, 0.3);
+    none;
 }
 
 /* ── Color Variants (Black & White Minimalist Theme) ───────────────────────── */
@@ -193,20 +190,19 @@
 .toast-error,
 .toast-warning,
 .toast-info {
-  background: #161b22;
+  background: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow:
-    0 12px 32px #161b22,
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    none;
 }
 
 .toast-accent {
-  background: #161b22;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  background: var(--bg-secondary);
+  box-shadow: none;
 }
 
 .toast-icon-wrap {
-  background: #161b22;
+  background: var(--bg-secondary);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
@@ -218,7 +214,7 @@
 
 .toast-progress {
   background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.6));
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  box-shadow: none;
 }
 
 /* Subtle Type Distinctions within B&W Palette */

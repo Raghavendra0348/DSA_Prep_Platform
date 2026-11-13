@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGoogleLogin } from '@react-oauth/google';
+import { config } from '../../lib/config';
 import Spinner from './Spinner';
 import './GoogleSignInButton.css';
 
@@ -12,7 +13,20 @@ import './GoogleSignInButton.css';
  *  text          {'signin' | 'signup'}
  *  className     extra class
  */
-export default function GoogleSignInButton({ onCredential, text = 'signin', className = '' }) {
+export default function GoogleSignInButton(props) {
+  if (!config.googleClientId) {
+    return (
+      <button type="button" className={`google-btn ${props.className || ''}`} disabled>
+        <GoogleGLogo />
+        Google sign-in unavailable
+      </button>
+    );
+  }
+
+  return <ConfiguredGoogleSignInButton {...props} />;
+}
+
+function ConfiguredGoogleSignInButton({ onCredential, text = 'signin', className = '' }) {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = useGoogleLogin({

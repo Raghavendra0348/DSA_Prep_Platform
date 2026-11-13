@@ -11,7 +11,7 @@
   inset: 0;
   border-radius: 999px;
   background: rgba(239, 71, 67, 0.2);
-  animation: pulse 2.4s ease-in-out infinite;
+  animation: none;
   pointer-events: none;
 }
 
@@ -19,8 +19,4 @@
 .badge {
   transition: transform var(--duration-fast, 150ms) ease,
               box-shadow var(--duration-fast, 150ms) ease;
-}
-
-.badge:hover {
-  transform: translateY(-1px);
 }

@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Search, ArrowRight, BookOpen,
-  Sparkles,
+  Search, ArrowRight,
+
 } from 'lucide-react';
 
 import { useLanding } from '../hooks/useLanding';
-import { useIntersection } from '../hooks/useIntersection';
+
 import { getClassification, TIER_INFO } from '../data/companyClassification';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import TierBadge from '../components/ui/TierBadge';
@@ -28,8 +28,7 @@ export default function Landing() {
     document.title = 'DSA Prep — Company-Wise LeetCode Questions';
   }, []);
 
-  // Count-up animation trigger on scroll — useIntersection fires once when section enters viewport
-  const [statsRef, countersVisible] = useIntersection({ threshold: 0.2 }, true);
+
 
   const performSearch = (term) => {
     const clean = term?.trim();
@@ -73,39 +72,19 @@ export default function Landing() {
 
   return (
     <div className="landing">
-      {/* ── 1. Hero Section ────────────────────────────────────────────────── */}
       <section className="hero">
-        <div className="hero-bg-glow hero-bg-glow-1" />
-        <div className="hero-bg-glow hero-bg-glow-2" />
-
-        <motion.div
-          className="hero-content container"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Announcement Badge */}
-          <motion.div className="hero-announcement" variants={fadeUp}>
-            <span className="announcement-pill">NEW 2026 EDITION</span>
-            <span className="announcement-text">Curated Company-Wise Questions &amp; Tier Lists</span>
-          </motion.div>
-
-          <motion.h1 className="hero-title" variants={fadeUp}>
-            Ace Your Next <span className="hero-highlight">Tech Interview</span>
-          </motion.h1>
-
-          <motion.p className="hero-subtitle" variants={fadeUp}>
-            Practice real LeetCode questions asked at <strong>429+ top companies</strong>.
-            Organized by recency, difficulty, and tier classification to fast-track your prep.
-          </motion.p>
-
+        <div className="hero-split container">
+          <div className="hero-copy">
+            <div className="hero-announcement">THE INTERVIEW PRACTICE INDEX</div>
+            <h1 className="hero-title">Less searching.<br /><span className="hero-highlight">More solving.</span></h1>
+            <p className="hero-subtitle">Find the questions asked at your target company. Practice by topic, difficulty, and recency. Keep track as you go.</p>
           {/* Hero Search Box */}
           <motion.form className="hero-search" onSubmit={handleSearch} variants={fadeUp}>
             <Search size={20} className="hero-search-icon" />
             <input
               type="text"
               className="hero-search-input"
-              placeholder="Search your target company (e.g. Google, Amazon, Swiggy)..."
+              aria-label="Search companies or DSA topics" placeholder="Company or topic, e.g. Google or Array"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -129,22 +108,46 @@ export default function Landing() {
             ))}
           </motion.div>
 
-          {/* Hero CTAs */}
-          <motion.div className="hero-actions" variants={fadeUp}>
-            <Link to="/companies" className="btn-hero-primary">
-              <span>Browse All Companies</span>
-              <ArrowRight size={18} />
-            </Link>
-            <Link to="/topics" className="btn-hero-secondary">
-              <BookOpen size={18} />
-              <span>Explore Topics</span>
-            </Link>
-          </motion.div>
-        </motion.div>
+            <div className="hero-actions">
+              <Link to="/companies">Browse companies <ArrowRight size={16} /></Link>
+              <Link to="/topics">Explore topics <ArrowRight size={16} /></Link>
+            </div>
+          </div>
+          <aside className="pattern-preview" aria-labelledby="pattern-preview-title">
+            <div className="pattern-preview-topline">
+              <span>PATTERN SPOTLIGHT</span>
+              <span>01 / TWO POINTERS</span>
+            </div>
+            <h2 id="pattern-preview-title">Find the pattern.<br />Then find the answer.</h2>
+            <p className="pattern-preview-intro">Two pointers. One sorted array. A little less work.</p>
+
+            <div className="pattern-example" role="img" aria-label="Two pointers example: in the sorted array 2, 4, 5, 7, 9, the left value 2 and right value 9 add up to the target 11.">
+              <div className="pattern-example-label"><span>sorted array</span><span>target = 11</span></div>
+              <div className="pattern-array" aria-hidden="true">
+                <span className="pattern-cell pattern-cell-selected">2</span>
+                <span className="pattern-cell">4</span>
+                <span className="pattern-cell">5</span>
+                <span className="pattern-cell">7</span>
+                <span className="pattern-cell pattern-cell-selected">9</span>
+              </div>
+              <div className="pattern-pointers" aria-hidden="true">
+                <span>↑<br />left</span><span className="pattern-pointer-line" /><span>↑<br />right</span>
+              </div>
+              <div className="pattern-result"><span>2 + 9</span><span>=</span><strong>11 <span>✓</span></strong></div>
+            </div>
+
+            <Link className="pattern-practice-link" to="/topics/two-pointers">Practice two pointers <ArrowRight size={17} /></Link>
+            <div className="pattern-other-topics">
+              <span>Up next</span>
+              <Link to="/topics/binary-search">Binary search <ArrowRight size={13} /></Link>
+              <Link to="/topics/sliding-window">Sliding window <ArrowRight size={13} /></Link>
+            </div>
+          </aside>
+        </div>
       </section>
 
       {/* ── 2. Live Platform Metrics Bar ───────────────────────────────────── */}
-      <section className="stats-bar" ref={statsRef}>
+      <section className="stats-bar" >
         <div className="stats-bar-inner container">
           {loading ? (
             <>
@@ -165,50 +168,37 @@ export default function Landing() {
           ) : (
             <>
               <StatCard
-               
-                value={stats?.totalCompanies || 429}
+
+                value={stats?.totalCompanies}
                 label="Target Companies"
-                subtext="Product & Service Leaders"
-                badge="FAANG & Tech"
-                theme="cyan"
                 to="/companies"
-                visible={countersVisible}
+
               />
               <StatCard
-                
-                value={stats?.totalQuestions || 3392}
+
+                value={stats?.totalQuestions}
                 label="Interview Questions"
-                subtext="Tag & Frequency Ranked"
-                badge="Real LeetCode"
-                theme="purple"
                 to="/companies"
-                visible={countersVisible}
+
               />
               <StatCard
-                
-                value={stats?.totalTopics || 173}
+
+                value={stats?.totalTopics}
                 label="DSA Topics"
-                subtext="Arrays to Graph & DP"
-                badge="Roadmap Ready"
-                theme="emerald"
                 to="/topics"
-                visible={countersVisible}
+
               />
               <StatCard
                 value={4}
                 label="Tier Categories"
-                subtext="MAANG to Service Tier"
-                badge="Tier Classified"
-                theme="amber"
                 to="/companies"
-                visible={countersVisible}
+
               />
             </>
           )}
         </div>
       </section>
 
-      {/* ── 3. Why Prepare With Us (Features Section) ─────────────────────── */}
 
       {/* ── 4. Featured Companies Section ──────────────────────────────────── */}
       <section className="featured-section">
@@ -220,9 +210,9 @@ export default function Landing() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <span className="section-badge">DIRECTORY HIGHLIGHTS</span>
-            <h2 className="section-title">Top Target Companies</h2>
-            <p className="section-subtitle">Start preparing questions for top tech employers</p>
+            <span className="section-badge">01 / COMPANY DIRECTORY</span>
+            <h2 className="section-title">Where are you interviewing?</h2>
+            <p className="section-subtitle">Choose a company to see its interview questions.</p>
           </motion.div>
 
           <motion.div
@@ -283,111 +273,30 @@ export default function Landing() {
 
           <div className="featured-bottom-cta">
             <Link to="/companies" className="btn-outline-lg">
-              <span>View All 429+ Companies</span>
+              <span>View all companies</span>
               <ArrowRight size={16} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── 5. How It Works (Step Workflow) ────────────────────────────────── */}
-     
 
-      {/* ── 6. Final Call To Action Banner ─────────────────────────────────── */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-banner">
-            <div className="cta-glow" />
-            <div className="cta-content">
-              <div className="cta-icon-badge">
-                <Sparkles size={28} />
-              </div>
-              <h2>Ready To Crack Your Dream Interview?</h2>
-              <p>Start practicing company-wise DSA questions completely free. No subscription required.</p>
-              <div className="cta-buttons">
-                <Link to="/companies" className="btn-cta-primary">
-                  <span>Start Practicing Now</span>
-                  <ArrowRight size={18} />
-                </Link>
-                <Link to="/topics" className="btn-cta-secondary">
-                  <span>Browse Topics</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+
+      <section className="study-note container">
+        <span className="section-badge">02 / STUDY BY TOPIC</span>
+        <div><h2>Working on a specific pattern?</h2><p>Build your understanding with questions grouped by DSA topic.</p></div>
+        <Link to="/topics">Explore topics <ArrowRight size={18} /></Link>
       </section>
     </div>
   );
 }
 
-// ── Animated Counter Card ────────────────────────────────────────────────────
-function StatCard({
-  icon: Icon,
-  value,
-  label,
-  subtext,
-  badge,
-  theme = 'cyan',
-  to,
-  visible,
-}) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!visible) return;
-    const duration = 1400;
-    const steps = 35;
-    const increment = value / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [visible, value]);
-
-  const CardWrapper = to ? Link : 'div';
-  const wrapperProps = to
-    ? { to, className: `stat-card stat-card-${theme} stat-card-link` }
-    : { className: `stat-card stat-card-${theme}` };
-
+function StatCard({ value, label, to }) {
   return (
-    <CardWrapper {...wrapperProps}>
-      <div className="stat-card-header">
-        {Icon && (
-          <div className="stat-card-icon">
-            <Icon size={20} />
-          </div>
-        )}
-        {badge && (
-          <span className="stat-card-badge">
-            <span className="stat-badge-dot" />
-            {badge}
-          </span>
-        )}
-      </div>
-
-      <div className="stat-card-body">
-        <div className="stat-card-value-wrap">
-          <span className="stat-card-value">{count.toLocaleString()}</span>
-          <span className="stat-card-plus">+</span>
-        </div>
-        <h3 className="stat-card-label">{label}</h3>
-        {subtext && <p className="stat-card-subtext">{subtext}</p>}
-      </div>
-
-      <div className="stat-card-footer">
-        <span className="stat-card-action">
-          <span>Explore</span>
-          <ArrowRight size={13} className="stat-card-arrow" />
-        </span>
-      </div>
-    </CardWrapper>
+    <Link to={to} className="stat-card">
+      <span className="stat-card-value">{value == null ? '—' : value.toLocaleString()}</span>
+      <span className="stat-card-label">{label}</span>
+      <ArrowRight size={16} aria-hidden="true" />
+    </Link>
   );
 }

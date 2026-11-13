@@ -6,8 +6,8 @@ import {
   LayoutGrid, Code2, Layers,
 } from 'lucide-react';
 import { useCompanies } from '../hooks/useCompanies';
-import { TIER_INFO, TYPE_INFO, getClassification, filterByType, groupByTier } from '../data/companyClassification';
-import { getLogoUrl } from '../data/companyDomains';
+import { TIER_INFO, TYPE_INFO, filterByType, groupByTier } from '../data/companyClassification';
+
 import SearchInput from '../components/shared/SearchInput';
 import CompanyLogo from '../components/ui/CompanyLogo';
 import Dropdown from '../components/ui/Dropdown';
@@ -242,26 +242,13 @@ export default function Companies() {
                   <>
                     <div className="companies-grid">
                       {displayCompanies.map(company => {
-                        const { tier: compTier } = getClassification(company.slug);
-                        const compTierInfo = TIER_INFO[compTier];
-                        const logoBgUrl = getLogoUrl(company.slug, 128);
 
                         return (
                           <Link
                             key={company.slug}
                             to={`/company/${company.slug}`}
                             className="card company-card company-card-img-bg"
-                            style={{ '--card-tier-color': compTierInfo.color }}
                           >
-                            {/* Full Card Image Background */}
-                            <div
-                              className="company-card-bg-img"
-                              style={{ backgroundImage: `url(${logoBgUrl})` }}
-                              aria-hidden="true"
-                            />
-                            {/* Dark Gradient Overlay for Text Legibility */}
-                            <div className="company-card-bg-gradient" />
-
                             {/* Card Top Row: Logo Badge + Tier Badge */}
                             <div className="company-card-top-row">
                               <CompanyLogo slug={company.slug} name={company.name} size={36} />

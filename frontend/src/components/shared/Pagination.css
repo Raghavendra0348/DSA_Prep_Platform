@@ -27,7 +27,7 @@
 
 .pagination-btn.active {
   background: var(--accent);
-  color: #0d1117;
+  color: var(--bg-primary);
   font-weight: 600;
 }
 

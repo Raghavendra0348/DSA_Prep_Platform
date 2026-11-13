@@ -22,7 +22,7 @@
 }
 
 .profile-eyebrow {
-  color: #8fc6ff;
+  color: var(--accent);
 }
 
 .profile-page-header h1 {
@@ -50,8 +50,7 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    linear-gradient(118deg, rgba(88, 166, 255, 0.16), transparent 48%),
-    var(--gradient-card);
+    var(--bg-secondary);
 }
 
 .profile-card:hover,
@@ -72,7 +71,7 @@
   right: 7%;
   width: 180px;
   height: 180px;
-  background: rgba(167, 139, 250, 0.13);
+  background: rgba(var(--accent-rgb), 0.13);
 }
 
 .profile-card-orb-two {
@@ -92,7 +91,7 @@
   color: #fff;
   font-weight: var(--fw-bold);
   background: var(--gradient-accent);
-  box-shadow: 0 12px 28px rgba(88, 166, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: none;
 }
 
 .profile-avatar-large {
@@ -120,7 +119,7 @@
   border: 3px solid var(--bg-card);
   border-radius: 50%;
   background: var(--solved);
-  box-shadow: 0 0 0 4px rgba(63, 185, 80, 0.14);
+  box-shadow: none;
 }
 
 .profile-info,
@@ -141,10 +140,10 @@
 
 .profile-member-badge {
   padding: 4px 8px;
-  border: 1px solid rgba(88, 166, 255, 0.25);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
   border-radius: var(--radius-full);
-  color: #9dceff;
-  background: rgba(88, 166, 255, 0.09);
+  color: var(--accent-hover);
+  background: rgba(var(--accent-rgb), 0.09);
 }
 
 .profile-info h2 {
@@ -177,7 +176,7 @@
   padding: 10px 11px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
-  background: rgba(13, 17, 23, 0.3);
+  background: rgba(17, 23, 19, 0.3);
 }
 
 .profile-detail-icon,
@@ -186,8 +185,8 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  color: #9dceff;
-  background: rgba(88, 166, 255, 0.12);
+  color: var(--accent-hover);
+  background: rgba(var(--accent-rgb), 0.12);
 }
 
 .profile-detail-icon {
@@ -305,7 +304,7 @@
   padding: 14px 16px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-md);
-  background: rgba(13, 17, 23, 0.4);
+  background: rgba(17, 23, 19, 0.4);
   gap: 14px;
 }
 
@@ -372,7 +371,7 @@
 /* ── Security card ────────────────────────────────────────────────────────── */
 .profile-pw-card {
   padding: 30px;
-  background: linear-gradient(145deg, rgba(28, 33, 40, 0.98), rgba(19, 29, 29, 0.96));
+  background: var(--bg-secondary);
 }
 
 .profile-pw-card .profile-section-heading {
@@ -484,4 +483,17 @@
   .profile-stats-grid { grid-template-columns: repeat(2, 1fr); }
   .profile-page-header h1 { font-size: 20px; }
   .profile-card, .profile-pw-card { padding: 16px; }
+}
+
+/* Shared charcoal and green design system. */
+
+.profile-card-orb { display: none; }
+.profile-page-header h1 { font-size: clamp(28px, 4vw, 34px); font-weight: 600; }
+.profile-avatar { background: var(--accent-dim); color: var(--accent); }
+.profile-page-header h1 {
+  font-size: clamp(28px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+  color: var(--text-primary);
 }

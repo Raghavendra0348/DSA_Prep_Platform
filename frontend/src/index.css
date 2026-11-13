@@ -10,23 +10,25 @@
 /* ── Design Tokens ────────────────────────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --bg-primary:    #0d1117;
-  --bg-secondary:  #161b22;
-  --bg-card:       #1c2128;
-  --bg-hover:      #21262d;
+  --bg-primary:    #111713;
+  --bg-secondary:  #1b231d;
+  --bg-card:       #1f2922;
+  --bg-hover:      #28342b;
 
   /* Borders */
-  --border:        #30363d;
-  --border-muted:  #21262d;
+  --border:        #354138;
+  --border-muted:  #28342b;
 
   /* Text */
-  --text-primary:  #e6edf3;
-  --text-secondary:#8b949e;
-  --text-muted:    #7d8590;
+  --text-primary:  #eceee9;
+  --text-secondary:#a6afa8;
+  --text-muted:    #98a49b;
 
   /* Accent */
-  --accent:        #58a6ff;
-  --accent-hover:  #79b8ff;
+  --accent:        #b9d98b;
+  --accent-rgb:    185, 217, 139;
+  --on-accent:     #182015;
+  --accent-hover:  #d0e5b3;
 
   /* Difficulty */
   --easy:          #22c55e;
@@ -36,13 +38,13 @@
   /* Status */
   --solved:        #3fb950;
   --attempted:     #d29922;
-  --unsolved:      #30363d;
+  --unsolved:      #354138;
 
   /* Shape */
   --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  16px;
-  --radius-xl:  24px;
+  --radius-md:  8px;
+  --radius-lg:  10px;
+  --radius-xl:  12px;
 
   /* Transitions */
   --transition: 0.2s ease;
@@ -107,7 +109,7 @@ ul, ol {
   top: -100px;
   left: 16px;
   background: var(--accent);
-  color: #0d1117;
+  color: var(--bg-primary);
   padding: 8px 16px;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -115,7 +117,7 @@ ul, ol {
   z-index: 9999;
   text-decoration: none;
   transition: top 150ms ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
 }
 
 .skip-to-main:focus {
@@ -187,13 +189,12 @@ ul, ol {
 
 .btn-primary {
   background: var(--accent);
-  color: #0d1117;
+  color: var(--bg-primary);
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(88, 166, 255, 0.25);
+  box-shadow: none;
 }
 
 .btn-ghost {
@@ -217,13 +218,12 @@ ul, ol {
   background: var(--gradient-accent);
   color: #fff;
   border: none;
-  box-shadow: 0 2px 12px rgba(88, 166, 255, 0.25);
+  box-shadow: none;
 }
 
 .btn-gradient:hover {
   opacity: 0.88;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(88, 166, 255, 0.35);
+  box-shadow: none;
 }
 
 .btn-danger {
@@ -233,7 +233,6 @@ ul, ol {
 
 .btn-danger:hover {
   background: #c0392b;
-  transform: translateY(-1px);
 }
 
 /* ── Cards ────────────────────────────────────────────────────────────────── */
@@ -245,15 +244,12 @@ ul, ol {
   transition: border-color var(--duration-normal) var(--ease-smooth),
               box-shadow var(--duration-normal) var(--ease-smooth),
               transform var(--duration-normal) var(--ease-smooth);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: none;
 }
 
 .card:hover {
-  border-color: rgba(88, 166, 255, 0.3);
-  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.08),
-              0 4px 20px rgba(0, 0, 0, 0.35),
-              inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transform: translateY(-1px);
+  border-color: rgba(var(--accent-rgb), 0.3);
+  box-shadow: none;
 }
 
 /* ── Difficulty Badges ────────────────────────────────────────────────────── */
@@ -289,7 +285,7 @@ ul, ol {
 .chip:hover {
   color: var(--accent);
   border-color: var(--accent);
-  background: rgba(88, 166, 255, 0.08);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 /* ── Input ────────────────────────────────────────────────────────────────── */
@@ -308,7 +304,7 @@ ul, ol {
 
 .input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
 }
 
 .input::placeholder {
@@ -394,7 +390,7 @@ ul, ol {
 }
 
 .filter-toggle.active {
-  color: #0d1117;
+  color: var(--bg-primary);
 }
 
 .filter-easy.active   { background: var(--easy);   border-color: var(--easy); }
@@ -458,11 +454,26 @@ ul, ol {
 
 [data-tooltip]:hover::after {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 
 /* ── Selection ───────────────────────────────────────────────────────────── */
 ::selection {
-  background: rgba(88, 166, 255, 0.3);
+  background: rgba(var(--accent-rgb), 0.3);
   color: var(--text-primary);
 }
+
+/* Shared charcoal and green design system. */
+
+.btn, .input, .filter-select, .dropdown-trigger { border-radius: var(--radius-sm); }
+.btn { min-height: 38px; justify-content: center; font-weight: 600; }
+.btn-primary, .btn-gradient { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.btn-primary:hover, .btn-gradient:hover { background: var(--accent-hover); color: var(--on-accent); transform: none; }
+.btn:disabled, button:disabled { cursor: not-allowed; }
+.card { background: var(--bg-secondary); border-color: var(--border); box-shadow: none; }
+.card:hover { border-color: #58675b; box-shadow: none; transform: none; }
+.input { background: var(--bg-secondary); min-height: 40px; }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .12); }
+.badge { border-radius: 4px; font-weight: 500; letter-spacing: 0; }
+.badge:hover { transform: none; }
+.badge-hard::before { display: none; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

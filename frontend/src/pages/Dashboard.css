@@ -20,10 +20,10 @@
   justify-content: space-between;
   gap: 24px;
   padding: 24px 28px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(22, 27, 34, 0.85) 0%, rgba(13, 17, 23, 0.95) 100%);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: none;
   margin-bottom: 20px;
   position: relative;
   overflow: hidden;
@@ -37,7 +37,7 @@
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(88, 166, 255, 0.08) 0%, transparent 70%);
+  background: var(--bg-secondary);
   pointer-events: none;
 }
 
@@ -54,14 +54,14 @@
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #1f6feb 0%, #8b5cf6 100%);
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   font-weight: 800;
   color: #ffffff;
-  box-shadow: 0 4px 18px rgba(31, 111, 235, 0.35);
+  box-shadow: none;
   border: 1.5px solid rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
 }
@@ -74,8 +74,8 @@
   height: 13px;
   border-radius: 50%;
   background: #3fb950;
-  border: 2px solid #0d1117;
-  box-shadow: 0 0 8px rgba(63, 185, 80, 0.8);
+  border: 2px solid var(--bg-primary);
+  box-shadow: none;
 }
 
 .dash-ui-hero-text {
@@ -97,9 +97,9 @@
   gap: 5px;
   font-size: 11px;
   font-weight: 700;
-  color: #58a6ff;
-  background: rgba(88, 166, 255, 0.1);
-  border: 1px solid rgba(88, 166, 255, 0.2);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   padding: 2px 9px;
   border-radius: 99px;
   letter-spacing: 0.02em;
@@ -108,7 +108,7 @@
 .dash-ui-title {
   font-size: 26px;
   font-weight: 800;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -117,7 +117,7 @@
 
 .dash-ui-desc {
   font-size: 13.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin: 6px 0 0 0;
   max-width: 580px;
   line-height: 1.5;
@@ -139,8 +139,8 @@
   border-radius: 11px;
   font-size: 13px;
   font-weight: 600;
-  color: #c9d1d9;
-  background: rgba(22, 27, 34, 0.75);
+  color: #c4cdc6;
+  background: rgba(27, 35, 29, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -148,9 +148,9 @@
 }
 
 .dash-ui-btn-refresh:hover:not(:disabled) {
-  color: #58a6ff;
-  border-color: rgba(88, 166, 255, 0.4);
-  background: rgba(88, 166, 255, 0.08);
+  color: var(--accent);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 .dash-ui-btn-refresh.spinning svg {
@@ -171,18 +171,17 @@
   font-size: 13.5px;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
+  background: var(--bg-secondary);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.35);
+  box-shadow: none;
   text-decoration: none;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .dash-ui-btn-explore:hover {
-  background: linear-gradient(135deg, #388bfd 0%, #58a6ff 100%);
+  background: var(--bg-hover);
   color: #ffffff;
-  transform: translateY(-1px);
 }
 
 /* ── 2. Top Stats Bar ─────────────────────────────────────────────────────── */
@@ -198,10 +197,10 @@
   align-items: center;
   gap: 16px;
   padding: 18px 22px;
-  border-radius: 16px;
-  background: rgba(22, 27, 34, 0.6);
+  border-radius: var(--radius-md);
+  background: rgba(27, 35, 29, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
   text-decoration: none;
   color: inherit;
   transition: all 0.2s ease;
@@ -211,15 +210,14 @@
 }
 
 .dash-ui-stat-box:hover {
-  transform: translateY(-2px);
-  border-color: rgba(88, 166, 255, 0.3);
-  background: rgba(22, 27, 34, 0.9);
+  border-color: rgba(var(--accent-rgb), 0.3);
+  background: rgba(27, 35, 29, 0.9);
 }
 
 .dash-ui-stat-icon {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,9 +237,9 @@
 }
 
 .stat-box-total .dash-ui-stat-icon {
-  background: rgba(88, 166, 255, 0.12);
-  color: #58a6ff;
-  border: 1px solid rgba(88, 166, 255, 0.25);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
 }
 
 .dash-ui-stat-meta {
@@ -261,7 +259,7 @@
 
 .dash-ui-stat-lbl {
   font-size: 12px;
-  color: #8b949e;
+  color: var(--text-secondary);
   font-weight: 500;
   margin-top: 2px;
   white-space: nowrap;
@@ -286,13 +284,13 @@
 }
 
 .tag-total {
-  background: rgba(88, 166, 255, 0.12);
-  color: #58a6ff;
-  border: 1px solid rgba(88, 166, 255, 0.25);
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
 }
 
 .dash-ui-stat-arrow {
-  color: #6e7681;
+  color: var(--text-muted);
   margin-left: auto;
   transition: transform 0.2s ease, color 0.2s ease;
   flex-shrink: 0;
@@ -322,11 +320,11 @@
 /* ── Panels Common Styles ─────────────────────────────────────────────────── */
 .dash-ui-panel {
   padding: 24px;
-  border-radius: 18px;
-  background: rgba(22, 27, 34, 0.65);
+  border-radius: var(--radius-md);
+  background: rgba(27, 35, 29, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
+  box-shadow: none;
+  backdrop-filter: none;
   min-width: 0;
 }
 
@@ -344,7 +342,7 @@
   font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: #58a6ff;
+  color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 3px;
 }
@@ -352,7 +350,7 @@
 .dash-ui-panel-head h2 {
   font-size: 17px;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -377,14 +375,14 @@
   gap: 4px;
   font-size: 12px;
   font-weight: 600;
-  color: #58a6ff;
+  color: var(--accent);
   text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;
 }
 
 .dash-ui-link-action:hover {
-  color: #79b8ff;
+  color: var(--accent-hover);
 }
 
 /* ── Progress Radar Panel (LeetCode Style Donut + Tracks) ─────────────────── */
@@ -431,14 +429,14 @@
 .dash-donut-lbl {
   font-size: 10.5px;
   font-weight: 700;
-  color: #8b949e;
+  color: var(--text-secondary);
   text-transform: uppercase;
   margin-top: 3px;
 }
 
 .dash-donut-sub {
   font-size: 10px;
-  color: #6e7681;
+  color: var(--text-muted);
 }
 
 /* Difficulty Tracks */
@@ -486,35 +484,35 @@
   flex-shrink: 0;
 }
 
-.dot-easy   { background: #00b8a3; box-shadow: 0 0 6px rgba(0, 184, 163, 0.6); }
-.dot-medium { background: #ffa116; box-shadow: 0 0 6px rgba(255, 161, 22, 0.6); }
-.dot-hard   { background: #ef4743; box-shadow: 0 0 6px rgba(239, 71, 67, 0.6); }
+.dot-easy   { background: #00b8a3; box-shadow: none; }
+.dot-medium { background: #ffa116; box-shadow: none; }
+.dot-hard   { background: #ef4743; box-shadow: none; }
 
 .dash-ui-diff-score {
   font-size: 12px;
-  color: #8b949e;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .dash-ui-diff-score strong {
-  color: #f0f6fc;
+  color: var(--text-primary);
 }
 
 .diff-pct {
-  color: #6e7681;
+  color: var(--text-muted);
   font-size: 11.5px;
 }
 
 .dash-ui-track {
   height: 7px;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
 .dash-ui-fill {
   height: 100%;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -528,7 +526,7 @@
   align-items: center;
   gap: 5px;
   font-size: 12px;
-  color: #8b949e;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -582,7 +580,7 @@
 .dash-ui-act-title {
   font-size: 13.5px;
   font-weight: 600;
-  color: #f0f6fc;
+  color: var(--text-primary);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
@@ -591,12 +589,12 @@
 }
 
 .dash-ui-act-title:hover {
-  color: #58a6ff;
+  color: var(--accent);
 }
 
 .dash-ui-act-date {
   font-size: 11px;
-  color: #8b949e;
+  color: var(--text-secondary);
   margin-top: 1px;
 }
 
@@ -615,17 +613,17 @@
   border-radius: 7px;
   font-size: 11.5px;
   font-weight: 600;
-  color: #58a6ff;
-  background: rgba(88, 166, 255, 0.08);
-  border: 1px solid rgba(88, 166, 255, 0.2);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   text-decoration: none;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .dash-ui-act-solve:hover {
-  background: rgba(88, 166, 255, 0.18);
-  border-color: #58a6ff;
+  background: rgba(var(--accent-rgb), 0.18);
+  border-color: var(--accent);
   color: #ffffff;
 }
 
@@ -673,7 +671,7 @@
 .dash-ui-comp-rank {
   font-size: 11px;
   font-weight: 700;
-  color: #6e7681;
+  color: var(--text-muted);
   width: 14px;
   flex-shrink: 0;
 }
@@ -682,7 +680,7 @@
 .dash-ui-topic-name {
   font-size: 13px;
   font-weight: 600;
-  color: #f0f6fc;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -698,7 +696,7 @@
 .dash-ui-comp-count,
 .dash-ui-topic-count {
   font-size: 11.5px;
-  color: #8b949e;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -709,12 +707,12 @@
 }
 
 .dash-ui-comp-arrow {
-  color: #484f58;
+  color: #58675b;
   transition: transform 0.15s ease, color 0.15s ease;
 }
 
 .dash-ui-company-item:hover .dash-ui-comp-arrow {
-  color: #58a6ff;
+  color: var(--accent);
   transform: translateX(2px);
 }
 
@@ -722,8 +720,8 @@
   width: 26px;
   height: 26px;
   border-radius: 7px;
-  background: rgba(88, 166, 255, 0.1);
-  color: #58a6ff;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -738,7 +736,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #8b949e;
+  color: var(--text-secondary);
   gap: 8px;
 }
 
@@ -754,7 +752,7 @@
 
 .dash-ui-empty-box svg,
 .dash-ui-empty-side svg {
-  color: #484f58;
+  color: #58675b;
 }
 
 /* ── Skeletons ────────────────────────────────────────────────────────────── */
@@ -828,7 +826,7 @@
 
   .dash-ui-panel {
     padding: 20px 18px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
   }
 
   .dash-ui-stats-bar {
@@ -893,7 +891,7 @@
 
   .dash-ui-hero {
     padding: 18px 14px;
-    border-radius: 14px;
+    border-radius: var(--radius-md);
     gap: 14px;
   }
 
@@ -928,7 +926,7 @@
 
   .dash-ui-panel {
     padding: 16px 14px;
-    border-radius: 14px;
+    border-radius: var(--radius-md);
   }
 
   .dash-ui-panel-head {
@@ -1022,4 +1020,19 @@
   .dash-ui-topic-name {
     max-width: 120px;
   }
+}
+
+/* Shared charcoal and green design system. */
+
+.dash-ui-hero::before { display: none; }
+.dash-ui-hero, .dash-ui-stat-card { background: var(--bg-secondary); border-color: var(--border); }
+.dash-ui-avatar { background: var(--accent-dim); color: var(--accent); border-color: var(--border); }
+.dash-ui-btn-explore { background: var(--accent); color: var(--on-accent); border-color: transparent; border-radius: var(--radius-sm); }
+.dash-ui-btn-explore:hover { background: var(--accent-hover); color: var(--on-accent); }
+.dash-ui-welcome h1 {
+  font-size: clamp(28px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.2;
+  color: var(--text-primary);
 }
