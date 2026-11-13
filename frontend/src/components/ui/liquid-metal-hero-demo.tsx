@@ -14,7 +14,7 @@ export default function LiquidMetalHeroDemo() {
       onSecondaryCtaClick={() => alert("Secondary CTA clicked!")}
       features={[
         "Seamless Animations",
-        "Responsive Excellence", 
+        "Responsive Excellence",
         "Modern Architecture"
       ]}
     />
