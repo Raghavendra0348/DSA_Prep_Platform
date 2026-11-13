@@ -9,15 +9,23 @@ import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-        {/* DevTools only included in development builds */}
-        {import.meta.env.DEV && (
-          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-        )}
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
+    {import.meta.env.VITE_MAINTENANCE_MODE === 'true' ? (
+      <main style={{ minHeight: '100vh', display: 'grid', placeContent: 'center', padding: '2rem', textAlign: 'center' }}>
+        <h1>We’ll be back shortly</h1>
+        <p>Scheduled maintenance is in progress. Your saved progress is safe.</p>
+        <p>Please try again in a few minutes.</p>
+      </main>
+    ) : (
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+          {/* DevTools only included in development builds */}
+          {import.meta.env.DEV && (
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+          )}
+        </QueryClientProvider>
+      </GoogleOAuthProvider>
+    )}
   </StrictMode>,
 );
 

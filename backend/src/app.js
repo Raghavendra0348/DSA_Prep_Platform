@@ -37,6 +37,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Deploy with MAINTENANCE_MODE=true before the final copy. Existing browser
+// tabs must also be blocked, including GET handlers that may rotate tokens.
+app.use('/api', (_, res, next) => {
+  if (process.env.MAINTENANCE_MODE !== 'true') return next();
+  res.set('Retry-After', '300');
+  return res.status(503).json({ success: false, error: 'Scheduled maintenance. Please try again shortly.' });
+});
+
 // ── HTTP Request Logging (M1: morgan) ─────────────────────────────────────
 // "dev" format: GET /api/stats 200 12ms — only in non-production
 if (process.env.NODE_ENV !== 'production') {
@@ -91,7 +99,25 @@ app.use('/api/bookmarks',  apiLimiter,  require('./routes/bookmarks'));
 app.use('/api/dashboard',  apiLimiter,  require('./routes/dashboard'));
 
 // ── Health Check ──────────────────────────────────────────────────────────
-app.get('/health', (_, res) => res.json({ status: 'ok' }));
+// Liveness stays independent of Aiven so DB downtime need not restart the app.
+app.get('/health/live', (_, res) => res.json({ status: 'ok' }));
+app.get('/health', async (_, res) => {
+  res.set('Cache-Control', 'no-store');
+  let timeout;
+  try {
+    await Promise.race([
+      require('./lib/prisma').$queryRaw`SELECT 1`,
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error('Database health check timed out')), 5000);
+      }),
+    ]);
+    res.json({ status: 'ok', database: 'up' });
+  } catch {
+    res.status(503).json({ status: 'unavailable', database: 'down' });
+  } finally {
+    clearTimeout(timeout);
+  }
+});
 
 // ── Global Error Handler ──────────────────────────────────────────────────
 // Catches Prisma errors, Zod validation errors, JWT errors, and generic 500s

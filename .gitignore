@@ -37,6 +37,9 @@ prisma/dev.db-journal
 *.db
 *.sqlite
 *.sqlite3
+*.dump
+*.backup
+*.bak
 
 # ── Logs & Debugging ────────────────────────────────────────────────────────
 logs/
@@ -97,3 +100,4 @@ backend/scripts/clean-empty-companies.js
 COUNT_FLOW_EXPLANATION.md
 frontend/improvements
 
+.neon

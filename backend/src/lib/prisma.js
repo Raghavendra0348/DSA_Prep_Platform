@@ -3,15 +3,28 @@ const { PrismaPg } = require('@prisma/adapter-pg');
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const dbUrl = process.env.DATABASE_URL || '';
-const isCloud = dbUrl.includes('sslmode=require') || dbUrl.includes('aivencloud.com') || process.env.NODE_ENV === 'production';
-const cleanUrl = dbUrl.replace(/([?&])sslmode=[^&]+(&|$)/, (m, p1, p2) => p1 === '?' && p2 ? '?' : '').replace(/\?$/, '');
+const { databaseConfig } = require('./database-config');
+
+const poolMax = Number(process.env.DB_POOL_MAX || 5);
+if (!Number.isSafeInteger(poolMax) || poolMax < 1) {
+  throw new Error('DB_POOL_MAX must be a positive integer');
+}
 
 const pool = new Pool({
-  connectionString: cleanUrl,
-  ssl: isCloud ? { rejectUnauthorized: false } : false,
+  ...databaseConfig(process.env.DATABASE_URL),
+  // Per-process limit: leave room for deploy overlap, migrations and the console.
+  max: poolMax,
+  idleTimeoutMillis: 30000,
+  statement_timeout: 15000,
+  query_timeout: 20000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
 });
-const adapter = new PrismaPg(pool);
+// pg removes broken idle clients; subsequent requests can open fresh connections.
+pool.on('error', (error) => {
+  console.error('Database idle connection failed', { code: error.code || 'UNKNOWN' });
+});
+const adapter = new PrismaPg(pool, { disposeExternalPool: true });
 const prisma = new PrismaClient({ adapter });
 
 module.exports = prisma;

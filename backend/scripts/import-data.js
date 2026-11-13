@@ -15,11 +15,10 @@ const fs   = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // Aiven SSL from local machine
+const { databaseConfig } = require('../src/lib/database-config');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...databaseConfig(process.env.DIRECT_URL || process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL),
   max: 5,
 });
 

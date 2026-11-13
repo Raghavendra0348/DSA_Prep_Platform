@@ -473,8 +473,8 @@ All endpoints are prefixed with `/api`. Protected endpoints require `Authorizati
 
 ### Deploy Checklist
 
-1. **Database**: Provision a PostgreSQL instance, run `prisma migrate deploy`, then `npm run import`
-2. **Backend**: Deploy to Render with `DATABASE_URL`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, and `CORS_ORIGIN` env vars
+1. **Database**: For a new empty database, run `prisma migrate deploy`, then `npm run import`. For existing Aiven data, follow the [Neon migration runbook](docs/backend/neon-migration.md) instead; preserve schema, accounts, and progress with dump/restore.
+2. **Backend**: Deploy to Render with pooled `DATABASE_URL`, direct `DIRECT_URL`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, and `CORS_ORIGIN`. Use `/health/live` for restart/uptime checks and `/health` for DB readiness. Temporary maintenance uses `MAINTENANCE_MODE=true` (backend) and `VITE_MAINTENANCE_MODE=true` (frontend build).
 3. **Frontend**: Deploy to Vercel with `VITE_API_URL` pointing to the backend URL
 
 ---

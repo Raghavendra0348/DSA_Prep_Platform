@@ -18,8 +18,8 @@ jobs:
           echo "Sending keep-alive ping to Render backend..."
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           
-          # Curl health endpoint with a 45s timeout in case of initial wake-up
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "https://dsa-prep-backend.onrender.com/health")
+          # Check HTTP liveness without waking Neon's database compute.
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "https://dsa-prep-backend.onrender.com/health/live")
           
           echo "[$TIMESTAMP] Ping finished with HTTP status: $HTTP_STATUS"
           

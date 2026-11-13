@@ -2,17 +2,27 @@ const app    = require('./app');
 const prisma = require('./lib/prisma');
 const PORT   = process.env.PORT || 5000;
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT} (0.0.0.0)`);
 
-  // ── Keep Aiven free-tier DB alive ──────────────────────────────────────
-  // Free tier powers off the DB after inactivity → cold start on next request.
-  // Ping every 4 minutes with a cheap query to keep the connection warm.
-  setInterval(async () => {
-    try {
-      await prisma.$queryRaw`SELECT 1`;
-    } catch {
-      // Silent — don't crash the server if DB is momentarily unreachable
-    }
-  }, 4 * 60 * 1000); // every 4 minutes
 });
+
+// Drain HTTP requests and release DB connections during rolling deployments.
+let shuttingDown = false;
+function shutdown() {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  const deadline = setTimeout(() => process.exit(1), 10000);
+  deadline.unref();
+  server.close(async () => {
+    try {
+      await prisma.$disconnect();
+      clearTimeout(deadline);
+    } catch {
+      console.error('Database shutdown failed');
+      process.exitCode = 1;
+    }
+  });
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);

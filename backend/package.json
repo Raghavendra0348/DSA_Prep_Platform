@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "postinstall": "prisma generate",
     "migrate": "prisma migrate deploy",
+    "db:neon": "node scripts/neon-migration.js",
     "import": "node scripts/import-data.js",
     "studio": "npx prisma studio",
     "test": "jest --runInBand --forceExit"
