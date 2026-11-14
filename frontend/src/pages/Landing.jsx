@@ -113,36 +113,7 @@ export default function Landing() {
               <Link to="/topics">Explore topics <ArrowRight size={16} /></Link>
             </div>
           </div>
-          <aside className="pattern-preview" aria-labelledby="pattern-preview-title">
-            <div className="pattern-preview-topline">
-              <span>PATTERN SPOTLIGHT</span>
-              <span>01 / TWO POINTERS</span>
-            </div>
-            <h2 id="pattern-preview-title">Find the pattern.<br />Then find the answer.</h2>
-            <p className="pattern-preview-intro">Two pointers. One sorted array. A little less work.</p>
-
-            <div className="pattern-example" role="img" aria-label="Two pointers example: in the sorted array 2, 4, 5, 7, 9, the left value 2 and right value 9 add up to the target 11.">
-              <div className="pattern-example-label"><span>sorted array</span><span>target = 11</span></div>
-              <div className="pattern-array" aria-hidden="true">
-                <span className="pattern-cell pattern-cell-selected">2</span>
-                <span className="pattern-cell">4</span>
-                <span className="pattern-cell">5</span>
-                <span className="pattern-cell">7</span>
-                <span className="pattern-cell pattern-cell-selected">9</span>
-              </div>
-              <div className="pattern-pointers" aria-hidden="true">
-                <span>↑<br />left</span><span className="pattern-pointer-line" /><span>↑<br />right</span>
-              </div>
-              <div className="pattern-result"><span>2 + 9</span><span>=</span><strong>11 <span>✓</span></strong></div>
-            </div>
-
-            <Link className="pattern-practice-link" to="/topics/two-pointers">Practice two pointers <ArrowRight size={17} /></Link>
-            <div className="pattern-other-topics">
-              <span>Up next</span>
-              <Link to="/topics/binary-search">Binary search <ArrowRight size={13} /></Link>
-              <Link to="/topics/sliding-window">Sliding window <ArrowRight size={13} /></Link>
-            </div>
-          </aside>
+         
         </div>
       </section>
 
